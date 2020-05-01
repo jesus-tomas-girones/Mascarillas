@@ -16,6 +16,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/cara" />
 
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_acept"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:alpha="0.25"
+        app:srcCompat="@drawable/cara_f"/>
+
+<!--        android:id="@+id/imgCara"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.25"
+        app:srcCompat="@drawable/cara_f" /-->
+
     <Button
         android:id="@+id/btn_acept"
         style="@style/ButtonStyleShowPhoto"
