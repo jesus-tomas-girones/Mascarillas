@@ -36,13 +36,13 @@ public class ShowPhotoActivity extends AppCompatActivity {
     private Button aceptar, cancelar;
     private Bitmap bitmapShowFoto;
     private String typePhotoResult;
+    //EStas variables corresponde a las claves que uso para las preferencias
     //public static final String BitmapPhoto = "BitmapPhoto";
     public static final String TypePhoto = "TypePhoto";
     public static final String nombreDirectorioFotos = "Mascarillas";
-    //Nombre de las imágenes
+    //Preferencia para el nombre de las imágenes
     private SharedPreferences preferenciasNamePhoto;
-    //Ruta de la imagen
-    private File imageFile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,13 +73,18 @@ public class ShowPhotoActivity extends AppCompatActivity {
 
     public void acept(View view){
 
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        String photoName = timeStamp+"_"+typePhotoResult;
+        String photoName = generateName();
         savePhotosExternalStorage(nombreDirectorioFotos, photoName, bitmapShowFoto, getApplicationContext());
         bitmapPhoto = null;
         TYPE_PHOTO++;
         savePhotoNameInPreference(""+TYPE_PHOTO, photoName);
         finish();
+    }
+
+    public String generateName(){
+        int numeroRandom = (int)(Math.random()*1000);
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        return timeStamp+numeroRandom+"_"+typePhotoResult;
     }
 
     public void savePhotosExternalStorage(String nameFolder, String nameFile, Bitmap photo, Context context){

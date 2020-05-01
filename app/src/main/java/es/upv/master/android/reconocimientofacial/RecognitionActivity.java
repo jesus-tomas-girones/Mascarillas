@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -56,7 +57,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /*import static es.upv.master.android.reconocimientofacial.Comun.getStorageReference;
 import static es.upv.master.android.reconocimientofacial.Comun.storage;
@@ -79,7 +82,8 @@ public class RecognitionActivity extends AppCompatActivity {
     static final int REQUEST_CAMERA_AND_STORAGE = 0;
     static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
     private ImageView diagramaCara, miniaturaFotoF, miniaturaFotoP;
-    public static float valorVisibilidadCara = (float) 0.4;
+    //Valor que tendrá el alfa de la máscara
+    private final float valorVisibilidadCara = 0.25f;
 
     //Tipo de foto frontal (F), perfil (P)
     public static int TYPE_PHOTO = 0;
@@ -107,7 +111,10 @@ public class RecognitionActivity extends AppCompatActivity {
         //Parte Gráfica
         mPreview = (CameraSourcePreview) findViewById(R.id.facePreview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
+
         diagramaCara = (ImageView)findViewById(R.id.imgCara);
+        diagramaCara.setAlpha(valorVisibilidadCara);
+        diagramaCara.setMaxHeight( mGraphicOverlay.getHeight());
         miniaturaFotoF = (ImageView)findViewById(R.id.imgPhotoF);
         miniaturaFotoP = (ImageView)findViewById(R.id.imgPhotoP);
         btnFlas = (Button) findViewById(R.id.btn_flash);
@@ -115,6 +122,7 @@ public class RecognitionActivity extends AppCompatActivity {
         //btnSharePhotos = (Button) findViewById(R.id.btn_sharePhoto);
         btnTakePhoto = (Button) findViewById(R.id.btn_takePhoto);
 
+        //Inicializo los parámetros paras vase de datos
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl( "gs://reconocimiento-facial-2ff83.appspot.com");
 
@@ -139,21 +147,9 @@ public class RecognitionActivity extends AppCompatActivity {
         listBitmapPhotos = new ArrayList<Bitmap>();
         //Primer tipo de foto es frontal FRONT
         typePhoto = "F";
+        //La primera cámara que se presenta al usuario en la frontal
         idCamera = CameraSource.CAMERA_FACING_FRONT;
         voltearCamara = false;
-
-
-    }
-
-    public void visibilidadImagCara( ){
-        new Thread(new Runnable() {
-         public void run() {
-            if(valorVisibilidadCara < 0){
-                valorVisibilidadCara = 0;
-            }
-            diagramaCara.setAlpha(valorVisibilidadCara);
-             }
-            }).start();
     }
 
     public void takeImage(View view) {
@@ -311,7 +307,6 @@ public class RecognitionActivity extends AppCompatActivity {
     }
 
     private void transiccionEntreActivities(){
-        valorVisibilidadCara = 0.5f;
         switch (TYPE_PHOTO){
             case 0:
                 typePhoto = "F";
@@ -487,7 +482,6 @@ public class RecognitionActivity extends AppCompatActivity {
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
-            visibilidadImagCara();
         }
 
         /**
@@ -497,10 +491,6 @@ public class RecognitionActivity extends AppCompatActivity {
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
-            if(valorVisibilidadCara <= 0){
-                valorVisibilidadCara = 0.5f;
-            }
-            visibilidadImagCara();
             mOverlay.remove(mFaceGraphic);
         }
 
@@ -591,7 +581,8 @@ public class RecognitionActivity extends AppCompatActivity {
                     .getSharedPreferences("PhotoName", Context.MODE_PRIVATE);
             String photoName = preferenciasNamePhoto.getString(""+numPhotoUp, null);
             if(photoName == null){
-
+                photoName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
+                        +(int)(Math.random()*1000);
             }
             imagenRef = storageRef.child(nombreDirectorioFotos).child(photoName);
             try {
@@ -677,9 +668,10 @@ public class RecognitionActivity extends AppCompatActivity {
             //}
 
         }else{
-            //Si ya está vacío el arreglo, se enviado todas las fotos
-            mostrarDialogo(this,"Operación Exitosa!",
-                    ". ¿Desea repetir la Operación?");
+            //Si ya está vacío el arreglo, se ha enviado todas las fotos
+            String title = getResources().getString(R.string.title_mostrar_dialogo);
+            String mensaje = getResources().getString(R.string.message_mostrar_dialogo);
+            mostrarDialogo(this,title, mensaje);
         }
 
 
@@ -687,7 +679,6 @@ public class RecognitionActivity extends AppCompatActivity {
 
     private void mostrarDialogo(final Activity activity, final String title,
               final String message) {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title)
                 .setMessage(message)
@@ -714,6 +705,7 @@ public class RecognitionActivity extends AppCompatActivity {
     }
 
     private void settingToStart(){
+        //Restablezco los valores de inicio
         typePhoto = "F";
         TYPE_PHOTO = 0;
         numPhotoUp = 0;
