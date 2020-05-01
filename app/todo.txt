@@ -1,0 +1,1 @@
+//TODO Pasar fotos a resolución fija antes de subirlas
