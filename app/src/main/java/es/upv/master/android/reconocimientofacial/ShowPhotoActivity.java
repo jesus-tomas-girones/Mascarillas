@@ -26,22 +26,22 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.REQUEST_WRITE_EXTERNAL_STORAGE;
+import es.upv.master.android.reconocimientofacial.camera.CameraSource;
+
 import static es.upv.master.android.reconocimientofacial.RecognitionActivity.TYPE_PHOTO;
 import static es.upv.master.android.reconocimientofacial.RecognitionActivity.bitmapPhoto;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.resize;
 
 public class ShowPhotoActivity extends AppCompatActivity {
-    private ImageView fotoFinal;
+    private ImageView fotoFinal, imagShowMask;
     private Button aceptar, cancelar;
     private Bitmap bitmapShowFoto;
-    private String typePhotoResult;
+    private String getTypePhoto;
+    private int getTypeCamera;
     //EStas variables corresponde a las claves que uso para las preferencias
     //public static final String BitmapPhoto = "BitmapPhoto";
-    public static final String TypePhoto = "TypePhoto";
-    public static final String nombreDirectorioFotos = "Mascarillas";
-    //Preferencia para el nombre de las imágenes
-    private SharedPreferences preferenciasNamePhoto;
+    public static final String TypePhoto = "TypePhotoShow";
+    public static final String TypeCamera = "TypeCameraShow";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,14 +49,23 @@ public class ShowPhotoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_show_photo);
         //Parte gráfica
         fotoFinal= findViewById(R.id.imgPhotoFinal);
+        imagShowMask = findViewById(R.id.imgShowMask);
         aceptar = findViewById(R.id.btn_acept);
         cancelar = findViewById(R.id.btn_cancel);
-        //Inicializo archivo de preferencia para guardar los nombres de las fotos
-        preferenciasNamePhoto = getApplicationContext()
-                .getSharedPreferences("PhotoName", Context.MODE_PRIVATE);
 
         Bundle extras = getIntent().getExtras();
-        typePhotoResult = (String) extras.get(TypePhoto);
+        getTypePhoto = (String) extras.get(TypePhoto);
+        getTypeCamera = extras.getInt(TypeCamera) ;
+
+        //Verifico si es cámara frontal o trasera
+        if(CameraSource.CAMERA_FACING_FRONT == getTypeCamera){
+            //Cambio el tipo de máscara que se ubica sobre la foto si es invertida cara_1
+            imagShowMask.setImageResource(getTypePhoto.equals("F") ? R.drawable.cara_f : R.drawable.cara_p1);
+        }else{
+            //Cambio el tipo de máscara que se ubica sobre la foto
+            imagShowMask.setImageResource(getTypePhoto.equals("F") ? R.drawable.cara_f : R.drawable.cara_p);
+        }
+
         //bitmapShowFoto = (Bitmap) extras.get(BitmapPhoto);
         bitmapShowFoto = bitmapPhoto;
 
@@ -72,30 +81,14 @@ public class ShowPhotoActivity extends AppCompatActivity {
     }
 
     public void acept(View view){
-
-        String photoName = generateName();
-        savePhotosExternalStorage(nombreDirectorioFotos, photoName, bitmapShowFoto, getApplicationContext());
         bitmapPhoto = null;
         TYPE_PHOTO++;
-        savePhotoNameInPreference(""+TYPE_PHOTO, photoName);
         finish();
     }
 
-    public String generateName(){
-        int numeroRandom = (int)(Math.random()*1000);
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        return timeStamp+numeroRandom+"_"+typePhotoResult;
-    }
 
-    public void savePhotosExternalStorage(String nameFolder, String nameFile, Bitmap photo, Context context){
-
-        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permission is not granted
-            final String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE};
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_WRITE_EXTERNAL_STORAGE);
-            return;
-        }
+    //Funció me permite guardar en memoria externa las fotos, siempre y cuando existan los permisos en el manifests
+   /* public void savePhotosExternalStorage(String nameFolder, String nameFile, Bitmap photo, Context context){
         try {
             File imageFile;
             String state = Environment.getExternalStorageState();
@@ -150,27 +143,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
-    public void savePhotoNameInPreference(String key, String value){
-        SharedPreferences.Editor editor = preferenciasNamePhoto.edit();
-        editor.putString(key,value);
-        editor.commit();
-    }
-
-    @Override public void onRequestPermissionsResult(int requestCode, String permissions[],
-                                                     int[] grantResults) {
-        switch (REQUEST_WRITE_EXTERNAL_STORAGE) {
-            case 1: {
-                if (!(grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Toast.makeText(ShowPhotoActivity.this,
-                            "Has denegado algún permiso de la aplicación.",
-                            Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-        }
-    }
 
 }

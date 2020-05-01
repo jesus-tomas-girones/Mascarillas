@@ -61,10 +61,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/*import static es.upv.master.android.reconocimientofacial.Comun.getStorageReference;
-import static es.upv.master.android.reconocimientofacial.Comun.storage;
-import static es.upv.master.android.reconocimientofacial.Comun.storageRef;*/
-import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.nombreDirectorioFotos;
+import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypeCamera;
+import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypePhoto;
+import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.resize;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.rotateImage;
 
 public class RecognitionActivity extends AppCompatActivity {
@@ -79,11 +78,10 @@ public class RecognitionActivity extends AppCompatActivity {
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    static final int REQUEST_CAMERA_AND_STORAGE = 0;
-    static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
+    static final String nombreDirectorioFotos = "PruebaSizesPhotos"; //"Mascarillas"
     private ImageView diagramaCara, miniaturaFotoF, miniaturaFotoP;
     //Valor que tendrá el alfa de la máscara
-    private final float valorVisibilidadCara = 0.25f;
+    //private final float valorVisibilidadCara = 0.25f;
 
     //Tipo de foto frontal (F), perfil (P)
     public static int TYPE_PHOTO = 0;
@@ -113,7 +111,7 @@ public class RecognitionActivity extends AppCompatActivity {
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
 
         diagramaCara = (ImageView)findViewById(R.id.imgCara);
-        diagramaCara.setAlpha(valorVisibilidadCara);
+        //diagramaCara.setAlpha(valorVisibilidadCara);
         diagramaCara.setMaxHeight( mGraphicOverlay.getHeight());
         miniaturaFotoF = (ImageView)findViewById(R.id.imgPhotoF);
         miniaturaFotoP = (ImageView)findViewById(R.id.imgPhotoP);
@@ -126,12 +124,6 @@ public class RecognitionActivity extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReferenceFromUrl( "gs://reconocimiento-facial-2ff83.appspot.com");
 
-        //Añade el permiso para acceder a la cámara y a almacenamiento
-        String[] PERMISOS =
-                {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.GET_ACCOUNTS,
-                        Manifest.permission.CAMERA};
-        ActivityCompat.requestPermissions(this, PERMISOS, REQUEST_CAMERA_AND_STORAGE);
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
         int rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
@@ -193,12 +185,17 @@ public class RecognitionActivity extends AppCompatActivity {
                                         break;
                                 }
                                 //Fin de rotar Image
+
+                                ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+                                // save image into gallery
+                                rotatedBitmap = resize(rotatedBitmap, 800, 600);
+                                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                                 bitmapPhoto = rotatedBitmap;
                                 listBitmapPhotos.add(rotatedBitmap);
 
                                 Intent i = new Intent(getApplicationContext(), ShowPhotoActivity.class);
-                                //i.putExtra("BitmapPhoto", rotatedBitmap);
-                                i.putExtra("TypePhoto", typePhoto);//"F-P"
+                                i.putExtra(TypePhoto, typePhoto);//"F-P"
+                                i.putExtra(TypeCamera, idCamera);//FRONT, BACK
                                 startActivity(i);
 
                             } catch (Exception e) {
@@ -236,7 +233,7 @@ public class RecognitionActivity extends AppCompatActivity {
             }
         };
 
-        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
+        Snackbar.make(mPreview, R.string.permission_camera_rationale,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.ok, listener)
                 .show();
@@ -258,7 +255,7 @@ public class RecognitionActivity extends AppCompatActivity {
         // graphics for each barcode on screen.  The factory is used by the multi-processor to
         // create a separate tracker instance for each barcode.
 
-        if (!detector.isOperational()) {
+ /*       if (!detector.isOperational()) {
             // Note: The first time that an app using face API is installed on a device, GMS will
             // download a native library to the device in order to do detection.  Usually this
             // completes before the app is run for the first time.  But if that download has not yet
@@ -278,9 +275,10 @@ public class RecognitionActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
                 Log.w(TAG, getString(R.string.low_storage_error));
             }
-        }
+        }*/
         //Eligiendo la cámara
         idCamera = voltearCamara ? CameraSource.CAMERA_FACING_BACK :  CameraSource.CAMERA_FACING_FRONT;
+        System.out.println("System Recognition: "+idCamera  );
         //Configurando recursos de vista
         settingCameraResource(idCamera);
 
@@ -367,52 +365,34 @@ public class RecognitionActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode){
-            //Pregunto por todos los permisos si hay más de 1 quiere decir que tengo todos los permisos(2) y activo la cámara
-            case REQUEST_CAMERA_AND_STORAGE: {
-                if (!(grantResults.length > 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Log.d(TAG, "We have not write external storage permission ");
-                    DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            finish();
-                        }
-                    };
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Reconocimiento de Mascarilla")
-                            .setMessage(R.string.no_camera_permission)
-                            .setPositiveButton(R.string.ok, listener)
-                            .show();
-
-
-                }else{
-                    autoFocus = true; useFlash = false;
-                    createCameraSource(autoFocus, useFlash);
-                }
-                return;
-            }
-            case REQUEST_WRITE_EXTERNAL_STORAGE: {
-                if (!(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-                    Log.d(TAG, "We have not write external storage permission ");
-                    Toast.makeText(RecognitionActivity.this, "Has denegado algún permiso de la aplicación.",
-                            Toast.LENGTH_SHORT).show();
-                    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-                }//else{
-                return;
-                //}
-
-            }
-            case RC_HANDLE_CAMERA_PERM: {
-                if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG, "Camera permission granted - initialize the camera source");
-                    // we have permission, so create the camerasource
-                    createCameraSource(autoFocus, useFlash);
-                    return;
-                }else{
-                    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-                }
-            }
-
+        if (requestCode != RC_HANDLE_CAMERA_PERM) {
+            Log.d(TAG, "Got unexpected permission result: " + requestCode);
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+            return;
         }
+
+        if (grantResults.length != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "Camera permission granted - initialize the camera source");
+            // we have permission, so create the camerasource
+            autoFocus = true; useFlash = false;
+            createCameraSource(autoFocus, useFlash);
+            return;
+        }
+
+        Log.e(TAG, "Permission not granted: results len = " + grantResults.length +
+                " Result code = " + (grantResults.length > 0 ? grantResults[0] : "(empty)"));
+
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                finish();
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Face Tracker sample")
+                .setMessage(R.string.no_camera_permission)
+                .setPositiveButton(R.string.ok, listener)
+                .show();
 
     }
 
@@ -480,7 +460,7 @@ public class RecognitionActivity extends AppCompatActivity {
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
-            mOverlay.add(mFaceGraphic);
+            //mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
         }
 
@@ -491,7 +471,7 @@ public class RecognitionActivity extends AppCompatActivity {
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
-            mOverlay.remove(mFaceGraphic);
+            //mOverlay.remove(mFaceGraphic);
         }
 
         /**
@@ -549,8 +529,14 @@ public class RecognitionActivity extends AppCompatActivity {
     }
 
     //Función me permite subir las fotos al servidos a través del botón btn_sharePhoto
-    public void sharePhoto(View view){
+/*    public void sharePhoto(View view){
         subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
+    }*/
+
+    public String generateName(){
+        int numeroRandom = (int)(Math.random()*1000);
+        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+        return timeStamp+numeroRandom+"_"+typePhoto+".jpg";
     }
 
 
@@ -577,13 +563,7 @@ public class RecognitionActivity extends AppCompatActivity {
                         }
                     });
 
-            final SharedPreferences preferenciasNamePhoto = getApplicationContext()
-                    .getSharedPreferences("PhotoName", Context.MODE_PRIVATE);
-            String photoName = preferenciasNamePhoto.getString(""+numPhotoUp, null);
-            if(photoName == null){
-                photoName = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                        +(int)(Math.random()*1000);
-            }
+            String photoName = generateName();
             imagenRef = storageRef.child(nombreDirectorioFotos).child(photoName);
             try {
                 switch (opcion) {
@@ -598,6 +578,7 @@ public class RecognitionActivity extends AppCompatActivity {
                         uploadTask = imagenRef.putBytes(data);
                         break;
                     case SOLICITUD_SUBIR_PUTSTREAM:
+                        //Para subir las fotos desde un directorio en memoria externa
                         InputStream stream = new FileInputStream( new File(ficheroDispositivo));
                         uploadTask = imagenRef.putStream(stream);
                         break;
@@ -609,7 +590,7 @@ public class RecognitionActivity extends AppCompatActivity {
                         subiendoDatos=false;
                         //mostrarDialogo(getApplicationContext(), "Ha ocurrido un error al" +
                         //    " subir la imagen o el usuario ha cancelado la subida.");
-                        Snackbar.make( mGraphicOverlay,R.string.error_upload_photos, Snackbar.LENGTH_INDEFINITE)
+                        Snackbar.make( mPreview,R.string.error_upload_photos, Snackbar.LENGTH_INDEFINITE)
                                 .setAction("SI", new View.OnClickListener()
                                 { @Override public void onClick(View view) {
                                     if (!listBitmapPhotos.isEmpty()){
@@ -629,6 +610,7 @@ public class RecognitionActivity extends AppCompatActivity {
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                         progresoSubida.dismiss();
                                         subiendoDatos=false;
+                                        if(!listBitmapPhotos.isEmpty())
                                         listBitmapPhotos.remove(0);
                                         subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA, null);
                                     }
@@ -660,7 +642,7 @@ public class RecognitionActivity extends AppCompatActivity {
                                 });
             }catch (IOException e) {
                 //mostrarDialogo(this,"ERROR", e.toString());
-                Snackbar.make( mGraphicOverlay,"ERROR INESPERADO", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make( mPreview,"ERROR INESPERADO", Snackbar.LENGTH_INDEFINITE)
                         .setAction("OK", new View.OnClickListener()
                         { @Override public void onClick(View view) { } }) .show();
                 settingToStart();

@@ -1,1 +1,12 @@
 //TODO Pasar fotos a resolución fija antes de subirlas
+
+Desconecta el reconocimiento facial que no es muy importante (x)
+Quitar el almacenamiento en memoria externa (x)
+Modificar que la máscara se añade sobre la foto según sea de perfil o frontal (x)
+Establecer un tamaño a las fotos 450x600 (x)
+
+Pendientes:
+Definir una sola resolución de las fotos (No sé si te refieres con resolución a que todas las fotos tenga el mismo tamaño)
+Fijar proporciones de la imagen de la máscara ()
+Cambiar la imagen ()
+invertir la foto de perfíl del usuario (depende mucho de la cámara)
