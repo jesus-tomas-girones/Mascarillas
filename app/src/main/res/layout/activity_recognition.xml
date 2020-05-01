@@ -37,6 +37,13 @@
             android:layout_height="0dp"
             android:foregroundGravity="center_vertical|center" />
 
+        <ImageView
+            android:id="@+id/imgCara"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.25"
+            app:srcCompat="@drawable/cara_f" />
+
     </es.upv.master.android.reconocimientofacial.camera.CameraSourcePreview>
 
     <Button
@@ -73,17 +80,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/facePreview" /-->
-
-    <ImageView
-        android:id="@+id/imgCara"
-        android:layout_width="232dp"
-        android:layout_height="267dp"
-        android:layout_marginTop="100dp"
-        android:alpha="0.4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/facePreview"
-        app:srcCompat="@drawable/cara_f" />
 
     <ImageView
         android:id="@+id/imgPhotoP"

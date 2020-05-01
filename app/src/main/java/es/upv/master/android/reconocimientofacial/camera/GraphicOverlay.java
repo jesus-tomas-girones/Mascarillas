@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.valorVisibilidadCara;
 
 /**
  * A view which renders a series of custom graphics to be overlayed on top of an associated preview
@@ -171,8 +170,6 @@ public class GraphicOverlay extends View {
             if ((mPreviewWidth != 0) && (mPreviewHeight != 0)) {
                 mWidthScaleFactor = (float) canvas.getWidth() / (float) mPreviewWidth;
                 mHeightScaleFactor = (float) canvas.getHeight() / (float) mPreviewHeight;
-
-                valorVisibilidadCara = valorVisibilidadCara- mHeightScaleFactor/200;
             }
 
             for (Graphic graphic : mGraphics) {
