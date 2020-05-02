@@ -61,6 +61,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.CaraGirada;
 import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypeCamera;
 import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypePhoto;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.resize;
@@ -74,11 +75,11 @@ public class RecognitionActivity extends AppCompatActivity {
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
     private Button btnFlas, btnGirarCamara, btnTakePhoto;
-
+    private ImageView girarMascara;
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    static final String nombreDirectorioFotos = "PruebaSizesPhotos"; //"Mascarillas"
+    static final String nombreDirectorioFotos = "Mascarillas"; //"Mascarillas"
     private ImageView diagramaCara, miniaturaFotoF, miniaturaFotoP;
     //Valor que tendrá el alfa de la máscara
     //private final float valorVisibilidadCara = 0.25f;
@@ -86,8 +87,11 @@ public class RecognitionActivity extends AppCompatActivity {
     //Tipo de foto frontal (F), perfil (P)
     private String typePhoto;
     private boolean voltearCamara;
+    private boolean isTurnedMask = true;
     private boolean autoFocus, useFlash;
     private int idCamera;
+    private int numPerfil;
+    public static int NUM_PHOTOS = 0;
 
     //Firebase
     StorageReference imagenRef;
@@ -107,7 +111,7 @@ public class RecognitionActivity extends AppCompatActivity {
         //Parte Gráfica
         mPreview = (CameraSourcePreview) findViewById(R.id.facePreview);
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
-
+        girarMascara = findViewById(R.id.botonGirarMascara);
         diagramaCara = (ImageView)findViewById(R.id.imgCara);
         //diagramaCara.setAlpha(valorVisibilidadCara);
         diagramaCara.setMaxHeight( mGraphicOverlay.getHeight());
@@ -140,6 +144,7 @@ public class RecognitionActivity extends AppCompatActivity {
         //La primera cámara que se presenta al usuario en la frontal
         idCamera = CameraSource.CAMERA_FACING_FRONT;
         voltearCamara = false;
+
     }
 
     public void takeImage(View view) {
@@ -194,7 +199,8 @@ public class RecognitionActivity extends AppCompatActivity {
 
                                 Intent i = new Intent(getApplicationContext(), ShowPhotoActivity.class);
                                 i.putExtra(TypePhoto, typePhoto);//"F-P"
-                                i.putExtra(TypeCamera, idCamera);//FRONT, BACK
+                                //i.putExtra(TypeCamera, idCamera);//FRONT, BACK
+                                i.putExtra(CaraGirada, numPerfil);
                                 startActivity(i);
 
                             } catch (Exception e) {
@@ -305,21 +311,30 @@ public class RecognitionActivity extends AppCompatActivity {
     }
 
     private void transiccionEntreActivities(){
-        int opt = listBitmapPhotos.size();
+        int opt = NUM_PHOTOS;
         switch (opt){
             case 0:
                 typePhoto = "F";
+                girarMascara.setVisibility(View.INVISIBLE);
+                if(listBitmapPhotos.size() == 1)
+                    listBitmapPhotos.remove(0);
                 break;
             case 1:
                 typePhoto = "P";
                 miniaturaFotoP.setVisibility(View.VISIBLE);
                 miniaturaFotoF.setImageBitmap(listBitmapPhotos.get(0));
-                diagramaCara.setImageResource(R.drawable.cara_p);
+                numPerfil = R.drawable.cara_p;
+                diagramaCara.setImageResource(numPerfil);
+                girarMascara.setVisibility(View.VISIBLE);
+                if(listBitmapPhotos.size() == 2)
+                    listBitmapPhotos.remove(1);
                 break;
             case 2:
                 typePhoto = "F";
+                NUM_PHOTOS = 0;
                 diagramaCara.setImageResource(R.drawable.cara_f);
                 miniaturaFotoP.setImageBitmap(listBitmapPhotos.get(1));
+                girarMascara.setVisibility(View.INVISIBLE);
                 subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
                 break;
         }
@@ -339,6 +354,7 @@ public class RecognitionActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        //settingToStart();
         mPreview.stop();
     }
 
@@ -354,6 +370,7 @@ public class RecognitionActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        settingToStart();
         if (mCameraSource != null) {
             mCameraSource.release();
         }
@@ -529,7 +546,7 @@ public class RecognitionActivity extends AppCompatActivity {
         subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
     }*/
 
-    public String generateName(){
+    public String generateName(String typePhoto){
         int numeroRandom = (int)(Math.random()*1000);
         String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         return timeStamp+numeroRandom+"_"+typePhoto+".jpg";
@@ -559,7 +576,7 @@ public class RecognitionActivity extends AppCompatActivity {
                         }
                     });
 
-            String photoName = generateName();
+            String photoName = generateName(numPhotoUp == 1 ? "F":"P");
             imagenRef = storageRef.child(nombreDirectorioFotos).child(photoName);
             try {
                 switch (opcion) {
@@ -663,6 +680,7 @@ public class RecognitionActivity extends AppCompatActivity {
                 .setOnCancelListener(new DialogInterface.OnCancelListener() {
                     @Override
                     public void onCancel(DialogInterface dialog) {
+                        settingToStart();
                         finish();
                     }
                 })
@@ -681,6 +699,7 @@ public class RecognitionActivity extends AppCompatActivity {
                                 //listener.onNegativeButtonClick();
                             //    Intent i = new Intent(getApplicationContext(), MainActivity.class);
                             //    startActivity(i);
+                                settingToStart();
                                 finish();
                             }
                         });
@@ -693,11 +712,24 @@ public class RecognitionActivity extends AppCompatActivity {
         //Restablezco los valores de inicio
         typePhoto = "F";
         numPhotoUp = 0;
+        NUM_PHOTOS = 0;
         miniaturaFotoP.setVisibility(View.INVISIBLE);
         miniaturaFotoF.setImageResource(R.drawable.cara_f);
         miniaturaFotoP.setImageResource(R.drawable.cara_p);
         diagramaCara.setImageResource(R.drawable.cara_f);
         listBitmapPhotos.clear();
+    }
+
+    public void girarMascaraPerfil(View view){
+        //girarMascara.setImageResource(isTurnedMask ? R.drawable.cara_p : R.drawable.cara_p1);
+        if(numPerfil == R.drawable.cara_p) {
+            diagramaCara.setImageResource(R.drawable.cara_p1);
+            numPerfil = R.drawable.cara_p1;
+        }
+        else {
+            diagramaCara.setImageResource(R.drawable.cara_p);
+            numPerfil = R.drawable.cara_p;
+        }
     }
 
 }

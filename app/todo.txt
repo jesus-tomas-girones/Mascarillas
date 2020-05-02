@@ -10,3 +10,5 @@ Definir una sola resolución de las fotos (No sé si te refieres con resolución
 Fijar proporciones de la imagen de la máscara ()
 Cambiar la imagen ()
 invertir la foto de perfíl del usuario (depende mucho de la cámara)
+
+
