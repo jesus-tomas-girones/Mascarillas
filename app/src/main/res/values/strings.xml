@@ -1,13 +1,18 @@
 <resources>
-    <string name="app_name">Reconocimiento Mascarilla</string>
+    <string name="app_name">Mascarilla-COVID-19</string>
     <string name="low_storage_error">Las dependecias del detector no se pueden descargar debido a la falta de espacio en el dispositivo</string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">El acceso a la cámara es necesario para la detección</string>
     <string name="permission_extenal_storage">El acceso a almacenamiento es necesario para guardar tus fotos</string>
-    <string name="no_camera_permission">Esta aplicación no puede funcionar debido a las restricciones con los permisos.  La aplicación se cerrará.</string>
-    <string name="boton_arrancar">Inicio</string>
+    <string name="no_camera_permission">Esta aplicación no puede funcionar debido a las restricciones con los permisos. Por favor, concede los permisos solicitados. La aplicación se cerrará.</string>
+    <string name="boton_arrancar">Comenzar</string>
     <!--Mensaje de Bienvenida (activity_main), la primera Actividad que ve el usuario -->
-    <string name="msgBienvenida">Gracias por colaborar con la UPV e Instituto de Investigación Sanitaria La Fe</string>
+    <string name="msgBienvenida">
+Esta aplicación tiene como objetivo recopilar una base de datos que permita implementar medidas para mejorar el ajuste de las mascarillas.\n\n
+Solo tienes que ponerte una mascarilla y tomarte una foto de cara y otra de perfil.\n\n
+Muchas gracias por colaborar con la Universidad Politécnica de Valencia y el Instituto … en este proyecto.\n\n
+PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anónima y solo serán utilizadas para los fines descritos en el proyecto.
+    </string>
     <string name="error_upload_photos">Error: Ha ocurrido un error inesperado al compartir las fotos. ¿Desea intentar otra vez?</string>
     <!--Mensaje de Finalización, cuando las fotos se han subido por completado -->
     <string name="title_mostrar_dialogo">Operación Exitosa!</string>
