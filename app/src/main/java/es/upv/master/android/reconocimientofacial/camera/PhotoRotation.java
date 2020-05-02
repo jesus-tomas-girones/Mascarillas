@@ -1,8 +1,17 @@
 package es.upv.master.android.reconocimientofacial.camera;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 public class PhotoRotation {
     private static final String TAG = "CameraExif";
@@ -124,9 +133,10 @@ public class PhotoRotation {
     public static Bitmap rotateImage(Bitmap source, float angle) {
         Matrix matrix = new Matrix();
         matrix.postRotate(angle);
-        System.out.println("BITMAP "+ source.getWidth() + "x" + source.getHeight());
+        Log.d("BITMAP" , source.getWidth() + "x" + source.getHeight());
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(),   source.getHeight(), matrix,
                 true);
+
     }
 
 

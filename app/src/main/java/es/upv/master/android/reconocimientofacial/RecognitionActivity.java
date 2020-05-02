@@ -84,9 +84,7 @@ public class RecognitionActivity extends AppCompatActivity {
     //private final float valorVisibilidadCara = 0.25f;
 
     //Tipo de foto frontal (F), perfil (P)
-    public static int TYPE_PHOTO = 0;
     private String typePhoto;
-    public static Bitmap bitmapPhoto;
     private boolean voltearCamara;
     private boolean autoFocus, useFlash;
     private int idCamera;
@@ -100,7 +98,7 @@ public class RecognitionActivity extends AppCompatActivity {
     final int SOLICITUD_SUBIR_PUTDATA = 0;
     final int SOLICITUD_SUBIR_PUTSTREAM = 1;
     Boolean subiendoDatos =false;
-    private ArrayList<Bitmap> listBitmapPhotos;
+    public static ArrayList<Bitmap> listBitmapPhotos;
     private int numPhotoUp = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,8 +161,10 @@ public class RecognitionActivity extends AppCompatActivity {
                                 //Observo cuanto es el bitma que obtengo al tomar la foto
                                 Log.d("BITMAP", loadedImage.getWidth() + "x" + loadedImage.getHeight());
 
+
                                 // rotate Image
                                 int orientation = PhotoRotation.getOrientation(bytes);
+
                                 switch(orientation) {
                                     case 90:
                                         rotatedBitmap= rotateImage(loadedImage, 90);
@@ -188,9 +188,8 @@ public class RecognitionActivity extends AppCompatActivity {
 
                                 ByteArrayOutputStream ostream = new ByteArrayOutputStream();
                                 // save image into gallery
-                                rotatedBitmap = resize(rotatedBitmap, 800, 600);
+                                rotatedBitmap = resize(rotatedBitmap, 648, 480); //800x600
                                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-                                bitmapPhoto = rotatedBitmap;
                                 listBitmapPhotos.add(rotatedBitmap);
 
                                 Intent i = new Intent(getApplicationContext(), ShowPhotoActivity.class);
@@ -305,23 +304,19 @@ public class RecognitionActivity extends AppCompatActivity {
     }
 
     private void transiccionEntreActivities(){
-        switch (TYPE_PHOTO){
+        int opt = listBitmapPhotos.size();
+        switch (opt){
             case 0:
                 typePhoto = "F";
-                if(listBitmapPhotos.size() == 1)
-                    listBitmapPhotos.remove(0);
                 break;
             case 1:
                 typePhoto = "P";
                 miniaturaFotoP.setVisibility(View.VISIBLE);
                 miniaturaFotoF.setImageBitmap(listBitmapPhotos.get(0));
                 diagramaCara.setImageResource(R.drawable.cara_p);
-                if(listBitmapPhotos.size() == 2)
-                    listBitmapPhotos.remove(1);
                 break;
             case 2:
                 typePhoto = "F";
-                TYPE_PHOTO = 0;
                 diagramaCara.setImageResource(R.drawable.cara_f);
                 miniaturaFotoP.setImageBitmap(listBitmapPhotos.get(1));
                 subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
@@ -683,13 +678,13 @@ public class RecognitionActivity extends AppCompatActivity {
                             }
                         });
         //}
+        //builder.setCancelable(false);
         builder.create().show();
     }
 
     private void settingToStart(){
         //Restablezco los valores de inicio
         typePhoto = "F";
-        TYPE_PHOTO = 0;
         numPhotoUp = 0;
         miniaturaFotoP.setVisibility(View.INVISIBLE);
         miniaturaFotoF.setImageResource(R.drawable.cara_f);

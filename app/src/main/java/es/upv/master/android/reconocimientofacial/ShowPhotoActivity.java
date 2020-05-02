@@ -27,19 +27,16 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import es.upv.master.android.reconocimientofacial.camera.CameraSource;
-
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.TYPE_PHOTO;
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.bitmapPhoto;
-import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.resize;
+import static es.upv.master.android.reconocimientofacial.RecognitionActivity.listBitmapPhotos;
 
 public class ShowPhotoActivity extends AppCompatActivity {
     private ImageView fotoFinal, imagShowMask;
-    private Button aceptar, cancelar;
+    private Button aceptar, cancelar, girarMask;
     private Bitmap bitmapShowFoto;
     private String getTypePhoto;
     private int getTypeCamera;
-    //EStas variables corresponde a las claves que uso para las preferencias
-    //public static final String BitmapPhoto = "BitmapPhoto";
+    private boolean isTurnedMask = false;
+    //EStas variables corresponde a las claves para pasar información de una actividad a otra
     public static final String TypePhoto = "TypePhotoShow";
     public static final String TypeCamera = "TypeCameraShow";
 
@@ -52,6 +49,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
         imagShowMask = findViewById(R.id.imgShowMask);
         aceptar = findViewById(R.id.btn_acept);
         cancelar = findViewById(R.id.btn_cancel);
+        girarMask = findViewById(R.id.btn_girar_mascara);
 
         Bundle extras = getIntent().getExtras();
         getTypePhoto = (String) extras.get(TypePhoto);
@@ -60,30 +58,42 @@ public class ShowPhotoActivity extends AppCompatActivity {
         //Verifico si es cámara frontal o trasera
         if(CameraSource.CAMERA_FACING_FRONT == getTypeCamera){
             //Cambio el tipo de máscara que se ubica sobre la foto si es invertida cara_1
-            imagShowMask.setImageResource(getTypePhoto.equals("F") ? R.drawable.cara_f : R.drawable.cara_p1);
+            boolean isPerfil = getTypePhoto.equals("F");
+            imagShowMask.setImageResource(isPerfil ? R.drawable.cara_f : R.drawable.cara_p1);
+            //Boton cambiar el perfil de la mascara solo se observa solo si es de perfil la foto y cámara frontal
+            if(!isPerfil)
+            girarMask.setVisibility(View.VISIBLE);
         }else{
             //Cambio el tipo de máscara que se ubica sobre la foto
             imagShowMask.setImageResource(getTypePhoto.equals("F") ? R.drawable.cara_f : R.drawable.cara_p);
         }
 
-        //bitmapShowFoto = (Bitmap) extras.get(BitmapPhoto);
-        bitmapShowFoto = bitmapPhoto;
+        bitmapShowFoto = getTypePhoto.equals("F") ? listBitmapPhotos.get(0):  listBitmapPhotos.get(1);
 
         if(bitmapShowFoto != null)
             fotoFinal.setImageBitmap(bitmapShowFoto);
 
+
+
     }
 
     public void cancel(View view){
-        bitmapShowFoto = null;
-        bitmapPhoto = null;
+        //bitmapShowFoto = null;
+        if(!listBitmapPhotos.isEmpty())
+            listBitmapPhotos.remove(getTypePhoto.equals("F") ? 0:1);
         finish();
     }
 
     public void acept(View view){
-        bitmapPhoto = null;
-        TYPE_PHOTO++;
+        //bitmapPhoto = null;
+        //TYPE_PHOTO++;
         finish();
+    }
+
+    public void girarMascara(View view){
+        if(isTurnedMask) isTurnedMask = false;
+        else isTurnedMask = true;
+        imagShowMask.setImageResource(isTurnedMask ? R.drawable.cara_p1 : R.drawable.cara_p);
     }
 
 

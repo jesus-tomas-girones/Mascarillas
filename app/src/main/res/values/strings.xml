@@ -15,4 +15,7 @@
     <!--Botones de ShowActivity (activity_show_activity) -->
     <string name="btn_descartar_foto">Descartar</string>
     <string name="btn_aceptar_foto">Aceptar</string>
+    <!--Botones de RecognitionActivity - Mostrar dialogo -->
+    <string name="btn_salir">Descartar</string>
+    <string name="btn_continuar">Aceptar</string>
 </resources>
