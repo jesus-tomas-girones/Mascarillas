@@ -188,7 +188,7 @@ public class RecognitionActivity extends AppCompatActivity {
 
                                 ByteArrayOutputStream ostream = new ByteArrayOutputStream();
                                 // save image into gallery
-                                rotatedBitmap = resize(rotatedBitmap, 648, 480); //800x600
+                                rotatedBitmap = resize(rotatedBitmap, 640,480); //800x600
                                 rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
                                 listBitmapPhotos.add(rotatedBitmap);
 
@@ -284,6 +284,7 @@ public class RecognitionActivity extends AppCompatActivity {
         mCameraSource = new CameraSource.Builder(getApplicationContext(), detector)
                 .setFacing(idCamera )
                 .setRequestedPreviewSize(1280, 720) //1024, 768 //1280, 960 //1280, 720
+//                .setRequestedPreviewSize(640, 480) //1024, 768 //1280, 960 //1280, 720
                 .setRequestedFps(30.0f)
                 //.setAutoFocusEnabled(true)
                 .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
