@@ -659,21 +659,27 @@ public class RecognitionActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(title)
                 .setMessage(message)
-        .setPositiveButton("Repetir",
+                .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                    @Override
+                    public void onCancel(DialogInterface dialog) {
+                        finish();
+                    }
+                })
+/*        .setPositiveButton("Repetir",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //listener.onPossitiveButtonClick();
                                 settingToStart();
                             }
-                        })
-        .setNegativeButton("Salir",
+                        })*/
+        .setNegativeButton("OK",
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //listener.onNegativeButtonClick();
-                                Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(i);
+                            //    Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                            //    startActivity(i);
                                 finish();
                             }
                         });

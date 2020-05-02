@@ -35,7 +35,7 @@ public class ShowPhotoActivity extends AppCompatActivity {
     private Bitmap bitmapShowFoto;
     private String getTypePhoto;
     private int getTypeCamera;
-    private boolean isTurnedMask = false;
+    private boolean isTurnedMask = true;
     //EStas variables corresponde a las claves para pasar información de una actividad a otra
     public static final String TypePhoto = "TypePhotoShow";
     public static final String TypeCamera = "TypeCameraShow";

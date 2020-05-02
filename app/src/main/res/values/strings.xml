@@ -11,7 +11,7 @@
     <string name="error_upload_photos">Error: Ha ocurrido un error inesperado al compartir las fotos. ¿Desea intentar otra vez?</string>
     <!--Mensaje de Finalización, cuando las fotos se han subido por completado -->
     <string name="title_mostrar_dialogo">Operación Exitosa!</string>
-    <string name="message_mostrar_dialogo">¿Desea continuar tomando fotos?</string>
+    <string name="message_mostrar_dialogo">Gracias por colaborar con el proyecto. Si pudieras colocarte la máscara en otra posición y tomarte nuevas fotos, nos sería de gran ayuda.</string>
     <!--Botones de ShowActivity (activity_show_activity) -->
     <string name="btn_descartar_foto">Descartar</string>
     <string name="btn_aceptar_foto">Aceptar</string>
