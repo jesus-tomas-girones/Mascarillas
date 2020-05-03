@@ -31,6 +31,7 @@
         <activity android:name=".RecognitionActivity"
             android:label="Repeat after me"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity">
         </activity>
         <activity android:name=".ShowPhotoActivity"

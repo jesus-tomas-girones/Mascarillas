@@ -8,23 +8,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -40,8 +34,6 @@ import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -199,7 +191,7 @@ public class RecognitionActivity extends AppCompatActivity {
 
                                 Intent i = new Intent(getApplicationContext(), ShowPhotoActivity.class);
                                 i.putExtra(TypePhoto, typePhoto);//"F-P"
-                                //i.putExtra(TypeCamera, idCamera);//FRONT, BACK
+                                i.putExtra(TypeCamera, idCamera);//FRONT, BACK
                                 i.putExtra(CaraGirada, numPerfil);
                                 startActivity(i);
 
@@ -323,7 +315,7 @@ public class RecognitionActivity extends AppCompatActivity {
                 typePhoto = "P";
                 miniaturaFotoP.setVisibility(View.VISIBLE);
                 miniaturaFotoF.setImageBitmap(listBitmapPhotos.get(0));
-                numPerfil = R.drawable.cara_p;
+                numPerfil = R.drawable.mask_perfil_der;
                 diagramaCara.setImageResource(numPerfil);
                 girarMascara.setVisibility(View.VISIBLE);
                 if(listBitmapPhotos.size() == 2)
@@ -332,7 +324,7 @@ public class RecognitionActivity extends AppCompatActivity {
             case 2:
                 typePhoto = "F";
                 NUM_PHOTOS = 0;
-                diagramaCara.setImageResource(R.drawable.cara_f);
+                diagramaCara.setImageResource(R.drawable.mask_frontal);
                 miniaturaFotoP.setImageBitmap(listBitmapPhotos.get(1));
                 girarMascara.setVisibility(View.INVISIBLE);
                 subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
@@ -714,21 +706,20 @@ public class RecognitionActivity extends AppCompatActivity {
         numPhotoUp = 0;
         NUM_PHOTOS = 0;
         miniaturaFotoP.setVisibility(View.INVISIBLE);
-        miniaturaFotoF.setImageResource(R.drawable.cara_f);
-        miniaturaFotoP.setImageResource(R.drawable.cara_p);
-        diagramaCara.setImageResource(R.drawable.cara_f);
+        miniaturaFotoF.setImageResource(R.drawable.mask_frontal);
+        miniaturaFotoP.setImageResource(R.drawable.mask_perfil_der);
+        diagramaCara.setImageResource(R.drawable.mask_frontal);
         listBitmapPhotos.clear();
     }
 
     public void girarMascaraPerfil(View view){
-        //girarMascara.setImageResource(isTurnedMask ? R.drawable.cara_p : R.drawable.cara_p1);
-        if(numPerfil == R.drawable.cara_p) {
-            diagramaCara.setImageResource(R.drawable.cara_p1);
-            numPerfil = R.drawable.cara_p1;
+        if(numPerfil == R.drawable.mask_perfil_der) {
+            diagramaCara.setImageResource(R.drawable.mask_perfil_izq);
+            numPerfil = R.drawable.mask_perfil_izq;
         }
         else {
-            diagramaCara.setImageResource(R.drawable.cara_p);
-            numPerfil = R.drawable.cara_p;
+            diagramaCara.setImageResource(R.drawable.mask_perfil_der);
+            numPerfil = R.drawable.mask_perfil_der;
         }
     }
 

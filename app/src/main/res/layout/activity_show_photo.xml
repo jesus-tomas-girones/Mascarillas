@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0.25"
-        app:srcCompat="@drawable/cara_f" /-->
+        app:srcCompat="@drawable/mask_frontal" /-->
 
     <ImageView
         android:id="@+id/imgShowMask"
@@ -33,7 +33,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:srcCompat="@drawable/cara_f" />
+        app:srcCompat="@drawable/mask_frontal" />
 
     <Button
         android:id="@+id/btn_acept"
@@ -67,8 +67,9 @@
         android:id="@+id/btn_girar_mascara"
         android:layout_width="60dp"
         android:layout_height="38dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/cara_p2"
+        android:background="@drawable/btn_girar_perfil"
         android:onClick="girarMascara"
         android:text=""
         android:visibility="invisible"

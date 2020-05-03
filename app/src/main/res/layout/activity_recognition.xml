@@ -10,13 +10,14 @@
     <ImageView
         android:id="@+id/botonGirarMascara"
         android:layout_width="60dp"
-        android:layout_height="40dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:onClick="girarMascaraPerfil"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/cara_p2" />
+        app:srcCompat="@drawable/btn_girar_perfil" />
 
     <es.upv.master.android.reconocimientofacial.camera.CameraSourcePreview
         android:id="@+id/facePreview"
@@ -42,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:alpha="0.25"
-            app:srcCompat="@drawable/cara_f" />
+            app:srcCompat="@drawable/mask_frontal" />
 
     </es.upv.master.android.reconocimientofacial.camera.CameraSourcePreview>
 
@@ -72,7 +73,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imgPhotoF"
         app:layout_constraintTop_toBottomOf="@+id/facePreview"
-        app:srcCompat="@drawable/cara_p"
+        app:srcCompat="@drawable/mini_mask_der"
         android:visibility="invisible"/>
 
     <ImageView
@@ -83,7 +84,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/facePreview"
-        app:srcCompat="@drawable/cara_f" />
+        app:srcCompat="@drawable/mini_mask_frontal" />
 
     <Button
         android:id="@+id/btn_girarCamara"
