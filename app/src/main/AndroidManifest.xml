@@ -39,6 +39,10 @@
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity">
         </activity>
+        <activity android:name=".label.LabelActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
     </application>
 
 </manifest>

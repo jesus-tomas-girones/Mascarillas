@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--   android:background="#000000"-->
+
+
+    <ImageView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="530dp"
+        android:adjustViewBounds="true"
+        android:cropToPadding="true"
+        android:scaleType="centerInside"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/mask_frontal" />
+
+    <Button
+        android:id="@+id/btn_1"
+        android:tag="1"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="etiqueta 1"
+        android:textColor="#E91E63"
+        android:onClick="onButtonClic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/photo" />
+    <Button
+        android:id="@+id/btn_2"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="etiqueta 2"
+        android:tag="2"
+        android:textColor="#3F51B5"
+        android:onClick="onButtonClic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@id/btn_1"
+        app:layout_constraintTop_toBottomOf="@+id/photo" />
+    <Button
+        android:id="@+id/btn_3"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="etiqueta 3"
+        android:tag="3"
+        android:textColor="#009688"
+        android:onClick="onButtonClic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_2"
+        app:layout_constraintTop_toBottomOf="@+id/photo" />
+
+    <Button
+        android:id="@+id/btn_4"
+        android:layout_width="1dp"
+        android:layout_height="60dp"
+        android:text="etiqueta 4"
+        android:tag="4"
+        android:onClick="onButtonClic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_2"
+        app:layout_constraintTop_toBottomOf="@+id/photo" />
+        tools:visibility="invisible" />
+
+    <Button
+        android:id="@+id/btn_5"
+        android:layout_width="1dp"
+        android:layout_height="60dp"
+        android:text="etiqueta 5"
+        android:tag="5"
+        android:onClick="onButtonClic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_2"
+        app:layout_constraintTop_toBottomOf="@+id/photo" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="○"
+        android:visibility="invisible"
+        android:textColor="#E91E63"
+        android:textSize="129dp"
+        tools:layout_editor_absoluteX="43dp"
+        tools:layout_editor_absoluteY="-20dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="○"
+        android:visibility="invisible"
+        android:textColor="#3F51B5"
+        android:textSize="129dp"
+        tools:layout_editor_absoluteX="144dp"
+        tools:layout_editor_absoluteY="-19dp" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="○"
+        android:visibility="invisible"
+        android:textColor="#009688"
+        android:textSize="129dp"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="-27dp" />
+    tools:visibility="invisible" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
