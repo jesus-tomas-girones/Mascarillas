@@ -6,6 +6,7 @@ import androidx.fragment.app.DialogFragment;
 
 import es.upv.master.android.reconocimientofacial.label.LabelActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,6 +15,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,19 +52,67 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_usar_mascara) {
+        if (id == R.id.menu_preferencia) {
 
             return true;
         }
 
-        else if (id == R.id.menu_ser_Evaluador) {
+        else if (id == R.id.menu_ser_evaluador) {
 
-            DialogFragment newFragment = new LoginDialog();
-            //newFragment.setArguments(bundle);
-            newFragment.show(getSupportFragmentManager(), "Agregar Cliente");
+            alertDialogLogin();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    public void alertDialogLogin(){
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle(getString(R.string.title_login_evaluator));
+        alertDialog.setMessage(getString(R.string.msg_login_evaluator));
+
+        final EditText input = new EditText(MainActivity.this);
+
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        alertDialog.setView(input);
+        alertDialog.setIcon(R.drawable.ic_candado);
+        alertDialog.setCancelable(false);
+        alertDialog.setPositiveButton(getString(R.string.entrar_boton),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        String password = input.getText().toString();
+                        if (!password.isEmpty()) {
+                            String pass = getString(R.string.password_login_evaluator);
+                            if (pass.equals(password)) {
+                                Toast.makeText(getApplicationContext(),
+                                        "Contraseña correcta", Toast.LENGTH_SHORT).show();
+                                Intent i = new Intent(getApplicationContext(), EvaluadorActivity.class);
+                                startActivity(i);
+                            } else {
+                                Toast.makeText(getApplicationContext(),
+                                        getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+
+                            }
+                        }else{
+                            Toast.makeText(getApplicationContext(),
+                                    getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+        alertDialog.setNegativeButton(getString(R.string.cerrar_boton),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+        alertDialog.show();
+    }
+
 }
