@@ -137,7 +137,6 @@ public class RecognitionActivity extends AppCompatActivity {
             requestCameraPermission();
         }
 
-
         listBitmapPhotos = new ArrayList<Bitmap>();
         //Primer tipo de foto es frontal FRONT
         typePhoto = "F";
