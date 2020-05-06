@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_usar_mascara"
+        android:id="@+id/menu_ser_evaluador"
         android:orderInCategory="100"
         app:showAsAction="never"
-        android:title="@string/menu_mascara"/>
+        android:title="@string/menu_modo_evaluador"/>
     <item
-        android:id="@+id/menu_ser_Evaluador"
+        android:id="@+id/menu_preferencia"
         android:orderInCategory="101"
         app:showAsAction="never"
-        android:title="@string/menu_modo_evaluador"/>
+        android:title="@string/menu_preferencias"/>
 </menu>
