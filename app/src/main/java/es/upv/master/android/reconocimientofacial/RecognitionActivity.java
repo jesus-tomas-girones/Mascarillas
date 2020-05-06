@@ -12,6 +12,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,11 +30,13 @@ import es.upv.master.android.reconocimientofacial.camera.CameraSource;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
@@ -49,10 +52,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.CaraGirada;
 import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypeCamera;
 import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypePhoto;
@@ -71,7 +76,7 @@ public class RecognitionActivity extends AppCompatActivity {
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    static final String nombreDirectorioFotos = "Mascarillas"; //"Mascarillas"
+    static final String nombreDirectorioFotos = "photosPrueba"; //"Mascarillas"
     private ImageView diagramaCara, miniaturaFotoF, miniaturaFotoP;
     //Valor que tendrá el alfa de la máscara
     //private final float valorVisibilidadCara = 0.25f;
@@ -90,6 +95,9 @@ public class RecognitionActivity extends AppCompatActivity {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     static UploadTask uploadTask=null;
+    private FirebaseFirestore db;
+    private long dateCurrentMilliseconds = 0;
+    private String dateCurrent;
 
     final int SOLICITUD_SUBIR_PUTDATA = 0;
     final int SOLICITUD_SUBIR_PUTSTREAM = 1;
@@ -116,7 +124,7 @@ public class RecognitionActivity extends AppCompatActivity {
 
         //Inicializo los parámetros paras vase de datos
         storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReferenceFromUrl( "gs://reconocimiento-facial-2ff83.appspot.com");
+        storageRef = storage.getReferenceFromUrl( "gs://mascarilla-440d4.appspot.com"); //gs://mascarilla-440d4.appspot.com
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -136,7 +144,7 @@ public class RecognitionActivity extends AppCompatActivity {
         //La primera cámara que se presenta al usuario en la frontal
         idCamera = CameraSource.CAMERA_FACING_FRONT;
         voltearCamara = false;
-
+        db = FirebaseFirestore.getInstance();
     }
 
     public void takeImage(View view) {
@@ -300,6 +308,9 @@ public class RecognitionActivity extends AppCompatActivity {
                 .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
                 .build();*/
 
+        Snackbar.make( mPreview, R.string.snackbar_try_mach_face, Snackbar.LENGTH_LONG)
+                .setAction("OK", new View.OnClickListener()
+                { @Override public void onClick(View view) { } }) .show();
     }
 
     private void transiccionEntreActivities(){
@@ -327,6 +338,7 @@ public class RecognitionActivity extends AppCompatActivity {
                 diagramaCara.setImageResource(R.drawable.mask_frontal);
                 miniaturaFotoP.setImageBitmap(listBitmapPhotos.get(1));
                 girarMascara.setVisibility(View.INVISIBLE);
+                dateCurrent = generateName();
                 subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
                 break;
         }
@@ -538,10 +550,12 @@ public class RecognitionActivity extends AppCompatActivity {
         subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
     }*/
 
-    public String generateName(String typePhoto){
+    public String generateName(){
         int numeroRandom = (int)(Math.random()*1000);
-        String timeStamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        return timeStamp+numeroRandom+"_"+typePhoto+".jpg";
+        dateCurrentMilliseconds = System.currentTimeMillis();
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyyMMddHHmmss");
+        Date time = new Date(dateCurrentMilliseconds);
+        return formatoFecha.format(time)+""+numeroRandom;
     }
 
 
@@ -568,14 +582,14 @@ public class RecognitionActivity extends AppCompatActivity {
                         }
                     });
 
-            String photoName = generateName(numPhotoUp == 1 ? "F":"P");
-            imagenRef = storageRef.child(nombreDirectorioFotos).child(photoName);
+            String posFacePhoto = numPhotoUp == 1 ? "_F":"_P";
+            typePhoto = dateCurrent + posFacePhoto;
+            //String photoName = dateCurrent + posFacePhoto;
+            //guardarFotos(dateCurrentMilliseconds, photoName);
+            imagenRef = storageRef.child(nombreDirectorioFotos).child(typePhoto+".jpg");
             try {
                 switch (opcion) {
                     case SOLICITUD_SUBIR_PUTDATA:
-                        //miniaturaFotoF.setDrawingCacheEnabled(true);
-                        //miniaturaFotoF.buildDrawingCache();
-                        //Bitmap bitmap = miniaturaFotoF.getDrawingCache();
                         Bitmap bitmap = listBitmapPhotos.get(0);
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
                         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -613,11 +627,25 @@ public class RecognitionActivity extends AppCompatActivity {
                                 new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        progresoSubida.dismiss();
-                                        subiendoDatos=false;
-                                        if(!listBitmapPhotos.isEmpty())
-                                        listBitmapPhotos.remove(0);
-                                        subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA, null);
+
+                                        Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
+                                        firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+
+                                                String url = uri.toString();
+                                                Log.e("Almacenamiento:", "the url is: " + url);
+                                                //String ref = imagenRef.getName();
+                                                guardarFotos(dateCurrentMilliseconds, typePhoto, url);
+                                                progresoSubida.dismiss();
+                                                subiendoDatos=false;
+                                                if(!listBitmapPhotos.isEmpty())
+                                                    listBitmapPhotos.remove(0);
+                                                subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA, null);
+                                            }
+                                        });
+
+
                                     }
                                 })
                         .addOnProgressListener(
@@ -647,7 +675,7 @@ public class RecognitionActivity extends AppCompatActivity {
                                 });
             }catch (IOException e) {
                 //mostrarDialogo(this,"ERROR", e.toString());
-                Snackbar.make( mPreview,"ERROR INESPERADO", Snackbar.LENGTH_INDEFINITE)
+                Snackbar.make( mPreview,R.string.snackbar_error, Snackbar.LENGTH_INDEFINITE)
                         .setAction("OK", new View.OnClickListener()
                         { @Override public void onClick(View view) { } }) .show();
                 settingToStart();
@@ -721,6 +749,12 @@ public class RecognitionActivity extends AppCompatActivity {
             diagramaCara.setImageResource(R.drawable.mask_perfil_der);
             numPerfil = R.drawable.mask_perfil_der;
         }
+    }
+
+    private void guardarFotos(final long creation_date, final String name, String url){
+        Photo photo = new Photo(creation_date,false, url);
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection(nombreDirectorioFotos).document(name).set(photo);
     }
 
 }

@@ -23,4 +23,25 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <!--Botones de RecognitionActivity - Mostrar dialogo -->
     <string name="btn_salir">Descartar</string>
     <string name="btn_continuar">Aceptar</string>
+    <!--Menú MainActivity -->
+    <string name="menu_mascara">Usar Máscara</string>
+    <string name="menu_modo_evaluador">Pasar Modo Evaluador</string>
+    <!--Snackbar de RecognitionActivity - -->
+    <string name="snackbar_try_mach_face">Intenta coincidir tu cara con la imagen</string>
+    <string name="snackbar_error">ERROR INESPERADO</string>
+
+
+    <!-- Strings de diálogo personalizado -->
+    <string name="info_text">Necesitas tener creada una cuenta para iniciar Modo Evaluador</string>
+    <string name="crear_boton">Cerrar</string>
+    <string name="nombre_input">Correo</string>
+    <string name="contrasena_input">Constraseña</string>
+    <string name="mostrar_contrasena_check">Mostrar contraseña</string>
+    <string name="olvidar_text">¿Olvidaste tu Contraseña?</string>
+    <string name="entrar_boton">ENTRAR</string>
+
+    <!-- Tab EvaluadorActivity     -->
+    <string name="tab_lista_evaluados">Lista Evaluados</string>
+    <string name="tab_lista_sin_evaluar">Lista Sin Evaluar</string>
+
 </resources>
