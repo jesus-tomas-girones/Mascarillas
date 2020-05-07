@@ -7,4 +7,14 @@
     <color name="black">#000000</color>
     <color name="colorCeleste">#2196F3</color>
     <color name="colorGold">#B77A5015</color>
+
+    <color name="colorLabel1">#2196F3</color>
+    <color name="colorLabel2">#B77A5015</color>
+    <color name="colorLabel3">#2196F3</color>
+    <color name="colorLabel4">#B77A5015</color>
+    <color name="colorLabel5">#2196F3</color>
+    <color name="colorLabel6">#B77A5015</color>
+    <color name="colorLabel7">#2196F3</color>
+    <color name="colorLabel8">#B77A5015</color>
+
 </resources>
