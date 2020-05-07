@@ -58,8 +58,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         else if (id == R.id.menu_ser_evaluador) {
-
-            alertDialogLogin();
+            //alertDialogLogin();
+            Intent i = new Intent(getApplicationContext(), EvaluadorActivity.class);
+            startActivity(i);
             return true;
         }
 

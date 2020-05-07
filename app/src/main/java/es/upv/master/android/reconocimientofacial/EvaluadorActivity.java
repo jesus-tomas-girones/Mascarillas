@@ -3,6 +3,7 @@ package es.upv.master.android.reconocimientofacial;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,6 +18,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.io.Serializable;
+
+import es.upv.master.android.reconocimientofacial.label.LabelActivity;
 
 import static es.upv.master.android.reconocimientofacial.RecognitionActivity.nombreDirectorioFotos;
 
@@ -37,8 +40,8 @@ public class EvaluadorActivity extends AppCompatActivity {
 
         //
         tabs = (TabLayout) findViewById(R.id.tabs);
-        String tab0 = getResources().getString(R.string.tab_lista_evaluados);
-        String tab1 = getResources().getString(R.string.tab_lista_sin_evaluar);
+        String tab1 = getResources().getString(R.string.tab_lista_evaluados);
+        String tab0 = getResources().getString(R.string.tab_lista_sin_evaluar);
         tabs.addTab(tabs.newTab().setText(tab0));
         tabs.addTab(tabs.newTab().setText(tab1));
         tabs.setTabMode(TabLayout.MODE_SCROLLABLE);
@@ -91,13 +94,15 @@ public class EvaluadorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int position = recyclerView.getChildAdapterPosition(view);
                 Photo photoItem = (Photo) adaptador.getItem(position);
-                //String idItem = adaptador.getSnapshots().getSnapshot(position).getId();
+                String namePhoto = adaptador.getSnapshots().getSnapshot(position).getId();
+                String type = String.valueOf(namePhoto.charAt(namePhoto.length()-1));
+                Log.d("Nombre Photo", "Nombre: "+namePhoto+" Tipo: "+type);
                 Context context = getApplicationContext();
-                Intent intent = new Intent(context, DetailsPhotoActivity.class);
+                Intent intent = new Intent(context, LabelActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("Id_photoDetails", photoItem.getCreation_date());
-                intent.putExtra("Label_photoDetails", photoItem.isLabelled());
-                intent.putExtra("URL_photoDetails", photoItem.getUrlPhoto());
+                intent.putExtra("Id_photoLabel", photoItem.getCreation_date());
+                intent.putExtra("Label_photoLabel", photoItem.isLabelled());
+                intent.putExtra("URL_photoLabel", photoItem.getUrlPhoto());
                 context.startActivity(intent);
             }
         });

@@ -30,7 +30,6 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="snackbar_try_mach_face">Intenta coincidir tu cara con la imagen</string>
     <string name="snackbar_error">ERROR INESPERADO</string>
 
-
     <!-- Strings de diálogo login personalizado -->
     <string name="mostrar_contrasena_check">Mostrar contraseña</string>
     <string name="password_error">Contraseña Incorrecta!</string>
@@ -44,6 +43,17 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="tab_lista_evaluados">Lista Evaluados</string>
     <string name="tab_lista_sin_evaluar">Lista Sin Evaluar</string>
 
-
+    <!-- Tipos de Problemas Fotos     -->
+    <string name="label_1">No simétrica</string>
+    <string name="label_2">Mal extendida</string>
+    <string name="label_3">Debajo puente nasal</string>
+    <string name="label_4">Gafas por debajo</string>
+    <string name="label_5">Ajuste Cuello</string>
+    <string name="label_6">Barba</string>
+    <string name="label_7">Mal ajuste nasal</string>
+    <string name="label_8">Goma mal colocada</string>
+    <string name="label_9">Hueco Lateral</string>
+    <string name="label_10">Hueco Lateral Der</string>
+    <string name="label_11">Hueco Lateral Izq</string>
 
 </resources>

@@ -8,6 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.bumptech.glide.Glide;
+
 import es.upv.master.android.reconocimientofacial.R;
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -30,6 +33,15 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       circle3 = findViewById(R.id.textView3);
       photo.setOnTouchListener(this);
       //Cargamos la imagen de storage
+      Bundle extras = getIntent().getExtras();
+      //Long idPhoto = extras.getLong("Id_photoLabel");
+      //boolean labelPhoto = extras.getBoolean("Label_photoLabel");
+      String uriPhoto = extras.getString("URL_photoLabel");
+
+      Glide.with(getApplicationContext())
+              .load(uriPhoto)
+              .placeholder(R.drawable.mask_frontal)
+              .into(photo);
    }
 
    private TextView getCircle() {
