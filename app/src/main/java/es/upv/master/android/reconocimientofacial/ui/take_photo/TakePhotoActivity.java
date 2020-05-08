@@ -8,6 +8,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +39,7 @@ import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
+import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -58,6 +61,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static es.upv.master.android.reconocimientofacial.data.Firebase.subirFotos;
 import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.CaraGirada;
 import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.TypeCamera;
 import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.TypePhoto;
@@ -70,7 +74,7 @@ import es.upv.master.android.reconocimientofacial.data.Firebase;
 
 public class TakePhotoActivity extends AppCompatActivity {
 
-    private static final String TAG = "FaceTracker";
+    private static final String TAG = "TakePhoto";
 
     private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
@@ -81,32 +85,18 @@ public class TakePhotoActivity extends AppCompatActivity {
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
     private ImageView diagramaCara, miniaturaFotoF, miniaturaFotoP;
-    //Valor que tendrá el alfa de la máscara
-    //private final float valorVisibilidadCara = 0.25f;
 
     //Tipo de foto frontal (F), perfil (P)
-    private String typePhoto;
-    private boolean voltearCamara;
-    private boolean isTurnedMask = true;
+    private String typePhoto = "F";
+    private boolean voltearCamara = false;
     private boolean autoFocus, useFlash;
-    private int idCamera;
+    private int idCamera = CameraSource.CAMERA_FACING_FRONT;;
     private int numPerfil;
     public static int NUM_PHOTOS = 0;
 
-    //Firebase
-    StorageReference imagenRef;
-    private FirebaseStorage storage;
-    private StorageReference storageRef;
-    static UploadTask uploadTask=null;
-    private FirebaseFirestore db;
-    private long dateCurrentMilliseconds = 0;
-    private String dateCurrent;
-
-    final int SOLICITUD_SUBIR_PUTDATA = 0;
-    final int SOLICITUD_SUBIR_PUTSTREAM = 1;
-    Boolean subiendoDatos =false;
     public static ArrayList<Bitmap> listBitmapPhotos;
-    private int numPhotoUp = 0;
+    private ArrayList<String> listIdPhotos;
+    private String idphoto;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,18 +106,12 @@ public class TakePhotoActivity extends AppCompatActivity {
         mGraphicOverlay = (GraphicOverlay) findViewById(R.id.faceOverlay);
         girarMascara = findViewById(R.id.botonGirarMascara);
         diagramaCara = (ImageView)findViewById(R.id.imgCara);
-        //diagramaCara.setAlpha(valorVisibilidadCara);
         diagramaCara.setMaxHeight( mGraphicOverlay.getHeight());
         miniaturaFotoF = (ImageView)findViewById(R.id.imgPhotoF);
         miniaturaFotoP = (ImageView)findViewById(R.id.imgPhotoP);
         btnFlas = (Button) findViewById(R.id.btn_flash);
         btnGirarCamara = (Button) findViewById(R.id.btn_girarCamara);
-        //btnSharePhotos = (Button) findViewById(R.id.btn_sharePhoto);
         btnTakePhoto = (Button) findViewById(R.id.btn_takePhoto);
-
-        //Inicializo los parámetros paras vase de datos
-        storage = FirebaseStorage.getInstance();
-        storageRef = storage.getReferenceFromUrl( "gs://mascarilla-440d4.appspot.com"); //gs://mascarilla-440d4.appspot.com
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.
@@ -141,81 +125,72 @@ public class TakePhotoActivity extends AppCompatActivity {
         }
 
         listBitmapPhotos = new ArrayList<Bitmap>();
-        //Primer tipo de foto es frontal FRONT
-        typePhoto = "F";
-        //La primera cámara que se presenta al usuario en la frontal
-        idCamera = CameraSource.CAMERA_FACING_FRONT;
-        voltearCamara = false;
-        db = FirebaseFirestore.getInstance();
+        listIdPhotos = new ArrayList<String>();
+
     }
 
     public void takeImage(View view) {
+            try{
+            //Aquí ejecutamos nuestras tareas costosas
+            mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
 
-           // new Thread(new Runnable() {
-               // public void run() {
-                    try{
-                    //Aquí ejecutamos nuestras tareas costosas
-                    mCameraSource.takePicture(null, new CameraSource.PictureCallback() {
+                @Override
+                public void onPictureTaken(byte[] bytes) {
+                    try {
+                        // convert byte array into bitmap
+                        Bitmap loadedImage = null;
+                        Bitmap rotatedBitmap = null;
+                        loadedImage = BitmapFactory.decodeByteArray(bytes, 0,
+                                bytes.length);
+                        //Observo cuanto es el bitma que obtengo al tomar la foto
+                        Log.d("BITMAP", loadedImage.getWidth() + "x" + loadedImage.getHeight());
 
-                        @Override
-                        public void onPictureTaken(byte[] bytes) {
-                            try {
-                                // convert byte array into bitmap
-                                Bitmap loadedImage = null;
-                                Bitmap rotatedBitmap = null;
-                                loadedImage = BitmapFactory.decodeByteArray(bytes, 0,
-                                        bytes.length);
-                                //Observo cuanto es el bitma que obtengo al tomar la foto
-                                Log.d("BITMAP", loadedImage.getWidth() + "x" + loadedImage.getHeight());
+                        // rotate Image
+                        int orientation = PhotoRotation.getOrientation(bytes);
 
+                        switch(orientation) {
+                            case 90:
+                                rotatedBitmap= rotateImage(loadedImage, 90);
 
-                                // rotate Image
-                                int orientation = PhotoRotation.getOrientation(bytes);
+                                break;
+                            case 180:
+                                rotatedBitmap= rotateImage(loadedImage, 180);
 
-                                switch(orientation) {
-                                    case 90:
-                                        rotatedBitmap= rotateImage(loadedImage, 90);
+                                break;
+                            case 270:
+                                rotatedBitmap= rotateImage(loadedImage, 270);
 
-                                        break;
-                                    case 180:
-                                        rotatedBitmap= rotateImage(loadedImage, 180);
-
-                                        break;
-                                    case 270:
-                                        rotatedBitmap= rotateImage(loadedImage, 270);
-
-                                        break;
-                                    case 0:
-                                        // if orientation is zero we don't need to rotate this
-                                        rotatedBitmap = loadedImage;
-                                    default:
-                                        break;
-                                }
-                                //Fin de rotar Image
-
-                                ByteArrayOutputStream ostream = new ByteArrayOutputStream();
-                                // save image into gallery
-                                rotatedBitmap = resize(rotatedBitmap, 640,480); //800x600
-                                rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
-                                listBitmapPhotos.add(rotatedBitmap);
-
-                                Intent i = new Intent(getApplicationContext(), ShowPhotoActivity.class);
-                                i.putExtra(TypePhoto, typePhoto);//"F-P"
-                                i.putExtra(TypeCamera, idCamera);//FRONT, BACK
-                                i.putExtra(CaraGirada, numPerfil);
-                                startActivity(i);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                                break;
+                            case 0:
+                                // if orientation is zero we don't need to rotate this
+                                rotatedBitmap = loadedImage;
+                            default:
+                                break;
                         }
-                    });
+                        //Fin de rotar Image
 
-                }catch (Exception ex){
-                    Log.e(TAG, "Error al capturar fotografia!");
+                        ByteArrayOutputStream ostream = new ByteArrayOutputStream();
+                        // save image into gallery
+                        rotatedBitmap = resize(rotatedBitmap, 640,480); //800x600
+                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, ostream);
+                        listBitmapPhotos.add(rotatedBitmap);
+
+                        Intent i = new Intent(getApplicationContext(), ShowPhotoActivity.class);
+                        i.putExtra(TypePhoto, typePhoto);//"F-P"
+                        i.putExtra(TypeCamera, idCamera);//FRONT, BACK
+                        i.putExtra(CaraGirada, numPerfil);
+                        startActivity(i);
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-           // }
-           // }).start();
+            });
+
+        }catch (Exception ex){
+            Log.e(TAG, "Error al capturar fotografia!");
+        }
+
     }
 
 
@@ -257,12 +232,14 @@ public class TakePhotoActivity extends AppCompatActivity {
                 new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
                         .build());
 
+        //final TextRecognizer detector = new TextRecognizer.Builder(getApplicationContext()).build();
+
         // A barcode detector is created to track barcodes.  An associated multi-processor instance
         // is set to receive the barcode detection results, track the barcodes, and maintain
         // graphics for each barcode on screen.  The factory is used by the multi-processor to
         // create a separate tracker instance for each barcode.
 
- /*       if (!detector.isOperational()) {
+        if (!detector.isOperational()) {
             // Note: The first time that an app using face API is installed on a device, GMS will
             // download a native library to the device in order to do detection.  Usually this
             // completes before the app is run for the first time.  But if that download has not yet
@@ -282,13 +259,12 @@ public class TakePhotoActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.low_storage_error, Toast.LENGTH_LONG).show();
                 Log.w(TAG, getString(R.string.low_storage_error));
             }
-        }*/
+        }
         //Eligiendo la cámara
         idCamera = voltearCamara ? CameraSource.CAMERA_FACING_BACK :  CameraSource.CAMERA_FACING_FRONT;
         System.out.println("System Recognition: "+idCamera  );
         //Configurando recursos de vista
         settingCameraResource(idCamera);
-
         mCameraSource = new CameraSource.Builder(getApplicationContext(), detector)
                 .setFacing(idCamera )
                 .setRequestedPreviewSize(1280, 720) //1024, 768 //1280, 960 //1280, 720
@@ -297,18 +273,6 @@ public class TakePhotoActivity extends AppCompatActivity {
                 //.setAutoFocusEnabled(true)
                 .setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)
                 .build();
-
-/*        CameraSource.Builder builder = new CameraSource.Builder(getApplicationContext(), detector)
-                .setFacing(CameraSource.CAMERA_FACING_BACK)
-                .setRequestedPreviewSize(1600, 1024)
-                .setRequestedFps(15.0f);
-
-        builder = builder.setFocusMode(
-                autoFocus ? Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE : null);
-
-        mCameraSource = builder
-                .setFlashMode(useFlash ? Camera.Parameters.FLASH_MODE_TORCH : null)
-                .build();*/
 
         Snackbar.make( mPreview, R.string.snackbar_try_mach_face, Snackbar.LENGTH_LONG)
                 .setAction("OK", new View.OnClickListener()
@@ -319,20 +283,27 @@ public class TakePhotoActivity extends AppCompatActivity {
         int opt = NUM_PHOTOS;
         switch (opt){
             case 0:
+                settingToStart();
                 typePhoto = "F";
+                idphoto = null;
                 girarMascara.setVisibility(View.INVISIBLE);
                 if(listBitmapPhotos.size() == 1)
                     listBitmapPhotos.remove(0);
                 break;
             case 1:
+                if(listBitmapPhotos.size() == 2){
+                    listBitmapPhotos.remove(1);
+                    return;
+                }
                 typePhoto = "P";
                 miniaturaFotoP.setVisibility(View.VISIBLE);
                 miniaturaFotoF.setImageBitmap(listBitmapPhotos.get(0));
                 numPerfil = R.drawable.mask_perfil_der;
                 diagramaCara.setImageResource(numPerfil);
                 girarMascara.setVisibility(View.VISIBLE);
-                if(listBitmapPhotos.size() == 2)
-                    listBitmapPhotos.remove(1);
+                if(idphoto == null) idphoto = generateNamePhoto();
+                if(listIdPhotos.isEmpty())
+                listIdPhotos.add(0, idphoto+"_F");
                 break;
             case 2:
                 typePhoto = "F";
@@ -340,8 +311,9 @@ public class TakePhotoActivity extends AppCompatActivity {
                 diagramaCara.setImageResource(R.drawable.mask_frontal);
                 miniaturaFotoP.setImageBitmap(listBitmapPhotos.get(1));
                 girarMascara.setVisibility(View.INVISIBLE);
-                dateCurrent = generateName();
-                subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
+                listIdPhotos.add(1, idphoto+"_P");
+                subirFotos(TakePhotoActivity.this,listBitmapPhotos, listIdPhotos);
+                //subirAFirebaseStorage();
                 break;
         }
     }
@@ -434,7 +406,7 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         if (mCameraSource != null) {
             try {
-                mPreview.start(mCameraSource, mGraphicOverlay);
+                mPreview.start(mCameraSource);
                // openCamera(voltearCamara ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
             } catch (IOException e) {
                 Log.e(TAG, "Unable to start camera source.", e);
@@ -518,7 +490,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         if (mCameraSource != null) {
             mCameraSource.release();
         }
-        //Comfiguro la nueva cámara de la nueva camara y la inicio
+        //Comfiguro la nueva cámara  y la inicio
         createCameraSource(true, useFlash);
         startCameraSource();
     }
@@ -544,203 +516,27 @@ public class TakePhotoActivity extends AppCompatActivity {
             mCameraSource .setFlashMode( Camera.Parameters.FLASH_MODE_OFF);
             btnFlas.setBackgroundResource(R.drawable.ic_flash_off);
         }
-
     }
 
-    //Función me permite subir las fotos al servidos a través del botón btn_sharePhoto
-/*    public void sharePhoto(View view){
-        subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
-    }*/
-
-    public String generateName(){
+    public String generateNamePhoto(){
         int numeroRandom = (int)(Math.random()*1000);
-        dateCurrentMilliseconds = System.currentTimeMillis();
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyyMMddHHmmss");
-        Date time = new Date(dateCurrentMilliseconds);
+        Date time = new Date(System.currentTimeMillis());
         return formatoFecha.format(time)+""+numeroRandom;
     }
 
 
-    //
-
-     public void subirAFirebaseStorage(Integer opcion, String ficheroDispositivo) {
-
-        if (!listBitmapPhotos.isEmpty()){
-            //Condición
-            //La función es recursiva por eso esta variable me permite enumerar las fotos que se van subiendo a firebase
-            numPhotoUp++;
-
-            final ProgressDialog progresoSubida = new ProgressDialog(TakePhotoActivity.this);
-            progresoSubida.setTitle("Subiendo... Foto"+numPhotoUp+"/"+2);
-            progresoSubida.setMessage("Espere...");
-            progresoSubida.setCancelable(true);
-            progresoSubida.setCanceledOnTouchOutside(false);
-            progresoSubida.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            uploadTask.cancel();
-                            settingToStart();
-                            return;
-                        }
-                    });
-
-            String posFacePhoto = numPhotoUp == 1 ? "_F":"_P";
-            typePhoto = dateCurrent + posFacePhoto;
-            //String photoName = dateCurrent + posFacePhoto;
-            //guardarFotos(dateCurrentMilliseconds, photoName);
-            imagenRef = storageRef.child(Firebase.COLLECTION).child(typePhoto+".jpg");
-            try {
-                switch (opcion) {
-                    case SOLICITUD_SUBIR_PUTDATA:
-                        Bitmap bitmap = listBitmapPhotos.get(0);
-                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                        byte[] data = baos.toByteArray();
-                        uploadTask = imagenRef.putBytes(data);
-                        break;
-                    case SOLICITUD_SUBIR_PUTSTREAM:
-                        //Para subir las fotos desde un directorio en memoria externa
-                        InputStream stream = new FileInputStream( new File(ficheroDispositivo));
-                        uploadTask = imagenRef.putStream(stream);
-                        break;
-                }
-
-                uploadTask .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        subiendoDatos=false;
-                        //mostrarDialogo(getApplicationContext(), "Ha ocurrido un error al" +
-                        //    " subir la imagen o el usuario ha cancelado la subida.");
-                        Snackbar.make( mPreview,R.string.error_upload_photos, Snackbar.LENGTH_INDEFINITE)
-                                .setAction("SI", new View.OnClickListener()
-                                { @Override public void onClick(View view) {
-                                    if (!listBitmapPhotos.isEmpty()){
-                                        //Si hay un error debe disminuir
-                                        if(numPhotoUp>0) numPhotoUp--;
-                                        subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA,null);
-                                    }
-                                } })
-                                .setAction("NO",new View.OnClickListener()
-                                { @Override public void onClick(View view) {  settingToStart(); } }).show();
-
-                    }
-                })
-                        .addOnSuccessListener(
-                                new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                        Task<Uri> firebaseUri = taskSnapshot.getStorage().getDownloadUrl();
-                                        firebaseUri.addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                            @Override
-                                            public void onSuccess(Uri uri) {
-
-                                                String url = uri.toString();
-                                                Log.e("Almacenamiento:", "the url is: " + url);
-                                                //String ref = imagenRef.getName();
-                                                registrarFoto(dateCurrentMilliseconds, typePhoto, url);
-                                                progresoSubida.dismiss();
-                                                subiendoDatos=false;
-                                                if(!listBitmapPhotos.isEmpty())
-                                                    listBitmapPhotos.remove(0);
-                                                subirAFirebaseStorage(SOLICITUD_SUBIR_PUTDATA, null);
-                                            }
-                                        });
-
-
-                                    }
-                                })
-                        .addOnProgressListener(
-                                new OnProgressListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                                        if (!subiendoDatos) {
-                                            progresoSubida.show();
-                                            subiendoDatos=true;
-                                        } else {
-                                            if (taskSnapshot.getTotalByteCount()>0)
-                                                progresoSubida.setMessage("Espere... " +
-                                                        String.valueOf(100*taskSnapshot.getBytesTransferred()
-                                                                /taskSnapshot.getTotalByteCount())+"%");
-                                        }
-                                    }
-                                })
-                        .addOnPausedListener(
-                                new OnPausedListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                                        //UploadTask pausa
-                                        subiendoDatos=false;
-                                        // mostrarDialogo(getApplicationContext(), "La subida ha sido pausada.");
-
-                                    }
-                                });
-            }catch (IOException e) {
-                //mostrarDialogo(this,"ERROR", e.toString());
-                Snackbar.make( mPreview,R.string.snackbar_error, Snackbar.LENGTH_INDEFINITE)
-                        .setAction("OK", new View.OnClickListener()
-                        { @Override public void onClick(View view) { } }) .show();
-                settingToStart();
-            }
-            //}
-
-        }else{
-            //Si ya está vacío el arreglo, se ha enviado todas las fotos
-            String title = getResources().getString(R.string.title_mostrar_dialogo);
-            String mensaje = getResources().getString(R.string.message_mostrar_dialogo);
-            mostrarDialogo(this,title, mensaje);
-        }
-
-
-    }
-
-    private void mostrarDialogo(final Activity activity, final String title,
-              final String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(title)
-                .setMessage(message)
-                .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                    @Override
-                    public void onCancel(DialogInterface dialog) {
-                        settingToStart();
-                        finish();
-                    }
-                })
-/*        .setPositiveButton("Repetir",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //listener.onPossitiveButtonClick();
-                                settingToStart();
-                            }
-                        })*/
-        .setNegativeButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //listener.onNegativeButtonClick();
-                            //    Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                            //    startActivity(i);
-                                settingToStart();
-                                finish();
-                            }
-                        });
-        //}
-        //builder.setCancelable(false);
-        builder.create().show();
-    }
-
     private void settingToStart(){
         //Restablezco los valores de inicio
         typePhoto = "F";
-        numPhotoUp = 0;
         NUM_PHOTOS = 0;
+        idphoto = null;
         miniaturaFotoP.setVisibility(View.INVISIBLE);
         miniaturaFotoF.setImageResource(R.drawable.mask_frontal);
         miniaturaFotoP.setImageResource(R.drawable.mask_perfil_der);
         diagramaCara.setImageResource(R.drawable.mask_frontal);
         listBitmapPhotos.clear();
+        listIdPhotos.clear();
     }
 
     public void girarMascaraPerfil(View view){

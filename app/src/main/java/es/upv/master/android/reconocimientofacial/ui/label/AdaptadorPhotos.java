@@ -2,6 +2,7 @@ package es.upv.master.android.reconocimientofacial.ui.label;
 
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,9 @@ public class AdaptadorPhotos extends
     @Override
     protected void onBindViewHolder(@NonNull AdaptadorPhotos.ViewHolder holder,
                                     int position, @NonNull Photo photo) {
-        holder.id.setText("Id: " +photo.getCreation_date());
+        CharSequence prettyTime = DateUtils.getRelativeDateTimeString( context, photo.getCreation_date(),
+                DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
+        holder.creation_date.setText(prettyTime);
         holder.etiqueta.setText("Etiquetado: "+ photo.isLabelled());
         Glide.with(context)
             .load(photo.getUrlPhoto())
@@ -57,12 +60,12 @@ public class AdaptadorPhotos extends
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public final ImageView imgPhoto;
-        public final TextView id;
+        public final TextView creation_date;
         public final TextView etiqueta;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.imgPhoto = (ImageView) itemView.findViewById(R.id.imagePhoto);
-            this.id = (TextView) itemView.findViewById(R.id.textId);
+            this.creation_date = (TextView) itemView.findViewById(R.id.textCreation_date);
             this.etiqueta = (TextView) itemView.findViewById(R.id.textEtiqueta);
         }
     }
