@@ -1,11 +1,10 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.ui.label;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,17 +12,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.io.Serializable;
+import es.upv.master.android.reconocimientofacial.R;
+import es.upv.master.android.reconocimientofacial.data.Firebase;
+import es.upv.master.android.reconocimientofacial.model.Photo;
 
-import es.upv.master.android.reconocimientofacial.label.LabelActivity;
+//import static es.upv.master.android.reconocimientofacial.ui.take_photo.RecognitionActivity.nombreDirectorioFotos;
 
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.nombreDirectorioFotos;
-
-public class EvaluadorActivity extends AppCompatActivity {
+public class ListLabelActivity extends AppCompatActivity {
     private TabLayout tabs;
     private RecyclerView recyclerView;
     FirebaseFirestore db;
@@ -78,7 +76,7 @@ public class EvaluadorActivity extends AppCompatActivity {
     }
 
     public void listarFotos(boolean isEvaluated){
-        Query query = db.collection(nombreDirectorioFotos)
+        Query query = db.collection(Firebase.COLLECTION)
                 .whereEqualTo("labelled",isEvaluated);
 
         FirestoreRecyclerOptions<Photo> opciones = new FirestoreRecyclerOptions
@@ -94,15 +92,16 @@ public class EvaluadorActivity extends AppCompatActivity {
             public void onClick(View view) {
                 int position = recyclerView.getChildAdapterPosition(view);
                 Photo photoItem = (Photo) adaptador.getItem(position);
-                String namePhoto = adaptador.getSnapshots().getSnapshot(position).getId();
-                String type = String.valueOf(namePhoto.charAt(namePhoto.length()-1));
-                Log.d("Nombre Photo", "Nombre: "+namePhoto+" Tipo: "+type);
+                String idPhoto = adaptador.getSnapshots().getSnapshot(position).getId();
+                String type = String.valueOf(idPhoto.charAt(idPhoto.length()-1));
+                Log.d("Nombre Photo", "id: "+idPhoto+" Tipo: "+type);
                 Context context = getApplicationContext();
                 Intent intent = new Intent(context, LabelActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("Id_photoLabel", photoItem.getCreation_date());
-                intent.putExtra("Label_photoLabel", photoItem.isLabelled());
-                intent.putExtra("URL_photoLabel", photoItem.getUrlPhoto());
+                intent.putExtra("Id_photo", idPhoto);
+                //intent.putExtra("Id_photoLabel", photoItem.getCreation_date());
+                //intent.putExtra("Label_photoLabel", photoItem.isLabelled());
+                intent.putExtra("URL_photo", photoItem.getUrlPhoto());
                 context.startActivity(intent);
             }
         });

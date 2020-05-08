@@ -25,7 +25,7 @@
         <activity android:name=".DetailsPhotoActivity"></activity>
         <!-- android:theme="@style/AppTheme.NoActionBar" -->
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -35,22 +35,22 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RecognitionActivity"
+            android:name=".ui.take_photo.TakePhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".ShowPhotoActivity"
+            android:name=".ui.take_photo.ShowPhotoActivity"
             android:label="Aceptar Foto"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".label.LabelActivity"
+            android:name=".ui.label.LabelActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".EvaluadorActivity"
+            android:name=".ui.label.ListLabelActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
     </application>

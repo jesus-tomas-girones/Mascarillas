@@ -1,4 +1,4 @@
-package es.upv.master.android.reconocimientofacial.label;
+package es.upv.master.android.reconocimientofacial.ui.label;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -15,16 +15,18 @@ import es.upv.master.android.reconocimientofacial.R;
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
 
-   String id;  //id de la colección a modificar
+   String idPhoto;  //id de la colección a modificar
    String nLabel = "1";
    ImageView photo;
    TextView circle1;
    TextView circle2;
    TextView circle3;
 
+   TextView[] circle;
+
+
    @Override
    protected void onCreate(Bundle savedInstanceState) {
-      // se nos pasa id como parámetro
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_label);
       photo = findViewById(R.id.photo);
@@ -34,10 +36,9 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       photo.setOnTouchListener(this);
       //Cargamos la imagen de storage
       Bundle extras = getIntent().getExtras();
-      //Long idPhoto = extras.getLong("Id_photoLabel");
+      idPhoto = extras.getString("Id_photo");
       //boolean labelPhoto = extras.getBoolean("Label_photoLabel");
-      String uriPhoto = extras.getString("URL_photoLabel");
-
+      String uriPhoto = extras.getString("URL_photo");
       Glide.with(getApplicationContext())
               .load(uriPhoto)
               .placeholder(R.drawable.mask_frontal)
@@ -100,8 +101,20 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    @Override
    protected void onResume() {
       super.onResume();
-      //Leemos los valores x1, y1, x2, ... de la base de datos
+
+      //Leer de la colección el id idPhoto
+      //Leemos los valores label1, x1, y1, x2, ... de la base de datos
       //Inicializamos circle1, 2 y 3
+
+//     bucle n 1..3 hasta que no exista el campo
+//       String label = leer de el registro "label"+n
+//       float  x = leer de el registro "x"+n
+//       float  y = leer de el registro "y"+n
+//       nLabel = "no simetrico" -> "1" "mal ajustada" -> "2"
+//       TextView circle = getCircle()
+//       circle.setVisivility(VISIBLE)
+//       setCircle(circle, x, y)
+
       setCircle(circle1, -1, -1);
       setCircle(circle2, 0.9f, 0.9f); //NO FUNCIONA
       setCircle(circle3, -1, -1);
@@ -116,6 +129,23 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       float x3 = getX(circle3);
       float y3 = getY(circle3);
       //Guardamos los valores en la base de datos
+      //saveLabels();
       super.onPause();
    }
+
+   //void saveLabels
+   // int n=1
+   // if circle1.getVisivity() == VISIBLE {
+   //    saveNewLabel(n, NAME_LABEL[1], getX(circle1), getY(circle1))
+   //    n++;
+   //}
+   // if circle2.getVisivity() == VISIBLE {
+   //    saveNewLabel(n, NAME_LABEL[2], getX(circle2), getY(circle2))
+   //    n++;
+   //}
+   // if CIRCLE3.getVisivity() == VISIBLE {
+   //    saveNewLabel(n, NAME_LABEL[3], getX(circle3), getY(circle3))
+   //    n++;
+   //}
+
 }

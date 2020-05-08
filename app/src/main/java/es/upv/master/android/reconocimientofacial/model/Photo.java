@@ -1,4 +1,4 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.model;
 
 public class Photo {
     private  String urlPhoto;

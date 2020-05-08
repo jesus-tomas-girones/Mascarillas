@@ -1,10 +1,7 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.ui.label;
 
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +10,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import es.upv.master.android.reconocimientofacial.R;
+import es.upv.master.android.reconocimientofacial.model.Photo;
 
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-
-import java.io.InputStream;
 
 public class AdaptadorPhotos extends
         FirestoreRecyclerAdapter<Photo, AdaptadorPhotos.ViewHolder> {
@@ -45,11 +42,8 @@ public class AdaptadorPhotos extends
             .load(photo.getUrlPhoto())
             .placeholder(R.drawable.mask_frontal)
             .into(holder.imgPhoto);
-/*        new DownloadImageTask((ImageView) holder.imgPhoto)
-                .execute(photo.getUrlPhoto());*/
         holder.itemView.setOnClickListener(onClickListener);
     }
-
 
     @NonNull
     @Override
@@ -73,33 +67,8 @@ public class AdaptadorPhotos extends
         }
     }
 
-    //setter de onClickListener;
     public void setOnItemClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
-/*    private class DownloadImageTask extends AsyncTask<String,Void, Bitmap> {
-        ImageView imageView;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.imageView = bmImage;
-        }
-
-        @Override
-        protected Bitmap doInBackground(String... strings) {
-            String urldisplay = strings[0];
-            Bitmap mImagen = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mImagen = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return mImagen;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            imageView.setImageBitmap(result);
-        }
-    }*/
 }

@@ -1,4 +1,4 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.ui.take_photo;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -8,10 +8,11 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.camera.CameraSource;
 
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.NUM_PHOTOS;
-import static es.upv.master.android.reconocimientofacial.RecognitionActivity.listBitmapPhotos;
+import static es.upv.master.android.reconocimientofacial.ui.take_photo.TakePhotoActivity.NUM_PHOTOS;
+import static es.upv.master.android.reconocimientofacial.ui.take_photo.TakePhotoActivity.listBitmapPhotos;
 
 public class ShowPhotoActivity extends AppCompatActivity {
     private ImageView fotoFinal, imagShowMask;

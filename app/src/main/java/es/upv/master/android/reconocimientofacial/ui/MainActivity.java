@@ -1,26 +1,20 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.ui;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
-import es.upv.master.android.reconocimientofacial.label.LabelActivity;
+import es.upv.master.android.reconocimientofacial.R;
+import es.upv.master.android.reconocimientofacial.ui.take_photo.TakePhotoActivity;
+import es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
-import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void start(View v){
-        Intent i = new Intent(this, RecognitionActivity.class);
+        Intent i = new Intent(this, TakePhotoActivity.class);
         //Intent i = new Intent(this, LabelActivity.class);
         startActivity(i);
     }
@@ -59,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
         else if (id == R.id.menu_ser_evaluador) {
             //alertDialogLogin();
-            Intent i = new Intent(getApplicationContext(), EvaluadorActivity.class);
+            Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
             startActivity(i);
             return true;
         }
@@ -92,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                             if (pass.equals(password)) {
                                 Toast.makeText(getApplicationContext(),
                                         "Contraseña correcta", Toast.LENGTH_SHORT).show();
-                                Intent i = new Intent(getApplicationContext(), EvaluadorActivity.class);
+                                Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                                 startActivity(i);
                             } else {
                                 Toast.makeText(getApplicationContext(),

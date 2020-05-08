@@ -1,4 +1,4 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.ui.take_photo;
 
 import android.Manifest;
 import android.app.Activity;
@@ -26,6 +26,8 @@ import androidx.core.app.ActivityCompat;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 //import com.google.android.gms.vision.CameraSource;
+import es.upv.master.android.reconocimientofacial.FaceGraphic;
+import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.camera.CameraSource;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -52,19 +54,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
-import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.CaraGirada;
-import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypeCamera;
-import static es.upv.master.android.reconocimientofacial.ShowPhotoActivity.TypePhoto;
+import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.CaraGirada;
+import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.TypeCamera;
+import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.TypePhoto;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.resize;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.rotateImage;
+import static es.upv.master.android.reconocimientofacial.data.Firebase.registrarFoto;
 
-public class RecognitionActivity extends AppCompatActivity {
+import es.upv.master.android.reconocimientofacial.data.Firebase;
+
+
+public class TakePhotoActivity extends AppCompatActivity {
 
     private static final String TAG = "FaceTracker";
 
@@ -76,7 +80,6 @@ public class RecognitionActivity extends AppCompatActivity {
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
     private static final int RC_HANDLE_CAMERA_PERM = 2;
-    static final String nombreDirectorioFotos = "photosPrueba"; //"Mascarillas"
     private ImageView diagramaCara, miniaturaFotoF, miniaturaFotoP;
     //Valor que tendrá el alfa de la máscara
     //private final float valorVisibilidadCara = 0.25f;
@@ -559,6 +562,7 @@ public class RecognitionActivity extends AppCompatActivity {
 
 
     //
+
      public void subirAFirebaseStorage(Integer opcion, String ficheroDispositivo) {
 
         if (!listBitmapPhotos.isEmpty()){
@@ -566,7 +570,7 @@ public class RecognitionActivity extends AppCompatActivity {
             //La función es recursiva por eso esta variable me permite enumerar las fotos que se van subiendo a firebase
             numPhotoUp++;
 
-            final ProgressDialog progresoSubida = new ProgressDialog(RecognitionActivity.this);
+            final ProgressDialog progresoSubida = new ProgressDialog(TakePhotoActivity.this);
             progresoSubida.setTitle("Subiendo... Foto"+numPhotoUp+"/"+2);
             progresoSubida.setMessage("Espere...");
             progresoSubida.setCancelable(true);
@@ -585,7 +589,7 @@ public class RecognitionActivity extends AppCompatActivity {
             typePhoto = dateCurrent + posFacePhoto;
             //String photoName = dateCurrent + posFacePhoto;
             //guardarFotos(dateCurrentMilliseconds, photoName);
-            imagenRef = storageRef.child(nombreDirectorioFotos).child(typePhoto+".jpg");
+            imagenRef = storageRef.child(Firebase.COLLECTION).child(typePhoto+".jpg");
             try {
                 switch (opcion) {
                     case SOLICITUD_SUBIR_PUTDATA:
@@ -635,7 +639,7 @@ public class RecognitionActivity extends AppCompatActivity {
                                                 String url = uri.toString();
                                                 Log.e("Almacenamiento:", "the url is: " + url);
                                                 //String ref = imagenRef.getName();
-                                                guardarFotos(dateCurrentMilliseconds, typePhoto, url);
+                                                registrarFoto(dateCurrentMilliseconds, typePhoto, url);
                                                 progresoSubida.dismiss();
                                                 subiendoDatos=false;
                                                 if(!listBitmapPhotos.isEmpty())
@@ -748,12 +752,6 @@ public class RecognitionActivity extends AppCompatActivity {
             diagramaCara.setImageResource(R.drawable.mask_perfil_der);
             numPerfil = R.drawable.mask_perfil_der;
         }
-    }
-
-    private void guardarFotos(final long creation_date, final String name, String url){
-        Photo photo = new Photo(creation_date,false, url);
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection(nombreDirectorioFotos).document(name).set(photo);
     }
 
 }
