@@ -100,7 +100,7 @@ public class ListLabelActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("Id_photo", idPhoto);
                 //intent.putExtra("Id_photoLabel", photoItem.getCreation_date());
-                //intent.putExtra("Label_photoLabel", photoItem.isLabelled());
+                intent.putExtra("Labelled_photo", photoItem.isLabelled());
                 intent.putExtra("URL_photo", photoItem.getUrlPhoto());
                 context.startActivity(intent);
             }

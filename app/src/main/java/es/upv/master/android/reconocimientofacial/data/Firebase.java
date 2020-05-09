@@ -37,10 +37,6 @@ public class Firebase {
    static public String REFERENCE_FIRESTORAGE = "gs://mascarilla-440d4.appspot.com";
    public static StorageReference storageRef;
    public static boolean subiendoDatos =false;
-   public static void subirFoto(Bitmap bitmap, String name) {
-
-   }
-
 
    public static void registrarFoto(final long creation_date, final String id, String url){
       Photo photo = new Photo(creation_date,false, url);
@@ -161,28 +157,5 @@ public class Firebase {
       builder.create().show();
    }
 
-   private void subirFichero(Uri fichero, String referencia) {
-      final StorageReference ref = storageRef.child(referencia);
-      UploadTask uploadTask = ref.putFile(fichero);
-      Task<Uri> urlTask = uploadTask.continueWithTask(new Continuation<UploadTask.
-              TaskSnapshot, Task<Uri>>() {
-         @Override public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
-            if (!task.isSuccessful()) throw task.getException();
-         return ref.getDownloadUrl();
-         }
-
-      }).addOnCompleteListener(new OnCompleteListener<Uri>() {
-         @Override public void onComplete(@NonNull Task<Uri> task) {
-            if (task.isSuccessful()){
-               Uri downloadUri = task.getResult();
-               Log.e("Almacenamiento", "URL: " + downloadUri.toString());
-               //registrarImagen(""Subida Subida porpor MóvilMóvil"", downloadUri.toString());
-            }
-            else{
-               Log.e("Almacenamiento", "ERROR subiendo fichero");
-            }
-         }
-      });
-   }
 
 }

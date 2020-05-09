@@ -7,14 +7,17 @@
     <color name="black">#000000</color>
     <color name="colorCeleste">#2196F3</color>
     <color name="colorGold">#B77A5015</color>
-
+<!-- Colores de las ETIQUETAS -->
     <color name="colorLabel1">#E91E63</color>
-    <color name="colorLabel2">#B77A5015</color>
-    <color name="colorLabel3">#2196F3</color>
-    <color name="colorLabel4">#B77A5015</color>
-    <color name="colorLabel5">#2196F3</color>
-    <color name="colorLabel6">#B77A5015</color>
-    <color name="colorLabel7">#2196F3</color>
-    <color name="colorLabel8">#B77A5015</color>
+    <color name="colorLabel2">#3F51B5</color>
+    <color name="colorLabel3">#009688</color>
+    <color name="colorLabel4">#E4FB8C00</color>
+    <color name="colorLabel5">#07A9F8</color>
+    <color name="colorLabel6">#91F12D</color>
+    <color name="colorLabel7">#8E24AA</color>
+    <color name="colorLabel8">#FBDE5B</color>
+    <color name="colorLabel9">#C3430A09</color>
+
+    <color name="colorFondoBotonLabel">#75434040</color>
 
 </resources>
