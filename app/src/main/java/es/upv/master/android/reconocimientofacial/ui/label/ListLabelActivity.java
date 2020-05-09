@@ -16,7 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import es.upv.master.android.reconocimientofacial.R;
-import es.upv.master.android.reconocimientofacial.data.Firebase;
+import es.upv.master.android.reconocimientofacial.data.DataBase;
 import es.upv.master.android.reconocimientofacial.model.Photo;
 
 //import static es.upv.master.android.reconocimientofacial.ui.take_photo.RecognitionActivity.nombreDirectorioFotos;
@@ -25,7 +25,7 @@ public class ListLabelActivity extends AppCompatActivity {
     private TabLayout tabs;
     private RecyclerView recyclerView;
     FirebaseFirestore db;
-    public static AdaptadorPhotos adaptador;
+    public static ListLabelAdapter adaptador;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,14 +76,14 @@ public class ListLabelActivity extends AppCompatActivity {
     }
 
     public void listarFotos(boolean isEvaluated){
-        Query query = db.collection(Firebase.COLLECTION)
+        Query query = db.collection(DataBase.COLLECTION)
                 .whereEqualTo("labelled",isEvaluated);
 
         FirestoreRecyclerOptions<Photo> opciones = new FirestoreRecyclerOptions
                 .Builder<Photo>()
                 .setQuery(query, Photo.class)
                 .build();
-        adaptador = new AdaptadorPhotos(this, opciones);
+        adaptador = new ListLabelAdapter(this, opciones);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adaptador);
 

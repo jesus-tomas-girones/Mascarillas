@@ -190,10 +190,10 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
          if(circle[i].getVisibility() == View.VISIBLE){
             Map<String, Object> dataLabel = new HashMap<>();
             int index = i+1;
-            dataLabel.put("label"+index, listLabel.get(i));
+            dataLabel.put("name"+index, listLabel.get(i));
             dataLabel.put("x"+index ,getX(circle[i]));
             dataLabel.put("y"+index,getY(circle[i]));
-            //dataLabel.put("number_label", index);
+            dataLabel.put("number_label", index);
             PhotoRef.update(dataLabel);
             //PhotoRef.collection("LABEL").document("label"+index).set(dataLabel);
          }

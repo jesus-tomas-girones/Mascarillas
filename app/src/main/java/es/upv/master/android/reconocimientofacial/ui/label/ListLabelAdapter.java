@@ -18,8 +18,8 @@ import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class AdaptadorPhotos extends
-        FirestoreRecyclerAdapter<Photo, AdaptadorPhotos.ViewHolder> {
+public class ListLabelAdapter extends
+        FirestoreRecyclerAdapter<Photo, ListLabelAdapter.ViewHolder> {
     private Context context;
     protected View.OnClickListener onClickListener;
     /**
@@ -28,14 +28,14 @@ public class AdaptadorPhotos extends
      *
      * @param options
      */
-    public AdaptadorPhotos(Context context,
-                           @NonNull FirestoreRecyclerOptions<Photo> options) {
+    public ListLabelAdapter(Context context,
+                            @NonNull FirestoreRecyclerOptions<Photo> options) {
         super(options);
         this. context = context.getApplicationContext();
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull AdaptadorPhotos.ViewHolder holder,
+    protected void onBindViewHolder(@NonNull ListLabelAdapter.ViewHolder holder,
                                     int position, @NonNull Photo photo) {
         CharSequence prettyTime = DateUtils.getRelativeDateTimeString( context, photo.getCreation_date(),
                 DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
@@ -50,12 +50,12 @@ public class AdaptadorPhotos extends
 
     @NonNull
     @Override
-    public AdaptadorPhotos.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                         int viewType) {
+    public ListLabelAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                          int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.photo_list, parent, false);
         view.setOnClickListener(onClickListener);
-        return new AdaptadorPhotos.ViewHolder(view);
+        return new ListLabelAdapter.ViewHolder(view);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
