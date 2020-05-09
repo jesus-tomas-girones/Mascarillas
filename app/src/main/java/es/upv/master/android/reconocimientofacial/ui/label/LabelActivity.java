@@ -3,6 +3,7 @@ package es.upv.master.android.reconocimientofacial.ui.label;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -10,11 +11,18 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +31,7 @@ import java.util.Map;
 import java.util.jar.Attributes;
 
 import es.upv.master.android.reconocimientofacial.R;
+import es.upv.master.android.reconocimientofacial.data.Firebase;
 
 import static es.upv.master.android.reconocimientofacial.data.Firebase.COLLECTION;
 
@@ -63,16 +72,9 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
               .placeholder(R.drawable.mask_frontal)
               .into(photo);
 
-      //layoutCircles = new LinearLayout(this);
-
    }
 
    private TextView getCircle() {
-/*      switch (nLabel) {
-         case "1": return circle1;
-         case "2": return circle2;
-         case "3": return circle3;
-      }*/
       int index = Integer.valueOf(nLabel) - 1;
       for(int i=0; i<circle.length; i++){
          if(index == i) return circle[i];
@@ -144,16 +146,37 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
 //      setCircle(circle1, -1, -1);
 //      setCircle(circle2, 0.9f, 0.9f); //NO FUNCIONA
 //      setCircle(circle3, -1, -1);
+       getLabels();
+   }
+
+   public void getLabels(){
+       FirebaseFirestore db = FirebaseFirestore.getInstance();
+       DocumentReference PhotoRef =  db.collection(COLLECTION).document(idPhoto);
+       for(int i=0; i < circle.length; i++){
+           final int index = i+1;
+           Task<DocumentSnapshot> query = PhotoRef.get()
+                   .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                   if (task.isSuccessful()) {
+                        Double x = task.getResult().getDouble("x"+index);
+                        Double y = task.getResult().getDouble("y"+index);
+                       Log.d("ETIQUETAS","x" + index + ": " + x + ",y" + index + ": " + y);
+                       if(x != null && y != null){
+                           double valorX =  x;
+                           double valorY = y;
+                           setCircle(circle[index-1],(float)valorX,(float)valorY);
+                       }
+                   }
+               }
+           });
+
+
+       }
    }
 
    @Override
    protected void onPause() {
-/*      float x1 = getX(circle1);
-      float y1 = getY(circle1);
-      float x2 = getX(circle2);
-      float y2 = getY(circle2);
-      float x3 = getX(circle3);
-      float y3 = getY(circle3);*/
       //Guardamos los valores en la base de datos
       //saveLabels();
       saveLabels();
@@ -167,10 +190,10 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
          if(circle[i].getVisibility() == View.VISIBLE){
             Map<String, Object> dataLabel = new HashMap<>();
             int index = i+1;
-            dataLabel.put("label"+index, listLabel.get(i));
+            dataLabel.put("name"+index, listLabel.get(i));
             dataLabel.put("x"+index ,getX(circle[i]));
             dataLabel.put("y"+index,getY(circle[i]));
-            dataLabel.put("number_laber", index);
+            dataLabel.put("number_label", index);
             PhotoRef.update(dataLabel);
             //PhotoRef.collection("LABEL").document("label"+index).set(dataLabel);
          }
@@ -181,7 +204,6 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    public void listLabels(){
       int[] labelResources = {R.string.label_1, R.string.label_2,  R.string.label_3, R.string.label_4, R.string.label_5,
               R.string.label_6, R.string.label_7, R.string.label_8, R.string.label_9};
-      String[] list= new String[9];
       listLabel = new ArrayList<String>();
       for(int i=0; i < labelResources.length; i++){
          String label = getResources().getString(labelResources[i]);
