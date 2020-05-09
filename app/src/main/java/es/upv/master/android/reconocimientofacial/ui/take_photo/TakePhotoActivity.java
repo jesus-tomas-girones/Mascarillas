@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,7 +19,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -32,44 +29,28 @@ import es.upv.master.android.reconocimientofacial.FaceGraphic;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.camera.CameraSource;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
-import com.google.android.gms.vision.text.TextRecognizer;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
-import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import es.upv.master.android.reconocimientofacial.camera.CameraSourcePreview;
 import es.upv.master.android.reconocimientofacial.camera.PhotoRotation;
 import es.upv.master.android.reconocimientofacial.camera.GraphicOverlay;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static es.upv.master.android.reconocimientofacial.data.Firebase.subirFotos;
+import static es.upv.master.android.reconocimientofacial.data.DataBase.subirFotos;
 import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.CaraGirada;
 import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.TypeCamera;
 import static es.upv.master.android.reconocimientofacial.ui.take_photo.ShowPhotoActivity.TypePhoto;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.resize;
 import static es.upv.master.android.reconocimientofacial.camera.PhotoRotation.rotateImage;
-import static es.upv.master.android.reconocimientofacial.data.Firebase.registrarFoto;
-
-import es.upv.master.android.reconocimientofacial.data.Firebase;
 
 
 public class TakePhotoActivity extends AppCompatActivity {

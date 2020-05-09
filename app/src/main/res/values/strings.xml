@@ -25,7 +25,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="btn_continuar">Aceptar</string>
     <!--Menú MainActivity -->
     <string name="menu_preferencias">Preferencias</string>
-    <string name="menu_modo_evaluador">Pasar Modo Evaluador</string>
+    <string name="menu_modo_evaluador">Pasar Modo Etiquetador</string>
     <!--Snackbar de RecognitionActivity - -->
     <string name="snackbar_try_mach_face">Intenta coincidir tu cara con la imagen</string>
     <string name="snackbar_error">ERROR INESPERADO</string>
@@ -40,8 +40,8 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="msg_login_evaluator">Ingresa tu contraseña</string>
 
     <!-- Tab EvaluadorActivity     -->
-    <string name="tab_lista_evaluados">Lista Evaluados</string>
-    <string name="tab_lista_sin_evaluar">Lista Sin Evaluar</string>
+    <string name="tab_lista_evaluados">Lista Etiquetados</string>
+    <string name="tab_lista_sin_evaluar">Lista Sin Etiquetar</string>
 
     <!-- Tipos de Problemas Fotos     -->
     <string name="label_1">No simétrica</string>

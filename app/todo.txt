@@ -11,6 +11,11 @@ Pendientes:
 //TODO Fijar proporciones de la imagen de la máscara ()
 //TODO Cambiar la imagen ()
 //TODO invertir la foto de perfíl del usuario (depende mucho de la cámara)
-//TODO definir color de fondo de botón en etiquetas en recursos y que sea más oscuro
+//TODO definir color para botón seleccionado
 
-
+//TODO Eliminar etiquetas si no están seleccinadas
+//TODO En listado poner las más recientes arriba
+//TODO en listado quitar "Etiquetado: ..." y poner la lista de etiquetas que se han marcado.
+//TODO en LabelActivity poner botón en barra de acciones de cancelar (una cruz), para salir sin guardar.
+//TODO en LabelActivity poner botón en barra de acciones de pasar a siguiente (flecha), para pasar a evaluar siguiente foto. Otra alternativa es el gesto de desplazar con el dedo.
+//TODO (Jesús) Inicar en mensaje inicial, la lista de errores y que se pide añadir fotos con errores
