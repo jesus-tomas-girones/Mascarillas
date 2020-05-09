@@ -52,9 +52,10 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_label);
       photo = findViewById(R.id.photo);
-      //
+      //Inicializo todos los círculos
       int circlesID[] = {R.id.txv_label1, R.id.txv_label2, R.id.txv_label3, R.id.txv_label4, R.id.txv_label5,
               R.id.txv_label6, R.id.txv_label7, R.id.txv_label8, R.id.txv_label9};
+
       for(int i=0; i<circle.length; i++){
          circle[i] = findViewById(circlesID[i]);
       }
@@ -178,7 +179,6 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    @Override
    protected void onPause() {
       //Guardamos los valores en la base de datos
-      //saveLabels();
       saveLabels();
       super.onPause();
    }
