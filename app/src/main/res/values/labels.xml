@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="labels">
+        <item>@string/label_1</item>
+        <item>@string/label_2</item>
+        <item>@string/label_3</item>
+        <item>@string/label_4</item>
+        <item>@string/label_5</item>
+        <item>@string/label_6</item>
+        <item>@string/label_7</item>
+        <item>@string/label_8</item>
+        <item>@string/label_9</item>
+    </string-array>
+</resources>

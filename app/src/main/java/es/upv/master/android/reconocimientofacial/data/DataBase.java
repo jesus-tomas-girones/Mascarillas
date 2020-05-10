@@ -187,40 +187,6 @@ public class DataBase {
       photoRef.update(dataLabel);
    }
 
-   public static void loadLabelsToPreference(final Context context, String id) {
-      DocumentReference PhotoRef = getCollectionReferencePhotos().document(id);
-      preferencesLabels = context.getSharedPreferences(
-              "es.upv.master.android.reconocimientofacial.labels", MODE_PRIVATE);
-      for (int i = 0; i < 9; i++) {
-         descargandoDatos = true;
-         final int index = i + 1;
-         Task<DocumentSnapshot> query = PhotoRef.get()
-                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       if (task.isSuccessful()) {
-                          String label = task.getResult().getString("label"+index);
-                          if(label != null){
-                             double x = task.getResult().getDouble("x" + index);
-                             double y = task.getResult().getDouble("y" + index);
-
-                             SharedPreferences.Editor editor = preferencesLabels.edit();
-                             editor.putFloat("x" + index, (float) x);
-                             editor.putFloat("y" + index, (float) y);
-                             editor.putString("label"+ index, label);
-                             editor.putInt("indexLabel"+ index, index);
-                             editor.commit();
-                          }
-                       }
-                       if(index==9){
-                          descargandoDatos = false;
-                       }
-                    }
-                 });
-      }
-
-   }
-
 
    public static CollectionReference getCollectionReferencePhotos(){
       return FirebaseFirestore.getInstance().collection(COLLECTION);

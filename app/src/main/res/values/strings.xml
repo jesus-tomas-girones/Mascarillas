@@ -43,6 +43,10 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="tab_lista_evaluados">Lista Etiquetados</string>
     <string name="tab_lista_sin_evaluar">Lista Sin Etiquetar</string>
 
+    <!-- menu label    -->
+    <string name="menu_label_cerrar">Salir</string>
+    <string name="menu_label_siguiente">Siguiente</string>
+
     <!-- Tipos de Problemas Fotos     -->
     <string name="label_1">No simétrica</string>
     <string name="label_2">Mal extendida</string>

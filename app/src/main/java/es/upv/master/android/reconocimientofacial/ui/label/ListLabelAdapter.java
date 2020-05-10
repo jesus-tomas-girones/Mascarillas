@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.model.Photo;
@@ -17,10 +18,20 @@ import es.upv.master.android.reconocimientofacial.model.Photo;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import static es.upv.master.android.reconocimientofacial.data.DataBase.getCollectionReferencePhotos;
 
 public class ListLabelAdapter extends
         FirestoreRecyclerAdapter<Photo, ListLabelAdapter.ViewHolder> {
     private Context context;
+    String labels = "";
     protected View.OnClickListener onClickListener;
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
@@ -35,18 +46,39 @@ public class ListLabelAdapter extends
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull ListLabelAdapter.ViewHolder holder,
+    protected void onBindViewHolder(@NonNull final ListLabelAdapter.ViewHolder holder,
                                     int position, @NonNull Photo photo) {
         CharSequence prettyTime = DateUtils.getRelativeDateTimeString( context, photo.getCreation_date(),
                 DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
         holder.creation_date.setText(prettyTime);
-        holder.etiqueta.setText("Etiquetado: "+ photo.isLabelled());
+        //Si la foto está etiquetada muestra todas las etiquetas caso contrario "false"
+        boolean islabelled = photo.isLabelled();
+        if(islabelled){
+            String labels = loadLabelsName( position);
+            holder.etiqueta.setText("Etiquetado: "+labels);
+
+        }else{
+            holder.etiqueta.setText("Etiquetado: "+ photo.isLabelled());
+        }
+
         Glide.with(context)
             .load(photo.getUrlPhoto())
             .placeholder(R.drawable.mask_frontal)
             .into(holder.imgPhoto);
         holder.itemView.setOnClickListener(onClickListener);
     }
+
+    public String loadLabelsName(int position){
+        String labels = "";
+        for(int i =1; i<=9; i++){
+            String label = (String) getSnapshots().getSnapshot(position).get("label"+i);
+            if(label != null){
+                labels = labels +i+" "+label + ". ";
+            }
+        }
+        return labels;
+    }
+
 
     @NonNull
     @Override

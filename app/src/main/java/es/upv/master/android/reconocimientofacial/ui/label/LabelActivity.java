@@ -26,6 +26,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
 
@@ -154,23 +157,27 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    }
 
    public void saveLabels() {
+      Map<String, Object> etiquetas = new HashMap<>();
       for (int i = 0; i < circle.length; i++) {
          //Me aseguro que la foto ha sido etiquetada para eliminar las etiquetas
          if(islabelledPhoto)
          DataBase.releaseLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
          if (circle[i].getVisibility() == View.VISIBLE) {
-            DataBase.updateLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
+           DataBase.updateLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
          }
       }
+      DocumentReference photoRef = getCollectionReferencePhotos().document(idPhoto);
+      photoRef.update(etiquetas);
+
    }
 
    //TODO tratar de pasar esta funcion a Firebase con parámetros adecuados
    //No funciona en Database porque la función loadLabels es asíncrono y al recuperar los datos, no me llegan
    public void loadLabels(String id) {
-      DocumentReference PhotoRef = getCollectionReferencePhotos().document(id);
+      DocumentReference photoRef = getCollectionReferencePhotos().document(id);
       for (int i = 0; i < 9; i++) {
       final int index = i + 1;
-      Task<DocumentSnapshot> query = PhotoRef.get()
+      Task<DocumentSnapshot> query = photoRef.get()
               .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                  @Override
                  public void onComplete(@NonNull Task<DocumentSnapshot> task) {
