@@ -26,7 +26,6 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 
-import static es.upv.master.android.reconocimientofacial.data.DataBase.getCollectionReferencePhotos;
 
 public class ListLabelAdapter extends
         FirestoreRecyclerAdapter<Photo, ListLabelAdapter.ViewHolder> {

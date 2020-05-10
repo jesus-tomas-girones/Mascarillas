@@ -166,6 +166,7 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                        while (!label.get(i).equals(listLabel[nLabel])) nLabel++;
                        if (nLabel > listLabel.length) {
                           Log.e("MASCARILLA", "Etiqueta '" + label.get(i) + "' n encontrada en lista de etiquetas actual"); //DOTO crear costante TAG
+                          //TODO Poner un Toast
                        } else {
                           setCircle(circle[nLabel], x.get(i).floatValue(), y.get(i).floatValue());
                        }

@@ -41,7 +41,7 @@ import es.upv.master.android.reconocimientofacial.model.Photo;
 import static android.content.Context.MODE_PRIVATE;
 
 public class DataBase {
-   static public final String COLLECTION = "photosPrueba"; //"Mascarillas"
+   static public final String COLLECTION = "photos"; //"Mascarillas"
    static public String REFERENCE_FIRESTORAGE = "gs://mascarilla-440d4.appspot.com";
    public static StorageReference storageRef;
    public static SharedPreferences preferencesLabels = null;
@@ -242,7 +242,7 @@ public class DataBase {
          dataLabel.put("y" + (i+1), FieldValue.delete());
       }
       dataLabel.put("labelled", true);
-      dataLabel.put("number_label", label.size()); //TODO quitar si es sencillo
+//      dataLabel.put("number_label", label.size()); //TODO quitar si es sencillo
       photoRef.update(dataLabel);
    }
 
@@ -261,7 +261,7 @@ public class DataBase {
                           List<String> label = new ArrayList<>();
                           List<Double> x = new ArrayList<>();
                           List<Double> y = new ArrayList<>();
-                          for (int i = 1; i <= 9; i++) {
+                          for (int i = 1; i <= 99; i++) {  //TODO pasar a costante
                              String s = task.getResult().getString("label"+i);
                              if (s != null) {
                                 label.add(s);
