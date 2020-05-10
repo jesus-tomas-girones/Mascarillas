@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import es.upv.master.android.reconocimientofacial.R;
@@ -168,7 +169,7 @@ public class DataBase {
       builder.create().show();
    }
 
-   public static void updateLabel(String id, String label, float x, float y, int indexLabel) {
+/*   public static void updateLabel(String id, String label, float x, float y, int indexLabel) {
       DocumentReference photoRef = getCollectionReferencePhotos().document(id);
       Map<String, Object> dataLabel = new HashMap<>();
          dataLabel.put("label" + indexLabel, label);
@@ -185,11 +186,96 @@ public class DataBase {
          dataLabel.put("x" + indexLabel, FieldValue.delete());
          dataLabel.put("y" + indexLabel, FieldValue.delete());
       photoRef.update(dataLabel);
-   }
+   }*/
+
+/*   public static void loadLabelsToPreference(final Context context, String id) {
+      DocumentReference PhotoRef = FirebaseFirestore.getInstance().collection(COLLECTION).document(id);
+      preferencesLabels = context.getSharedPreferences(
+              "es.upv.master.android.reconocimientofacial.labels", MODE_PRIVATE);
+      for (int i = 0; i < 9; i++) {
+         descargandoDatos = true;
+         final int index = i + 1;
+         Task<DocumentSnapshot> query = PhotoRef.get()
+                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                       if (task.isSuccessful()) {
+                          String label = task.getResult().getString("label"+index);
+                          if(label != null){
+                             double x = task.getResult().getDouble("x" + index);
+                             double y = task.getResult().getDouble("y" + index);
+
+                             SharedPreferences.Editor editor = preferencesLabels.edit();
+                             editor.putFloat("x" + index, (float) x);
+                             editor.putFloat("y" + index, (float) y);
+                             editor.putString("label"+ index, label);
+                             editor.putInt("indexLabel"+ index, index);
+                             editor.commit();
+                          }
+                       }
+                       if(index==9){
+                          descargandoDatos = false;
+                       }
+                    }
+                 });
+      }
+
+   }*/
 
 
-   public static CollectionReference getCollectionReferencePhotos(){
+/*   public static CollectionReference getCollectionReferencePhotos(){
       return FirebaseFirestore.getInstance().collection(COLLECTION);
+   }*/
+
+   public static void updateLabels(String id, List<String> label, List<Float> x, List<Float> y) {
+      FirebaseFirestore db = FirebaseFirestore.getInstance();
+      DocumentReference photoRef = db.collection(COLLECTION).document(id);
+      Map<String, Object> dataLabel = new HashMap<>();
+      for (int i=0; i<label.size(); i++){
+         dataLabel.put("label" + (i+1), label.get(i));
+         dataLabel.put("x" + (i+1), x.get(i));
+         dataLabel.put("y" + (i+1), y.get(i));
+      }
+      for (int i=label.size(); i<9; i++){
+         dataLabel.put("label" + (i+1), FieldValue.delete());
+         dataLabel.put("x" + (i+1), FieldValue.delete());
+         dataLabel.put("y" + (i+1), FieldValue.delete());
+      }
+      dataLabel.put("labelled", true);
+      dataLabel.put("number_label", label.size()); //TODO quitar si es sencillo
+      photoRef.update(dataLabel);
    }
+
+   public interface LoadLabelsListener {
+      void onLoad(List<String> label, List<Double> x, List<Double> y);
+   }
+   // Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+   public static void loadLabels(String id, final LoadLabelsListener listener) {
+      FirebaseFirestore db = FirebaseFirestore.getInstance();
+      DocumentReference photoRef = db.collection(COLLECTION).document(id);
+      Task<DocumentSnapshot> query = photoRef.get()
+                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                       if (task.isSuccessful()) {
+                          List<String> label = new ArrayList<>();
+                          List<Double> x = new ArrayList<>();
+                          List<Double> y = new ArrayList<>();
+                          for (int i = 1; i <= 9; i++) {
+                             String s = task.getResult().getString("label"+i);
+                             if (s != null) {
+                                label.add(s);
+                                x.add(task.getResult().getDouble("x"+i));
+                                y.add(task.getResult().getDouble("y"+i));
+                             }
+                          }
+                          listener.onLoad(label, x, y);
+                       } else {
+                         Log.e("MASCARILLA", "Error en Database.loadLabels() accediendo a Firebase"); //DOTO crear costante TAG
+                       }
+                    }
+                 });
+   }
+
 
 }

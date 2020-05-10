@@ -1,11 +1,7 @@
 package es.upv.master.android.reconocimientofacial.ui.label;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Point;
-import android.nfc.Tag;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,28 +9,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
-
-import static es.upv.master.android.reconocimientofacial.data.DataBase.descargandoDatos;
-import static es.upv.master.android.reconocimientofacial.data.DataBase.getCollectionReferencePhotos;
-import static es.upv.master.android.reconocimientofacial.data.DataBase.preferencesLabels;
 
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -55,7 +40,7 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       //Cargamos los parámetros
       Bundle extras = getIntent().getExtras();
       idPhoto = extras.getString("Id_photo");
-      islabelledPhoto = extras.getBoolean("Labelled_photo",false);
+      islabelledPhoto = extras.getBoolean("Labelled_photo", false);
       String uriPhoto = extras.getString("URL_photo");
 
       photo = findViewById(R.id.photo);
@@ -97,9 +82,9 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       ClickedButtonStyle(v);
    }
 
-   public void ClickedButtonStyle(View v){
-      if(selectedButton != v.findViewWithTag(v.getTag())){
-         if(selectedButton != null)
+   public void ClickedButtonStyle(View v) {
+      if (selectedButton != v.findViewWithTag(v.getTag())) {
+         if (selectedButton != null)
             selectedButton.setAlpha(1);
          selectedButton = v.findViewWithTag(v.getTag());
          selectedButton.setAlpha(0.7f);
@@ -144,40 +129,57 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    protected void onResume() {
       super.onResume();
       //Pregunto si la foto ha sido etiquetada
-      if(islabelledPhoto)
+      if (islabelledPhoto)
          loadLabels(idPhoto);
    }
 
    @Override
    protected void onPause() {
       //Guardamos los valores en la base de datos
-      if(!exitWithoutSaving)
-      saveLabels();
+      if (!exitWithoutSaving)
+         saveLabels();
       super.onPause();
    }
 
-   public void saveLabels() {
-      Map<String, Object> etiquetas = new HashMap<>();
-      for (int i = 0; i < circle.length; i++) {
-         //Me aseguro que la foto ha sido etiquetada para eliminar las etiquetas
-         if(islabelledPhoto)
-         DataBase.releaseLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
+   //Crea listas con etiquetas y sus coordenadas para llamar a DataBase.updateLabel() y almacenarlas
+   void saveLabels() {
+      List<String> label = new ArrayList<>();
+      List<Float> x = new ArrayList<>();
+      List<Float> y = new ArrayList<>();
+      for (int i = 0; i < listLabel.length; i++) {
          if (circle[i].getVisibility() == View.VISIBLE) {
-           DataBase.updateLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
+            label.add(listLabel[i]);
+            x.add(getX(circle[i]));
+            y.add(getY(circle[i]));
          }
       }
-      DocumentReference photoRef = getCollectionReferencePhotos().document(idPhoto);
-      photoRef.update(etiquetas);
-
+      DataBase.updateLabels(idPhoto, label, x, y);
    }
 
-   //TODO tratar de pasar esta funcion a Firebase con parámetros adecuados
-   //No funciona en Database porque la función loadLabels es asíncrono y al recuperar los datos, no me llegan
+   //Lee listas con etiquetas de DataBase.loadLabels() y situa los Circle[] según lo leido
+   void loadLabels(String id) {
+      DataBase.loadLabels(id, new DataBase.LoadLabelsListener() {
+                 @Override
+                 public void onLoad(List<String> label, List<Double> x, List<Double> y) {
+                    for (int i = 0; i < label.size(); i++) {
+                       int nLabel = 0;
+                       while (!label.get(i).equals(listLabel[nLabel])) nLabel++;
+                       if (nLabel > listLabel.length) {
+                          Log.e("MASCARILLA", "Etiqueta '" + label.get(i) + "' n encontrada en lista de etiquetas actual"); //DOTO crear costante TAG
+                       } else {
+                          setCircle(circle[nLabel], x.get(i).floatValue(), y.get(i).floatValue());
+                       }
+                    }
+                 }
+              });
+   }
+
+/*   //No funciona en Database porque la función loadLabels es asíncrono y al recuperar los datos, no me llegan
    public void loadLabels(String id) {
-      DocumentReference photoRef = getCollectionReferencePhotos().document(id);
+      DocumentReference PhotoRef = getCollectionReferencePhotos().document(id);
       for (int i = 0; i < 9; i++) {
       final int index = i + 1;
-      Task<DocumentSnapshot> query = photoRef.get()
+      Task<DocumentSnapshot> query = PhotoRef.get()
               .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                  @Override
                  public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -192,39 +194,36 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                  }
               });
           }
-   }
+   }*/
 
-   @Override
-   public boolean onCreateOptionsMenu(Menu menu) {
-      // Inflate the menu; this adds items to the action bar if it is present.
-      getMenuInflater().inflate(R.menu.menu_label, menu);
-      return true;
-      //return super.onCreateOptionsMenu(menu);
-   }
+         @Override
+         public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_label, menu);
+            return true;
+            //return super.onCreateOptionsMenu(menu);
+         }
 
-   @Override
-   public boolean onOptionsItemSelected(MenuItem item) {
-      // Handle action bar item clicks here. The action bar will
-      // automatically handle clicks on the Home/Up button, so long
-      // as you specify a parent activity in AndroidManifest.xml.
-      int id = item.getItemId();
+         @Override
+         public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle action bar item clicks here. The action bar will
+            // automatically handle clicks on the Home/Up button, so long
+            // as you specify a parent activity in AndroidManifest.xml.
+            int id = item.getItemId();
 
-      //noinspection SimplifiableIfStatement
-      if (id == R.id.menu_label_salir) {
-         exitWithoutSaving = true;
-         finish();
-         return true;
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.menu_label_salir) {
+               exitWithoutSaving = true;
+               finish();
+               return true;
+            } else if (id == R.id.menu_label_siguiente) {
+               //alertDialogLogin();
+               Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
+               startActivity(i);
+               return true;
+            }
+            return super.onOptionsItemSelected(item);
+         }
+
+
       }
-
-      else if (id == R.id.menu_label_siguiente) {
-         //alertDialogLogin();
-         Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
-         startActivity(i);
-         return true;
-      }
-
-      return super.onOptionsItemSelected(item);
-   }
-
-
-}
