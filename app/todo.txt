@@ -8,14 +8,14 @@ Establecer un tamaño a las fotos 450x600 (x)
 
 Pendientes:
 //TODO Definir una sola resolución de las fotos (No sé si te refieres con resolución a que todas las fotos tenga el mismo tamaño)
-//TODO Fijar proporciones de la imagen de la máscara ()
+//TODO Fijar proporciones de la imagen de la máscara (x)
 //TODO Cambiar la imagen ()
 //TODO invertir la foto de perfíl del usuario (depende mucho de la cámara)
-//TODO definir color para botón seleccionado
+//TODO definir color para botón seleccionado (x)
 
 //TODO Eliminar etiquetas si no están seleccinadas
-//TODO En listado poner las más recientes arriba
-//TODO en listado quitar "Etiquetado: ..." y poner la lista de etiquetas que se han marcado.
+//TODO En listado poner las más recientes arriba (x)
+//TODO en listado quitar "Etiquetado: ..." y poner la lista de etiquetas que se han marcado. (x)
 //TODO en LabelActivity poner botón en barra de acciones de cancelar (una cruz), para salir sin guardar.
 //TODO en LabelActivity poner botón en barra de acciones de pasar a siguiente (flecha), para pasar a evaluar siguiente foto. Otra alternativa es el gesto de desplazar con el dedo.
 //TODO (Jesús) Inicar en mensaje inicial, la lista de errores y que se pide añadir fotos con errores

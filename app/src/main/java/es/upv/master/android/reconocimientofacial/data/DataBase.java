@@ -45,6 +45,7 @@ public class DataBase {
    public static StorageReference storageRef;
    public static SharedPreferences preferencesLabels = null;
    public static boolean subiendoDatos = false;
+   public static boolean descargandoDatos = false;
 
    public static void registrarFoto(final long creation_date, final String id, String url) {
       Photo photo = new Photo(creation_date, false, url);
@@ -191,6 +192,7 @@ public class DataBase {
       preferencesLabels = context.getSharedPreferences(
               "es.upv.master.android.reconocimientofacial.labels", MODE_PRIVATE);
       for (int i = 0; i < 9; i++) {
+         descargandoDatos = true;
          final int index = i + 1;
          Task<DocumentSnapshot> query = PhotoRef.get()
                  .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -208,8 +210,10 @@ public class DataBase {
                              editor.putString("label"+ index, label);
                              editor.putInt("indexLabel"+ index, index);
                              editor.commit();
-
                           }
+                       }
+                       if(index==9){
+                          descargandoDatos = false;
                        }
                     }
                  });
@@ -217,40 +221,6 @@ public class DataBase {
 
    }
 
-   public static ArrayList<Double> loadLabels(String id, final int index) {
-      DocumentReference PhotoRef = getCollectionReferencePhotos().document(id);
-      final Map<String, Object>  dataLabel = new HashMap<>();
-//      for (int i = 0; i < 9; i++) {
- //        final int index = i + 1;
-      final ArrayList<Double> listPoint = new ArrayList<Double>();
-         Task<DocumentSnapshot> query = PhotoRef.get()
-                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       if (task.isSuccessful()) {
-                          String label = task.getResult().getString("label"+index);
-                          if(label != null){
-                            // Map<String, Object> dataLabel = new HashMap<>();
-                             Double x = task.getResult().getDouble("x" + index);
-                             Double y = task.getResult().getDouble("y" + index);
-                             dataLabel.put("label"+ index, label);
-                             dataLabel.put("x" + index, task.getResult().getDouble("x" + index));
-                             dataLabel.put("y" + index, task.getResult().getDouble("y" + index));
-                             dataLabel.put("indexLabel", index);
-                             //listLabels.add(dataLabel);
-                             Log.d("ETIQUETAS", "x" + index + ": " + x + ",y" + index + ": " + y);
-                             System.out.println( "x" + index + ": " + x + ",y" + index + ": " + y);
-                             listPoint.add(x);
-                             listPoint.add(y);
-                          }
-                       }
-                    }
-                 });
- //     }
-
-      System.out.println(dataLabel.get(0));
-      return listPoint;
-   }
 
    public static CollectionReference getCollectionReferencePhotos(){
       return FirebaseFirestore.getInstance().collection(COLLECTION);

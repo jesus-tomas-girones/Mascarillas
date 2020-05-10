@@ -1,10 +1,14 @@
 package es.upv.master.android.reconocimientofacial.ui.label;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -21,19 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.jar.Attributes;
 
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
 
+import static es.upv.master.android.reconocimientofacial.data.DataBase.descargandoDatos;
 import static es.upv.master.android.reconocimientofacial.data.DataBase.getCollectionReferencePhotos;
 import static es.upv.master.android.reconocimientofacial.data.DataBase.preferencesLabels;
 
@@ -45,7 +41,9 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    String nLabel = "1";
    ImageView photo;
    TextView[] circle = new TextView[9];
-   ArrayList<String> listLabel;
+   String[] listLabel;
+   Button selectedButton;
+   boolean exitWithoutSaving = false;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +64,8 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       for (int i = 0; i < circle.length; i++) {
          circle[i] = findViewById(circlesID[i]);
       }
-      //TODO cambiar - Cargo todos las etiquetas
-      listLabels();
+      //Cargo todos las etiquetas desde un recurso array en el array listlabel
+      listLabel = getResources().getStringArray(R.array.labels);
 
       //Cargamos la imagen de URL
       Glide.with(getApplicationContext())
@@ -76,14 +74,13 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
               .into(photo);
    }
 
-   //TODO Esta función ya no es necesario, reemplazar por circle[Integer.valueOf(nLabel)]
+   //TODO Esta función ya no es necesario, reemplazar por circle[Integer.valueOf(nLabel)],
+   // java no me permite asignarle directamente un elemento del array porque es un valor primitivo, "Error Variable mighr no been initialized"
    private TextView getCircle() {
       int index = Integer.valueOf(nLabel) - 1;
-      for (int i = 0; i < circle.length; i++) {
-         if (index == i) return circle[i];
-      }
-      return null;
+      return circle[index];
    }
+
 
    public void onButtonClic(View v) {
       nLabel = (String) v.getTag();
@@ -92,6 +89,17 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       TextView circle = getCircle();
       if (circle.getVisibility() == View.VISIBLE) {
          circle.setVisibility(View.INVISIBLE);
+      }
+      //Cambio el alfa de los botones pulsados
+      ClickedButtonStyle(v);
+   }
+
+   public void ClickedButtonStyle(View v){
+      if(selectedButton != v.findViewWithTag(v.getTag())){
+         if(selectedButton != null)
+            selectedButton.setAlpha(1);
+         selectedButton = v.findViewWithTag(v.getTag());
+         selectedButton.setAlpha(0.7f);
       }
    }
 
@@ -132,6 +140,7 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    @Override
    protected void onResume() {
       super.onResume();
+      //Pregunto si la foto ha sido etiquetada
       if(islabelledPhoto)
          loadLabels(idPhoto);
    }
@@ -139,36 +148,24 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    @Override
    protected void onPause() {
       //Guardamos los valores en la base de datos
+      if(!exitWithoutSaving)
       saveLabels();
       super.onPause();
    }
 
    public void saveLabels() {
       for (int i = 0; i < circle.length; i++) {
-         //Primero me aseguro que la foto ha sido etiquetada para eliminar las etiquetas
+         //Me aseguro que la foto ha sido etiquetada para eliminar las etiquetas
          if(islabelledPhoto)
-         DataBase.releaseLabel(idPhoto, listLabel.get(i), getX(circle[i]), getY(circle[i]), i+1);
+         DataBase.releaseLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
          if (circle[i].getVisibility() == View.VISIBLE) {
-            DataBase.updateLabel(idPhoto, listLabel.get(i), getX(circle[i]), getY(circle[i]), i+1);
+            DataBase.updateLabel(idPhoto, listLabel[i], getX(circle[i]), getY(circle[i]), i+1);
          }
       }
    }
 
    //TODO tratar de pasar esta funcion a Firebase con parámetros adecuados
-   //No funciona porque loadLabelsToPreference es asíncrono
-   public void addLabelsToPhotos() {
-      DataBase.loadLabelsToPreference(getApplicationContext(), idPhoto);
-      for(int i = 1; i<=9; i++){
-         String label = preferencesLabels.getString("label"+i, null);
-         if(label != null){
-            double x = preferencesLabels.getFloat("x"+i, 0);
-            double y = preferencesLabels.getFloat("y"+i, 0);
-            setCircle(circle[i-1], (float)x, (float)y);
-         }
-      }
-
-   }
-
+   //No funciona en Database porque la función loadLabels es asíncrono y al recuperar los datos, no me llegan
    public void loadLabels(String id) {
       DocumentReference PhotoRef = getCollectionReferencePhotos().document(id);
       for (int i = 0; i < 9; i++) {
@@ -190,28 +187,37 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
           }
    }
 
-   //TODO OPCIONAL Podrías eliminar el método listLabels() si defines directamente un recurso array.string:
-/* https://stackoverflow.com/questions/23321449/how-to-list-android-string-resources-in-an-array
-   define your array in array.xml:
-   <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string-array name="labels">
-        <item>barba</item>
-        <item>goma mal ...</item>
-    </string-array>
- </resources>
-   then try this:
-   String[] listLabel = getResources().getStringArray(
-           R.array.dlabels);
-   */
-   public void listLabels() {
-      int[] labelResources = {R.string.label_1, R.string.label_2, R.string.label_3, R.string.label_4, R.string.label_5,
-              R.string.label_6, R.string.label_7, R.string.label_8, R.string.label_9};
-      listLabel = new ArrayList<String>();
-      for (int i = 0; i < labelResources.length; i++) {
-         String label = getResources().getString(labelResources[i]);
-         listLabel.add(i, label);
-      }
+   @Override
+   public boolean onCreateOptionsMenu(Menu menu) {
+      // Inflate the menu; this adds items to the action bar if it is present.
+      getMenuInflater().inflate(R.menu.menu_label, menu);
+      return true;
+      //return super.onCreateOptionsMenu(menu);
    }
+
+   @Override
+   public boolean onOptionsItemSelected(MenuItem item) {
+      // Handle action bar item clicks here. The action bar will
+      // automatically handle clicks on the Home/Up button, so long
+      // as you specify a parent activity in AndroidManifest.xml.
+      int id = item.getItemId();
+
+      //noinspection SimplifiableIfStatement
+      if (id == R.id.menu_label_salir) {
+         exitWithoutSaving = true;
+         finish();
+         return true;
+      }
+
+      else if (id == R.id.menu_label_siguiente) {
+         //alertDialogLogin();
+         Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
+         startActivity(i);
+         return true;
+      }
+
+      return super.onOptionsItemSelected(item);
+   }
+
 
 }

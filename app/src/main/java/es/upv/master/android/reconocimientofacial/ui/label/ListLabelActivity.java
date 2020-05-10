@@ -77,8 +77,8 @@ public class ListLabelActivity extends AppCompatActivity {
 
     public void listarFotos(boolean isEvaluated){
         Query query = db.collection(DataBase.COLLECTION)
-                .whereEqualTo("labelled",isEvaluated);
-
+                .whereEqualTo("labelled",isEvaluated)
+                .orderBy("creation_date", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Photo> opciones = new FirestoreRecyclerOptions
                 .Builder<Photo>()
                 .setQuery(query, Photo.class)

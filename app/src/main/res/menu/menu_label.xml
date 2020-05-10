@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/empty"
+        android:icon="@drawable/ic_menu"
+        android:orderInCategory="101"
+        app:showAsAction="always">
+        <menu>
+            <item
+                android:id="@+id/menu_label_siguiente"
+                android:orderInCategory="100"
+                android:title="@string/menu_label_siguiente"
+                android:icon="@drawable/ic_next"
+                app:showAsAction="always|withText" />
+            <item
+                android:id="@+id/menu_label_salir"
+                android:orderInCategory="100"
+                android:title="@string/menu_label_cerrar"
+                android:icon="@drawable/ic_close"
+                app:showAsAction="always|withText" />
+        </menu>
+    </item>
+
+
+</menu>
