@@ -41,12 +41,11 @@ import es.upv.master.android.reconocimientofacial.model.Photo;
 import static android.content.Context.MODE_PRIVATE;
 
 public class DataBase {
-   static public final String COLLECTION = "photos"; //"Mascarillas"
+   static public final String COLLECTION = "photos";
+   private static final int MAX_LABELS = 100;
    static public String REFERENCE_FIRESTORAGE = "gs://mascarilla-440d4.appspot.com";
    public static StorageReference storageRef;
-   public static SharedPreferences preferencesLabels = null;
    public static boolean subiendoDatos = false;
-   public static boolean descargandoDatos = false;
 
    public static void registrarFoto(final long creation_date, final String id, String url) {
       Photo photo = new Photo(creation_date, false, url);
@@ -144,8 +143,6 @@ public class DataBase {
          String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo);
          showDialogFireStorage(activity, title, mensaje);
       }
-
-
    }
 
    public static void showDialogFireStorage(final Activity activity, final String title,
@@ -242,7 +239,7 @@ public class DataBase {
          dataLabel.put("y" + (i+1), FieldValue.delete());
       }
       dataLabel.put("labelled", true);
-//      dataLabel.put("number_label", label.size()); //TODO quitar si es sencillo
+//      dataLabel.put("number_label", label.size());
       photoRef.update(dataLabel);
    }
 
@@ -261,7 +258,7 @@ public class DataBase {
                           List<String> label = new ArrayList<>();
                           List<Double> x = new ArrayList<>();
                           List<Double> y = new ArrayList<>();
-                          for (int i = 1; i <= 99; i++) {  //TODO pasar a costante
+                          for (int i = 1; i <= MAX_LABELS; i++) {
                              String s = task.getResult().getString("label"+i);
                              if (s != null) {
                                 label.add(s);

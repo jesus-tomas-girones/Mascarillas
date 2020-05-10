@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -72,8 +73,6 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
 
    public void onButtonClic(View v) {
       nLabel = (String) v.getTag();
-      //TODO Marcar botón como seleccionado, por ejemplo cam
-      //Marcar resto de botones como NO seleccionado
       TextView circle = getCircle();
       if (circle.getVisibility() == View.VISIBLE) {
          circle.setVisibility(View.INVISIBLE);
@@ -165,8 +164,9 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                        int nLabel = 0;
                        while (!label.get(i).equals(listLabel[nLabel])) nLabel++;
                        if (nLabel > listLabel.length) {
-                          Log.e("MASCARILLA", "Etiqueta '" + label.get(i) + "' n encontrada en lista de etiquetas actual"); //DOTO crear costante TAG
-                          //TODO Poner un Toast
+                          String s= "Etiqueta '" + label.get(i) + "' n encontrada en lista de etiquetas actual";
+                          Log.e("MASCARILLA", s); //DOTO crear costante TAG
+                          Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();
                        } else {
                           setCircle(circle[nLabel], x.get(i).floatValue(), y.get(i).floatValue());
                        }
