@@ -10,7 +10,8 @@ Definir color para botón seleccionado (x)
 En listado poner las más recientes arriba (x)
 En listado quitar "Etiquetado: ..." y poner la lista de etiquetas que se han marcado.
 En LabelActivity poner botón en barra de acciones de cancelar (una cruz), para salir sin guardar.
-En LabelActivity poner botón en barra de acciones de pasar a siguiente (flecha), para pasar a evaluar siguiente foto. Otra alternativa es el gesto de desplazar con el dedo.
+En LabelActivity poner botón en barra de acciones de pasar a siguiente (flecha), para pasar a evaluar siguiente foto. (x)
+Otra alternativa es el gesto de desplazar con el dedo.
 Inicar en mensaje inicial, la lista de errores y que se pide añadir fotos con errores
 
 Pendientes:

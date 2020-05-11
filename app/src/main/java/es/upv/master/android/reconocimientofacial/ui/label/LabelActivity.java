@@ -200,6 +200,9 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                this.setResult(Activity.RESULT_OK, i);
                finish();
                return true;
+            }else if (id == R.id.menu_label_aceptar) {
+               finish();
+               return true;
             }
             return super.onOptionsItemSelected(item);
          }
