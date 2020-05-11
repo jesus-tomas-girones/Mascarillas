@@ -50,15 +50,7 @@ public class ListLabelAdapter extends
         CharSequence prettyTime = DateUtils.getRelativeDateTimeString( context, photo.getCreation_date(),
                 DateUtils.SECOND_IN_MILLIS, DateUtils.WEEK_IN_MILLIS, 0);
         holder.creation_date.setText(prettyTime);
-        //Si la foto está etiquetada muestra todas las etiquetas caso contrario "false"
-        boolean islabelled = photo.isLabelled();
-        if(islabelled){
-            String labels = loadLabelsName( position);
-            holder.etiqueta.setText("Etiquetado: "+labels);
-
-        }else{
-            holder.etiqueta.setText("Etiquetado: "+ photo.isLabelled());
-        }
+        holder.etiqueta.setText("Etiquetado: "+ photo.isLabelled());
 
         Glide.with(context)
             .load(photo.getUrlPhoto())
@@ -67,16 +59,6 @@ public class ListLabelAdapter extends
         holder.itemView.setOnClickListener(onClickListener);
     }
 
-    public String loadLabelsName(int position){
-        String labels = "";
-        for(int i =1; i<=9; i++){
-            String label = (String) getSnapshots().getSnapshot(position).get("label"+i);
-            if(label != null){
-                labels = labels +i+" "+label + ". ";
-            }
-        }
-        return labels;
-    }
 
 
     @NonNull

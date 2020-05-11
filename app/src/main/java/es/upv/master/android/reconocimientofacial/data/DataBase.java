@@ -166,59 +166,6 @@ public class DataBase {
       builder.create().show();
    }
 
-/*   public static void updateLabel(String id, String label, float x, float y, int indexLabel) {
-      DocumentReference photoRef = getCollectionReferencePhotos().document(id);
-      Map<String, Object> dataLabel = new HashMap<>();
-         dataLabel.put("label" + indexLabel, label);
-         dataLabel.put("x" + indexLabel, x);
-         dataLabel.put("y" + indexLabel, y);
-         dataLabel.put("labelled", true);
-      photoRef.update(dataLabel);
-   }
-
-   public static void releaseLabel(String id, String label, float x, float y, int indexLabel) {
-      DocumentReference photoRef = getCollectionReferencePhotos().document(id);
-      Map<String, Object> dataLabel = new HashMap<>();
-         dataLabel.put("label" + indexLabel, FieldValue.delete());
-         dataLabel.put("x" + indexLabel, FieldValue.delete());
-         dataLabel.put("y" + indexLabel, FieldValue.delete());
-      photoRef.update(dataLabel);
-   }*/
-
-/*   public static void loadLabelsToPreference(final Context context, String id) {
-      DocumentReference PhotoRef = FirebaseFirestore.getInstance().collection(COLLECTION).document(id);
-      preferencesLabels = context.getSharedPreferences(
-              "es.upv.master.android.reconocimientofacial.labels", MODE_PRIVATE);
-      for (int i = 0; i < 9; i++) {
-         descargandoDatos = true;
-         final int index = i + 1;
-         Task<DocumentSnapshot> query = PhotoRef.get()
-                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                       if (task.isSuccessful()) {
-                          String label = task.getResult().getString("label"+index);
-                          if(label != null){
-                             double x = task.getResult().getDouble("x" + index);
-                             double y = task.getResult().getDouble("y" + index);
-
-                             SharedPreferences.Editor editor = preferencesLabels.edit();
-                             editor.putFloat("x" + index, (float) x);
-                             editor.putFloat("y" + index, (float) y);
-                             editor.putString("label"+ index, label);
-                             editor.putInt("indexLabel"+ index, index);
-                             editor.commit();
-                          }
-                       }
-                       if(index==9){
-                          descargandoDatos = false;
-                       }
-                    }
-                 });
-      }
-
-   }*/
-
 
 /*   public static CollectionReference getCollectionReferencePhotos(){
       return FirebaseFirestore.getInstance().collection(COLLECTION);

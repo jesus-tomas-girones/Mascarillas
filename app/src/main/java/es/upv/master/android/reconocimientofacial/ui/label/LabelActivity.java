@@ -175,28 +175,6 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
               });
    }
 
-/*   //No funciona en Database porque la función loadLabels es asíncrono y al recuperar los datos, no me llegan
-   public void loadLabels(String id) {
-      DocumentReference PhotoRef = getCollectionReferencePhotos().document(id);
-      for (int i = 0; i < 9; i++) {
-      final int index = i + 1;
-      Task<DocumentSnapshot> query = PhotoRef.get()
-              .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                 @Override
-                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                       String label = task.getResult().getString("label"+index);
-                       if(label != null){
-                          double x = task.getResult().getDouble("x" + index);
-                          double y = task.getResult().getDouble("y" + index);
-                          setCircle(circle[index-1], (float)x, (float)y);
-                       }
-                    }
-                 }
-              });
-          }
-   }*/
-
          @Override
          public boolean onCreateOptionsMenu(Menu menu) {
             // Inflate the menu; this adds items to the action bar if it is present.
