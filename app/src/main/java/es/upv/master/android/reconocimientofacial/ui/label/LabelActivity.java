@@ -22,8 +22,6 @@ import java.util.List;
 
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
-import static es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity.REQUEST_CODE_NEXT_PHOTO;
-import static es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity.adaptador;
 
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
