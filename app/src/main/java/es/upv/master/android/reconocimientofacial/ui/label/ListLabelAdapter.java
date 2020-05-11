@@ -32,6 +32,8 @@ public class ListLabelAdapter extends
     private Context context;
     String labels = "";
     protected View.OnClickListener onClickListener;
+    protected View.OnClickListener clickListener;
+
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
      * FirestoreRecyclerOptions} for configuration options.
@@ -55,7 +57,6 @@ public class ListLabelAdapter extends
         if(islabelled){
             String labels = loadLabelsName( position);
             holder.etiqueta.setText(labels);
-
         }else{
         holder.etiqueta.setText("");
         }
@@ -71,7 +72,7 @@ public class ListLabelAdapter extends
         for(int i =1; i<=9; i++){
             String label = (String) getSnapshots().getSnapshot(position).get("label"+i);
             if(label != null){
-                labels = labels +i+" "+label + "\n";
+                labels = labels +label + "\n";
             }
         }
         return labels;
@@ -102,5 +103,15 @@ public class ListLabelAdapter extends
     public void setOnItemClickListener(View.OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
+
+    public void setOnClickListener(View.OnClickListener clickListener){
+        this.clickListener = clickListener;
+    }
+
+    public String getKey(int pos) {
+        final String id = super.getSnapshots().getSnapshot(pos).getId();
+        return id;
+    }
+
 
 }

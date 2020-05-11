@@ -1,5 +1,6 @@
 package es.upv.master.android.reconocimientofacial.ui.label;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import java.util.List;
 
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
+import static es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity.REQUEST_CODE_NEXT_PHOTO;
+import static es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity.adaptador;
 
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -196,11 +199,11 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                return true;
             } else if (id == R.id.menu_label_siguiente) {
                Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
-               startActivity(i);
+               this.setResult(Activity.RESULT_OK, i);
+               finish();
                return true;
             }
             return super.onOptionsItemSelected(item);
          }
-
 
       }

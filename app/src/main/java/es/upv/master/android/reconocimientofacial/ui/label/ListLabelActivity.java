@@ -1,11 +1,15 @@
 package es.upv.master.android.reconocimientofacial.ui.label;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,13 +23,15 @@ import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
 import es.upv.master.android.reconocimientofacial.model.Photo;
 
-//import static es.upv.master.android.reconocimientofacial.ui.take_photo.RecognitionActivity.nombreDirectorioFotos;
 
 public class ListLabelActivity extends AppCompatActivity {
     private TabLayout tabs;
     private RecyclerView recyclerView;
     FirebaseFirestore db;
     public static ListLabelAdapter adaptador;
+    public static final int REQUEST_CODE_NEXT_PHOTO = 1;
+    public static int position;
+    FirestoreRecyclerOptions<Photo> opciones;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +85,7 @@ public class ListLabelActivity extends AppCompatActivity {
         Query query = db.collection(DataBase.COLLECTION)
                 .orderBy("creation_date", Query.Direction.DESCENDING)
                 .whereEqualTo("labelled",isEvaluated);
-        FirestoreRecyclerOptions<Photo> opciones = new FirestoreRecyclerOptions
+        opciones = new FirestoreRecyclerOptions
                 .Builder<Photo>()
                 .setQuery(query, Photo.class)
                 .build();
@@ -90,21 +96,39 @@ public class ListLabelActivity extends AppCompatActivity {
         adaptador.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int position = recyclerView.getChildAdapterPosition(view);
+                position = recyclerView.getChildAdapterPosition(view);
                 Photo photoItem = (Photo) adaptador.getItem(position);
                 String idPhoto = adaptador.getSnapshots().getSnapshot(position).getId();
-                String type = String.valueOf(idPhoto.charAt(idPhoto.length()-1));
-                Log.d("Nombre Photo", "id: "+idPhoto+" Tipo: "+type);
-                Context context = getApplicationContext();
-                Intent intent = new Intent(context, LabelActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent intent = new Intent(ListLabelActivity.this, LabelActivity.class);
+                //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("Id_photo", idPhoto);
-                //intent.putExtra("Id_photoLabel", photoItem.getCreation_date());
                 intent.putExtra("Labelled_photo", photoItem.isLabelled());
                 intent.putExtra("URL_photo", photoItem.getUrlPhoto());
-                context.startActivity(intent);
+                //getApplicationContext().startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_NEXT_PHOTO);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == REQUEST_CODE_NEXT_PHOTO  && resultCode  == RESULT_OK) {
+
+                Photo photoItem = (Photo) opciones.getSnapshots().get(position);
+                String idPhoto = adaptador.getSnapshots().getSnapshot(position).getId();
+                //String id = adaptador.getKey(position);
+                //Photo photoItem = (Photo) adaptador.getItem(position);
+                Context context = getApplicationContext();
+                Intent intent = new Intent(context, LabelActivity.class);
+                intent.putExtra("Id_photo", idPhoto);
+                intent.putExtra("Labelled_photo", photoItem.isLabelled());
+                intent.putExtra("URL_photo", photoItem.getUrlPhoto());
+                //context.startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_NEXT_PHOTO);
+            }
 
     }
+
+
 }
