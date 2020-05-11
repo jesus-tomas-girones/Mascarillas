@@ -75,6 +75,7 @@ public class ListLabelAdapter extends
                 labels = labels +label + "\n";
             }
         }
+        if (labels.isEmpty()) labels = "CORECTA";
         return labels;
     }
 
