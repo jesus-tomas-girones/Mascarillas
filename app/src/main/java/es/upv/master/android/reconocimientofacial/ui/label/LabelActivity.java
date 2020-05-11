@@ -25,7 +25,7 @@ import es.upv.master.android.reconocimientofacial.data.DataBase;
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
 
-   String idPhoto;  //id de la colección a modificar
+   String idPhoto;  //id del documento a modificar
    boolean islabelledPhoto;
    String nLabel = "1";
    ImageView photo;
@@ -63,13 +63,12 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
               .into(photo);
    }
 
-   //TODO Esta función ya no es necesario, reemplazar por circle[Integer.valueOf(nLabel)],
+   // Esta función ya no es necesario, reemplazar por circle[Integer.valueOf(nLabel)],
    // java no me permite asignarle directamente un elemento del array porque es un valor primitivo, "Error Variable mighr no been initialized"
    private TextView getCircle() {
       int index = Integer.valueOf(nLabel) - 1;
       return circle[index];
    }
-
 
    public void onButtonClic(View v) {
       nLabel = (String) v.getTag();
@@ -78,10 +77,10 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
          circle.setVisibility(View.INVISIBLE);
       }
       //Cambio el alfa de los botones pulsados
-      ClickedButtonStyle(v);
+      setClickedButtonStyle(v);
    }
 
-   public void ClickedButtonStyle(View v) {
+   public void setClickedButtonStyle(View v) {
       if (selectedButton != v.findViewWithTag(v.getTag())) {
          if (selectedButton != null)
             selectedButton.setAlpha(1);

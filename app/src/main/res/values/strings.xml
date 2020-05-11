@@ -10,7 +10,10 @@
     <string name="msgBienvenida">
 Esta aplicación tiene como objetivo recopilar una base de datos que permita implementar medidas para mejorar el ajuste de las mascarillas.\n\n
 Solo tienes que ponerte una mascarilla y tomarte una foto de cara y otra de perfil.\n\n
-Muchas gracias por colaborar con la Universidad Politécnica de Valencia y el Instituto … en este proyecto.\n\n
+Puedes tomarte varias fotos, tanto con la mascarilla bien colocada como mal.
+Los problemas que trataremos de detectar son:
+No simétrica, Mal extendida, Debajo puente nasal, Gafas por debajo, Ajuste Cuello, Barba, Mal ajuste nasal, Goma mal colocada y Hueco Lateral.\n\n
+Muchas gracias por colaborar con la Universidad Politécnica de Valencia, FISABIO y el Hospital General d’Ontinyent en este proyecto.\n\n
 PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anónima y solo serán utilizadas para los fines descritos en el proyecto.
     </string>
     <string name="error_upload_photos">Error: Ha ocurrido un error inesperado al compartir las fotos. ¿Desea intentar otra vez?</string>

@@ -172,6 +172,15 @@ public class DataBase {
    }*/
 
    public static void updateLabels(String id, List<String> label, List<Float> x, List<Float> y) {
+      /**
+       * Escribe en el documento id de la colección photos, un conjunto de etiquetas y sus coordenadas.
+       * Las etiquetas no indicadas son eliminadas del documento.
+       *
+       * @param id nombre del documento a escribir sus etiquetas
+       * @param label lista con las etiquetas
+       * @param label lista con la coordenada x de cada una de las etiquetas
+       * @param label lista con la coordenada y de cada una de las etiquetas
+       */
       FirebaseFirestore db = FirebaseFirestore.getInstance();
       DocumentReference photoRef = db.collection(COLLECTION).document(id);
       Map<String, Object> dataLabel = new HashMap<>();
@@ -193,8 +202,14 @@ public class DataBase {
    public interface LoadLabelsListener {
       void onLoad(List<String> label, List<Double> x, List<Double> y);
    }
-   // Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+
    public static void loadLabels(String id, final LoadLabelsListener listener) {
+      /**
+       * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+       *
+       * @param id nombre del documento a leer sus etiquetas
+       * @param listener escuchador que llamaremos cuando se tengan las etiquetas
+       */
       FirebaseFirestore db = FirebaseFirestore.getInstance();
       DocumentReference photoRef = db.collection(COLLECTION).document(id);
       Task<DocumentSnapshot> query = photoRef.get()
