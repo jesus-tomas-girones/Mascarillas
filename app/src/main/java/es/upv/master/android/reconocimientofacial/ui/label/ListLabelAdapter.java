@@ -71,9 +71,10 @@ public class ListLabelAdapter extends
         for(int i =1; i<=9; i++){
             String label = (String) getSnapshots().getSnapshot(position).get("label"+i);
             if(label != null){
-                labels = labels +i+" "+label + "\n";
+                labels = labels +label + "\n";
             }
         }
+        if (labels.isEmpty()) labels = "CORECTA";
         return labels;
     }
 

@@ -102,9 +102,11 @@ public class ListLabelActivity extends AppCompatActivity {
                 //intent.putExtra("Id_photoLabel", photoItem.getCreation_date());
                 intent.putExtra("Labelled_photo", photoItem.isLabelled());
                 intent.putExtra("URL_photo", photoItem.getUrlPhoto());
-                context.startActivity(intent);
+//                startActivityForResult(intent,1234);
+                startActivity(intent);
             }
         });
-
     }
+
+
 }
