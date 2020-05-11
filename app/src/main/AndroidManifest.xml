@@ -22,7 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DetailsPhotoActivity"></activity>
         <!-- android:theme="@style/AppTheme.NoActionBar" -->
         <activity
             android:name=".ui.MainActivity"

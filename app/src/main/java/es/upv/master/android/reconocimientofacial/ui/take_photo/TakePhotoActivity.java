@@ -24,8 +24,6 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-//import com.google.android.gms.vision.CameraSource;
-import es.upv.master.android.reconocimientofacial.FaceGraphic;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.camera.CameraSource;
 
@@ -402,7 +400,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     private class GraphicFaceTrackerFactory implements MultiProcessor.Factory<Face> {
         @Override
         public Tracker<Face> create(Face face) {
-            return new GraphicFaceTracker(mGraphicOverlay);
+            return new GraphicFaceTracker();
         }
     }
 
@@ -411,30 +409,20 @@ public class TakePhotoActivity extends AppCompatActivity {
      * associated face overlay.
      */
     private class GraphicFaceTracker extends Tracker<Face> {
-        private GraphicOverlay mOverlay;
-        private FaceGraphic mFaceGraphic;
-
-        GraphicFaceTracker(GraphicOverlay overlay) {
-            mOverlay = overlay;
-            mFaceGraphic = new FaceGraphic(overlay);
-        }
+        GraphicFaceTracker() { }
 
         /**
          * Start tracking the detected face instance within the face overlay.
          */
         @Override
         public void onNewItem(int faceId, Face item) {
-            mFaceGraphic.setId(faceId);
         }
 
         /**
          * Update the position/characteristics of the face within the overlay.
          */
         @Override
-        public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
-            //mOverlay.add(mFaceGraphic);
-            mFaceGraphic.updateFace(face);
-        }
+        public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) { }
 
         /**
          * Hide the graphic when the corresponding face was not detected.  This can happen for
@@ -442,9 +430,7 @@ public class TakePhotoActivity extends AppCompatActivity {
          * view).
          */
         @Override
-        public void onMissing(FaceDetector.Detections<Face> detectionResults) {
-            //mOverlay.remove(mFaceGraphic);
-        }
+        public void onMissing(FaceDetector.Detections<Face> detectionResults) { }
 
         /**
          * Called when the face is assumed to be gone for good. Remove the graphic annotation from
@@ -452,7 +438,6 @@ public class TakePhotoActivity extends AppCompatActivity {
          */
         @Override
         public void onDone() {
-            mOverlay.remove(mFaceGraphic);
         }
     }
 
