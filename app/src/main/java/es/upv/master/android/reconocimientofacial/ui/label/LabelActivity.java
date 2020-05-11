@@ -196,7 +196,6 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                finish();
                return true;
             } else if (id == R.id.menu_label_siguiente) {
-               //alertDialogLogin();
                Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                startActivity(i);
                return true;
