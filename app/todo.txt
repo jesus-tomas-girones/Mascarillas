@@ -23,6 +23,6 @@ Pendientes:
 //TODO opción bajar colección photos a fichero .csv (solo etiquetados)
     id, fecha, urlphoto, label1, x1, y1, label2, x2, y2, label3, x3, y3,...
 //TODO opción bajar fotos a memoria SD pero solo las últimas (guardar en preferencia última fecha de bajada)
-
+//TODO en listado se carga una foto muy alta antes de cargar la foto real
 
 

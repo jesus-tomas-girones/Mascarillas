@@ -1,6 +1,5 @@
 package es.upv.master.android.reconocimientofacial.ui.label;
 
-
 import android.content.Context;
 import android.text.format.DateUtils;
 import android.view.LayoutInflater;
@@ -18,14 +17,6 @@ import es.upv.master.android.reconocimientofacial.model.Photo;
 import com.bumptech.glide.Glide;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-
 
 public class ListLabelAdapter extends
         FirestoreRecyclerAdapter<Photo, ListLabelAdapter.ViewHolder> {
@@ -75,7 +66,7 @@ public class ListLabelAdapter extends
                 labels = labels +label + "\n";
             }
         }
-        if (labels.isEmpty()) labels = "CORECTA";
+        if (labels.isEmpty()) labels = "CORRECTA"; //TODO pasar a recurso
         return labels;
     }
 
