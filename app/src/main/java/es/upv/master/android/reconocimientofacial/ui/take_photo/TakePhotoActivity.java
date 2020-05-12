@@ -58,7 +58,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     private CameraSource mCameraSource = null;
     private CameraSourcePreview mPreview;
     private GraphicOverlay mGraphicOverlay;
-    private Button btnFlas, btnGirarCamara, btnTakePhoto;
+    private Button btnFlas;
     private ImageView girarMascara;
     private static final int RC_HANDLE_GMS = 9001;
     // permission request codes need to be < 256
@@ -89,8 +89,6 @@ public class TakePhotoActivity extends AppCompatActivity {
         miniaturaFotoF = (ImageView)findViewById(R.id.imgPhotoF);
         miniaturaFotoP = (ImageView)findViewById(R.id.imgPhotoP);
         btnFlas = (Button) findViewById(R.id.btn_flash);
-        btnGirarCamara = (Button) findViewById(R.id.btn_girarCamara);
-        btnTakePhoto = (Button) findViewById(R.id.btn_takePhoto);
 
         // Check for the camera permission before accessing the camera.  If the
         // permission is not granted yet, request permission.

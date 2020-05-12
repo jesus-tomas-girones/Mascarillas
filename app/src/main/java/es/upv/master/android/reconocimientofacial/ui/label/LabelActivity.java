@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,6 +35,10 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
    String[] listLabel;
    Button selectedButton;
    boolean exitWithoutSaving = false;
+   //Variable que me permiten calcular la diferencia de desplazamiento
+   // en la acción onTouch para pasar a la siguiente foto
+   private float mX=0, mY=0;
+   private boolean tap=false;
 
    @Override
    protected void onCreate(Bundle savedInstanceState) {
@@ -92,12 +97,37 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
 
    @Override
    public boolean onTouch(View v, MotionEvent event) {
+      super.onTouchEvent(event);
+      float x = event.getX();
+      float y = event.getY();
+      switch (event.getAction()) {
+         case MotionEvent.ACTION_DOWN:
+            tap=true;
+            break;
+         case MotionEvent.ACTION_MOVE:
+            float dx = Math.abs(x - mX);
+            float dy = Math.abs(y - mY);
+            if (dy>6 && dx>6){
+               actionNextPhoto();
+            }else if(dy>1 && dx>1){
+               tap=false;
+            }
+            break;
+         case MotionEvent.ACTION_UP:
+            if (tap){
+               addLabel(v, event );
+            }
+      }
+      mX=x; mY=y;
+      return true;
+   }
+
+   private void addLabel(View v, MotionEvent event ){
       TextView circle = getCircle();
       circle.setVisibility(View.VISIBLE);
       circle.setX(event.getX() - circle.getWidth() / 2);
       circle.setY(event.getY() - circle.getHeight() / 2);
       v.performClick();
-      return false;
    }
 
    private float getX(TextView circle) {
@@ -196,15 +226,19 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                finish();
                return true;
             } else if (id == R.id.menu_label_siguiente) {
-               Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
-               this.setResult(Activity.RESULT_OK, i);
-               finish();
+               actionNextPhoto();
                return true;
             }else if (id == R.id.menu_label_aceptar) {
                finish();
                return true;
             }
             return super.onOptionsItemSelected(item);
+         }
+
+         private void actionNextPhoto(){
+            Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
+            this.setResult(Activity.RESULT_OK, i);
+            finish();
          }
 
       }

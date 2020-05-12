@@ -16,8 +16,8 @@ Inicar en mensaje inicial, la lista de errores y que se pide añadir fotos con e
 
 Pendientes:
 //TODO invertir la foto de perfíl del usuario (depende mucho de la cámara)
-//TODO botón aceptar en LabelActivity
-//TODO pasar a la siguiente foto con un gesto en LabelActivity
+//TODO botón aceptar en LabelActivity (x)
+//TODO pasar a la siguiente foto con un gesto en LabelActivity (x)
 //TODO poner en preferenias un botón para descargar fotos y base de datos
 //TODO opción bajar fotos a memoria SD
 //TODO opción bajar colección photos a fichero .csv (solo etiquetados)
