@@ -2,6 +2,8 @@ package es.upv.master.android.reconocimientofacial.ui;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
+import es.upv.master.android.reconocimientofacial.PreferencesActivity;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.ui.take_photo.TakePhotoActivity;
 import es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity;
@@ -47,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_preferencia) {
-
+            Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
+            startActivity(i);
             return true;
         }
 

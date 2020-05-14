@@ -61,4 +61,19 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="label_7">Mal ajuste nasal</string>
     <string name="label_8">Goma mal colocada</string>
     <string name="label_9">Hueco Lateral</string>
+
+    <!-- Preference    -->
+    <string name="action_setting">Preferencias</string>
+    <string name="pref_remember_password">Recordar contraseña</string>
+    <string name="pref_summary_password">Guarda la clave de acceso de modo etiquetador</string>
+    <string name="pref_download_photo_and_data">Descargar fotos e información de etiquetas</string>
+    <string name="pref_summary_download_photo">Guarda las fotos etiquetadas a la memoría de tu móvil</string>
+    <string name="pref_download_photo">Bajar fotos al móvil</string>
+    <string name="pref_download_label">Bajar Etiquetas al móvil</string>
+    <string name="pref_summary_download_label">Guarda la información de las etiquetas al móvil en formato .csv</string>
+    <string name="pref_select_date">Seleccionar un rango de fecha para descargar</string>
+    <string name="pref_choose_date">Bajar Etiquetas al móvilr</string>
+    <string name="pref_summary_choose_date">Permite elegir la fecha inicial y final deseada para realizar descargas de fotos y/o etiquetas</string>
+    <string name="pref_register_download">Última descarga</string>
+    <string name="pref_summary_register_download">Foto/Etiqueta</string>
 </resources>

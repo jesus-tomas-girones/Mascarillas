@@ -32,4 +32,8 @@
         <item name="android:background">@drawable/border_button_inicio</item>
     </style>
 
+    <style name="dateTimePicker" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
 </resources>

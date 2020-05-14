@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -23,12 +24,22 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -201,6 +212,11 @@ public class DataBase {
 
    public interface LoadLabelsListener {
       void onLoad(List<String> label, List<Double> x, List<Double> y);
+      void onLoadPhotos(List<String> urls);
+   }
+
+   public interface LoadUrlPhotosListener{
+      void onLoadPhotos(List<String> urls);
    }
 
    public static void loadLabels(String id, final LoadLabelsListener listener) {
@@ -236,7 +252,62 @@ public class DataBase {
                  });
    }
 
+   public static void search(long creation_date){
+      FirebaseFirestore db = FirebaseFirestore.getInstance();
+      CollectionReference photosRef = db.collection(COLLECTION);
+      Query queryPhotos = photosRef.whereEqualTo("labelled", true)
+                                    .whereGreaterThanOrEqualTo("creation_date", creation_date);
 
+   }
 
+   public void downloadPhotosByDate(){
+      File localFile = null;
+      try {
+         localFile = File.createTempFile("image", "jpg");
+      }
+      catch (IOException e) {
+         e.printStackTrace();
+      }
+      final String path = localFile.getAbsolutePath();
+      Log.d("Almacenamiento Interno", "creando fichero: " + path);
+      StorageReference ficheroRef = storageRef.child("users/me/profile.png");
+
+      ficheroRef.getDownloadUrl().
+              addOnSuccessListener(new OnSuccessListener<Uri>(){
+                 @Override
+                 public void onSuccess(Uri uri) {
+
+                 }
+
+              }).addOnFailureListener(new OnFailureListener() {
+                  @Override
+                  public void onFailure(@NonNull Exception exception) {
+                     Log.e("Almacenamiento", "ERROR: bajando fichero");
+                  }
+              });
+   }
+
+   private static void downloadFile(String url, File outputFile) {
+      try {
+         URL u = new URL(url);
+         URLConnection conn = u.openConnection();
+         int contentLength = conn.getContentLength();
+
+         DataInputStream stream = new DataInputStream(u.openStream());
+
+         byte[] buffer = new byte[contentLength];
+         stream.readFully(buffer);
+         stream.close();
+
+         DataOutputStream fos = new DataOutputStream(new FileOutputStream(outputFile));
+         fos.write(buffer);
+         fos.flush();
+         fos.close();
+      } catch(FileNotFoundException e) {
+         return; // swallow a 404
+      } catch (IOException e) {
+         return; // swallow a 404
+      }
+   }
 
 }

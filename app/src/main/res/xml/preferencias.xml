@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preferencias_principal" >
+    <SwitchPreference
+        android:key="password"
+        android:title="@string/pref_remember_password"
+        android:summary="@string/pref_summary_password"
+        android:defaultValue="0"/>
+    <PreferenceCategory android:title="@string/pref_download_photo_and_data">
+        <ListPreference
+            android:key="download_photo"
+            android:title="@string/pref_download_photo"
+            android:summary="@string/pref_summary_download_photo"
+            android:entries="@array/control_dates"
+            android:entryValues="@array/control_dates_valores"
+            android:defaultValue="0"/>
+        <ListPreference
+            android:key="download_label"
+            android:summary="@string/pref_summary_download_label"
+            android:title="@string/pref_download_label"
+            android:entries="@array/control_dates"
+            android:entryValues="@array/control_dates_valores"
+            android:defaultValue="0"/>
+    </PreferenceCategory >
+    <PreferenceScreen
+        android:title="@string/pref_select_date"
+        android:summary="@string/pref_summary_choose_date">
+<!--        <EditTextPreference
+            android:key="pref_from_date"
+            android:title="Desde:"
+            android:summary="Fecha de inicio"
+            android:inputType="date"
+            android:defaultValue=" "/>
+        <EditTextPreference
+            android:key="pref_until_date"
+            android:title="Hasta:"
+            android:summary="Fecha final"
+            android:inputType="date"
+            android:defaultValue=" "/>-->
+        <es.upv.master.android.reconocimientofacial.DatePreference
+            android:key="pref_inicial_date"
+            android:title="Seleccionar fecha Inicial"
+            android:defaultValue="2014-08-01"
+            android:summary="2014-08-01"/>
+        <es.upv.master.android.reconocimientofacial.DatePreference
+            android:key="pref_final_date"
+            android:title="Seleccionar fecha Final"
+            android:defaultValue="2014-08-01"
+            android:summary="Ultima descarga: 2014-08-01"/>
+    </PreferenceScreen >
+    <EditTextPreference
+        android:key="register_download"
+        android:summary="@string/pref_summary_register_download"
+        android:title="@string/pref_register_download"
+        android:entries="@array/control_dates"
+        android:entryValues="@array/control_dates_valores"
+        android:defaultValue="0"/>
+
+</PreferenceScreen>
