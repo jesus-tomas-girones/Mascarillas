@@ -3,16 +3,21 @@ package es.upv.master.android.reconocimientofacial.data;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -22,9 +27,12 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
@@ -53,11 +61,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class DataBase {
    static public final String COLLECTION = "photos";
+   static public final String LOCAL_DIRECTORY = "Mascarillas";
    private static final int MAX_LABELS = 100;
    static public String REFERENCE_FIRESTORAGE = "gs://mascarilla-440d4.appspot.com";
    public static StorageReference storageRef;
-   public static boolean subiendoDatos = false;
-
+   public static boolean subiendoDatos, descargandoDatos = false;
+   public static final String TAG = "Mascarillas";
    public static void registrarFoto(final long creation_date, final String id, String url) {
       Photo photo = new Photo(creation_date, false, url);
       FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -152,12 +161,23 @@ public class DataBase {
          //Si ya está vacío el arreglo, se ha enviado todas las fotos
          String title = activity.getResources().getString(R.string.title_mostrar_dialogo);
          String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo);
-         showDialogFireStorage(activity, title, mensaje);
+         showDialogFireStorage(activity, title, mensaje, RETURN_MAIN_ACTIVITY_DIALOG);
       }
    }
 
+   public static final int RETURN_MAIN_ACTIVITY_DIALOG = 0;
+   public static final int DISMISS_DIALOG = 1;
+
    public static void showDialogFireStorage(final Activity activity, final String title,
-                                            final String message) {
+                                            final String message, final int type_action) {
+      /**
+       * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+       *
+       * @param title título de la notificación
+       * @param message mensaja de la notificación
+       * @param type_action tipo de acción ha realizar al pulsar el botón "OK",
+       *                    RETURN_MAIN_ACTIVITY_DIALOG = 0, DISMISS_DIALOG = 1
+       */
       AlertDialog.Builder builder = new AlertDialog.Builder(activity);
       builder.setTitle(title)
               .setMessage(message)
@@ -171,16 +191,20 @@ public class DataBase {
                       new DialogInterface.OnClickListener() {
                          @Override
                          public void onClick(DialogInterface dialog, int which) {
-                            activity.finish();
+                            switch (type_action){
+                               case RETURN_MAIN_ACTIVITY_DIALOG:
+                                  activity.finish();
+                                  break;
+                               case DISMISS_DIALOG:
+                                  dialog.dismiss();
+                                  break;
+                            }
+
                          }
                       });
       builder.create().show();
    }
 
-
-/*   public static CollectionReference getCollectionReferencePhotos(){
-      return FirebaseFirestore.getInstance().collection(COLLECTION);
-   }*/
 
    public static void updateLabels(String id, List<String> label, List<Float> x, List<Float> y) {
       /**
@@ -212,11 +236,10 @@ public class DataBase {
 
    public interface LoadLabelsListener {
       void onLoad(List<String> label, List<Double> x, List<Double> y);
-      void onLoadPhotos(List<String> urls);
    }
 
-   public interface LoadUrlPhotosListener{
-      void onLoadPhotos(List<String> urls);
+   public interface LoadLabelledPhotosListener{
+      void onLoadPhotos(List<Map<String, Object>> listLabelledPhotos);
    }
 
    public static void loadLabels(String id, final LoadLabelsListener listener) {
@@ -252,62 +275,144 @@ public class DataBase {
                  });
    }
 
-   public static void search(long creation_date){
+   public static void searchLabelledPhoto(long inicialDate, long finalDate,
+              final boolean withPhoto, final boolean withLabel, final LoadLabelledPhotosListener listener){
+      /**
+       * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+       *
+       * @param inicialDate
+       * @param finalDate
+       * @param withPhoto
+       * @param withLabel
+       */
       FirebaseFirestore db = FirebaseFirestore.getInstance();
-      CollectionReference photosRef = db.collection(COLLECTION);
-      Query queryPhotos = photosRef.whereEqualTo("labelled", true)
-                                    .whereGreaterThanOrEqualTo("creation_date", creation_date);
+      Query photosRef = db.collection(COLLECTION)
+                        .whereEqualTo("labelled", true)
+                        .whereGreaterThanOrEqualTo("creation_date", inicialDate);
+               if(finalDate>0)
+                  photosRef.whereLessThanOrEqualTo("creation_date", finalDate);
+                  photosRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                     @Override
+                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                           List<DocumentSnapshot> listLabels = task.getResult().getDocuments();
+                           List< Map<String, Object>> listLabelledPhotos = new ArrayList<Map<String, Object>>();
+                           for(DocumentSnapshot labelDocument : listLabels){
+                              Map<String, Object> labelData = new HashMap<>();
+                              //Añadir a la búsqueda las etiquetas de las fotos
+                              if(withLabel){
+                                 List<String> label = new ArrayList<>();
+                                 List<Double> x = new ArrayList<>();
+                                 List<Double> y = new ArrayList<>();
+                                 for (int i = 1; i <= MAX_LABELS; i++) {
+                                    String s = labelDocument.getString("label"+i);
+                                    if (s != null) {
+                                       label.add(s);
+                                       x.add(labelDocument.getDouble("x"+i));
+                                       y.add(labelDocument.getDouble("y"+i));
+                                    }
+                                 }
+                                 labelData.put("label", label);
+                                 labelData.put("x", x);
+                                 labelData.put("y", x);
+                              }
+                              //Añadir a la búsqueda las url de las fotos, podemos obtener también las id de los documentos
+                              //que corresponde al mismo nombre de las fotos en el firestorage
+                              if(withPhoto){
+                                 String urlPhoto = labelDocument.getString("urlPhoto");
+                                 labelData.put("uriPhoto", urlPhoto);
+                                 String idPhoto = labelDocument.getId();
+                                 labelData.put("idPhoto", idPhoto);
+                              }
 
+                              listLabelledPhotos.add(labelData);
+                           }
+                           listener.onLoadPhotos(listLabelledPhotos);
+                        } else {
+                           Log.e("MASCARILLA", "Error en Database.loadLabels() accediendo a Firebase"); //DOTO crear costante TAG
+                        }
+                     }
+                  });
    }
 
-   public void downloadPhotosByDate(){
-      File localFile = null;
-      try {
-         localFile = File.createTempFile("image", "jpg");
-      }
-      catch (IOException e) {
-         e.printStackTrace();
-      }
-      final String path = localFile.getAbsolutePath();
-      Log.d("Almacenamiento Interno", "creando fichero: " + path);
-      StorageReference ficheroRef = storageRef.child("users/me/profile.png");
+   public static void downloadPhotosById(final Activity activity, final ArrayList<String> list_id,
+                                         int initial_id, final ProgressDialog progressDownload){
 
-      ficheroRef.getDownloadUrl().
-              addOnSuccessListener(new OnSuccessListener<Uri>(){
+      //Si entra al if significa que la descarga ha finalizado, muestra un dialogo y vacía la lista de id
+      //para no concatenar nuevos elementos si se continúa realizando nuevas descargas
+      final int index_id = initial_id;
+      if(index_id >= list_id.size() && index_id != 0){
+         list_id.clear();
+         String title = activity.getResources().getString(R.string.title_mostrar_dialogo);
+         String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo_descargas_finalizada);
+         showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
+         return;
+      }
+
+      //Barra de progreso de descarga
+      final int id = index_id +1;
+      progressDownload.setTitle("Descargando... Foto" + id + "/" + list_id.size());
+      progressDownload.setMessage("Espere...");
+      progressDownload.setCancelable(true);
+      progressDownload.setCanceledOnTouchOutside(false);
+
+      //Creo el ruta y l directorio donde se almacenará las fotos y lo monto en MediaStore
+      // para que el usuario pueda observar el directorio desde galeria
+      File rootPath = new File(Environment.getExternalStorageDirectory(), LOCAL_DIRECTORY);
+      if(!rootPath.exists()) {
+         rootPath.mkdirs();
+      }
+      final File localFile = new File(rootPath,list_id.get(index_id)+".jpg");
+      ContentValues values = new ContentValues();
+      values.put(MediaStore.Images.Media.DATE_TAKEN, System.currentTimeMillis());
+      values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg");
+      values.put(MediaStore.MediaColumns.DATA, localFile.getAbsolutePath());
+      activity.getContentResolver().insert(
+              MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+      Log.d("Almacenamiento Interno", "creando fichero: " + rootPath.getAbsolutePath());
+
+      //Instancio FirebaseStorage y le paso la referencia URL donde debe apuntar para descargar las fotos
+      FirebaseStorage storage = FirebaseStorage.getInstance();
+      storageRef = storage.getReferenceFromUrl(REFERENCE_FIRESTORAGE);
+      StorageReference ficheroRef = storageRef.child(COLLECTION).child(list_id.get(index_id)+".jpg");
+
+      ficheroRef.getFile(localFile)
+              .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                  @Override
-                 public void onSuccess(Uri uri) {
+                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    if(taskSnapshot.getTask().isSuccessful()){
+                       Log.d(TAG, "Database.downloadPhotosById() - Derscarga de la imagen: "+list_id.get(index_id));
 
+                       if(index_id == list_id.size()-1){
+                          progressDownload.dismiss();
+                          descargandoDatos = false;
+                       }
+                       downloadPhotosById(activity, list_id, id, progressDownload);
+                    }
                  }
-
               }).addOnFailureListener(new OnFailureListener() {
                   @Override
-                  public void onFailure(@NonNull Exception exception) {
-                     Log.e("Almacenamiento", "ERROR: bajando fichero");
+                  public void onFailure(@NonNull Exception e) {
+                     Log.e("MASCARILLA", "Error en Database.downloadPhotosById() accediendo a Firestore"); //DOTO crear costante TAG
+                     String title = activity.getResources().getString(R.string.title_mostrar_dialogo_no_descargas);
+                     String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo_descargas_fallidas);
+                     showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
                   }
-              });
-   }
+               }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+                  @Override
+                  public void onProgress(@NonNull FileDownloadTask.TaskSnapshot taskSnapshot) {
+                     if (!subiendoDatos) {
+                        progressDownload.show();
+                        descargandoDatos = true;
+                     } else {
+                        if (taskSnapshot.getTotalByteCount() > 0)
+                           progressDownload.setMessage("Espere... " +
+                                   String.valueOf(100 * taskSnapshot.getBytesTransferred()
+                                           / taskSnapshot.getTotalByteCount()) + "%");
+                     }
+                  }
+               });
 
-   private static void downloadFile(String url, File outputFile) {
-      try {
-         URL u = new URL(url);
-         URLConnection conn = u.openConnection();
-         int contentLength = conn.getContentLength();
-
-         DataInputStream stream = new DataInputStream(u.openStream());
-
-         byte[] buffer = new byte[contentLength];
-         stream.readFully(buffer);
-         stream.close();
-
-         DataOutputStream fos = new DataOutputStream(new FileOutputStream(outputFile));
-         fos.write(buffer);
-         fos.flush();
-         fos.close();
-      } catch(FileNotFoundException e) {
-         return; // swallow a 404
-      } catch (IOException e) {
-         return; // swallow a 404
-      }
    }
 
 }

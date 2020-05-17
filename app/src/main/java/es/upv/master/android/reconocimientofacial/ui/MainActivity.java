@@ -3,13 +3,15 @@ package es.upv.master.android.reconocimientofacial.ui;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import es.upv.master.android.reconocimientofacial.PreferencesActivity;
+import es.upv.master.android.reconocimientofacial.ui.preferences.PreferencesActivity;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.ui.take_photo.TakePhotoActivity;
 import es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,11 +21,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
+    public static SharedPreferences prefs;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        prefs = getSharedPreferences(
+                "package es.upv.master.android.reconocimientofacial.preference",
+                Context.MODE_PRIVATE);
     }
 
     public void start(View v){
@@ -55,9 +60,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         else if (id == R.id.menu_ser_evaluador) {
-            //alertDialogLogin();
-            Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
-            startActivity(i);
+           /* boolean switchPass = prefs.getBoolean("password", false);
+            if(switchPass){*/
+                Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
+                startActivity(i);
+            /*}else{
+                alertDialogLogin();
+            }*/
+
             return true;
         }
 
@@ -89,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
                             if (pass.equals(password)) {
                                 Toast.makeText(getApplicationContext(),
                                         "Contraseña correcta", Toast.LENGTH_SHORT).show();
+                                //Escribo la contraesña en preferencias
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putString("password", pass);
                                 Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                                 startActivity(i);
                             } else {

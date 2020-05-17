@@ -13,17 +13,28 @@
     </string-array>
 
     <string-array name="control_dates">
-        <item>Hoy</item>
+        <item>Desde la última descarga</item>
+        <item>Últimas 24 horas</item>
         <item>Últimos 3 dias</item>
         <item>Últimos 7 dias</item>
-        <item>Últimos 15 dias</item>
         <item>Seleccionar otra fecha</item>
     </string-array>
-    <string-array name="control_dates_valores">
+    <string-array name="control_dates_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
+    </string-array>
+
+    <string-array name="control_opt_download">
+        <item>Descargar Etiquetas</item>
+        <item>Descargar Fotos</item>
+        <item>Descargar Etiquetas y Fotos</item>
+    </string-array>
+    <string-array name="control_opt_download_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
 </resources>

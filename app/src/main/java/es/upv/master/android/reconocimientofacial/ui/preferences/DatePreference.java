@@ -1,15 +1,29 @@
-package es.upv.master.android.reconocimientofacial;
+package es.upv.master.android.reconocimientofacial.ui.preferences;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.os.Bundle;
 import android.preference.DialogPreference;
+import android.text.format.DateFormat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.TimePicker;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.fragment.app.DialogFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+
+import es.upv.master.android.reconocimientofacial.R;
 
 public class DatePreference extends DialogPreference {
     private int lastDate = 0;
@@ -44,20 +58,16 @@ public class DatePreference extends DialogPreference {
 
     @Override
     protected View onCreateDialogView() {
-        picker = new DatePicker(getContext());
-
-        // setCalendarViewShown(false) attribute is only available from API level 11
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            picker.setCalendarViewShown(false);
-        }
-
-        return (picker);
+            picker = new DatePicker(getContext());
+            // setCalendarViewShown(false) attribute is only available from API level 11
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+                picker.setCalendarViewShown(false);
+            return (picker);
     }
 
     @Override
     protected void onBindDialogView(View v) {
         super.onBindDialogView(v);
-
         picker.updateDate(lastYear, lastMonth + 1, lastDate);
     }
 
@@ -69,7 +79,6 @@ public class DatePreference extends DialogPreference {
             lastYear = picker.getYear();
             lastMonth = picker.getMonth();
             lastDate = picker.getDayOfMonth();
-
             String dateval = String.valueOf(lastYear) + "-"
                     + String.valueOf(lastMonth) + "-"
                     + String.valueOf(lastDate);
@@ -88,15 +97,14 @@ public class DatePreference extends DialogPreference {
     @Override
     protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
         dateval = null;
-
         if (restoreValue) {
             if (defaultValue == null) {
                 Calendar cal = Calendar.getInstance();
                 SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
                 String formatted = format1.format(cal.getTime());
-                dateval = getPersistedString(formatted);
+                dateval = formatted;
             } else {
-                dateval = getPersistedString(defaultValue.toString());
+                dateval = defaultValue.toString();
             }
         } else {
             dateval = defaultValue.toString();
@@ -108,11 +116,8 @@ public class DatePreference extends DialogPreference {
 
     public void setText(String text) {
         final boolean wasBlocking = shouldDisableDependents();
-
         dateval = text;
-
         persistString(text);
-
         final boolean isBlocking = shouldDisableDependents();
         if (isBlocking != wasBlocking) {
             notifyDependencyChange(isBlocking);
@@ -134,4 +139,57 @@ public class DatePreference extends DialogPreference {
             notifyChanged();
         }
     }
+    /***********************************************************************************************************/
+    public static class DatePickerFragment extends DialogFragment
+            implements DatePickerDialog.OnDateSetListener {
+        private Calendar calendar;
+        private DatePickerDialog.OnDateSetListener onDateSetListener;
+
+        public DatePickerFragment(DatePickerDialog.OnDateSetListener onDateSetListener) {
+            this.onDateSetListener = onDateSetListener;
+        }
+
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Use the current date as the default date in the picker
+            calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            // Create a new instance of DatePickerDialog and return it
+            return new DatePickerDialog(getActivity(), onDateSetListener, year, month, day);
+        }
+
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            // Do something with the date chosen by the user
+        }
+    }
+/***********************************************************************************************************/
+    public static class TimePickerFragment extends DialogFragment
+        implements TimePickerDialog.OnTimeSetListener {
+
+        private TimePickerDialog.OnTimeSetListener onTimeSetListener;
+        private int hours;
+        private int minutes;
+
+        TimePickerFragment(TimePickerDialog.OnTimeSetListener onTimeSetListener, int hours, int minutes) {
+            this.onTimeSetListener = onTimeSetListener;
+            this.hours = hours;
+            this.minutes = minutes;
+        }
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+            return new TimePickerDialog(getActivity(),
+                    onTimeSetListener, hours, minutes, DateFormat.is24HourFormat(getActivity()));
+        }
+
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) { }
+
+    }
+
 }

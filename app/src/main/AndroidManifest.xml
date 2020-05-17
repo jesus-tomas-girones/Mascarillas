@@ -53,8 +53,9 @@
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".PreferencesActivity"
+            android:name=".ui.preferences.PreferencesActivity"
             android:label="@string/action_setting"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             tools:ignore="LockedOrientationActivity"></activity>
     </application>
 

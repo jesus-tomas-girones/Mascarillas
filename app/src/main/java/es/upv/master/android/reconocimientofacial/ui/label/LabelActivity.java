@@ -202,8 +202,6 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                        }
                     }
                  }
-                  @Override
-                  public void onLoadPhotos(List<String> urls){}
           });
    }
 

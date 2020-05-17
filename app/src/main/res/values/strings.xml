@@ -3,7 +3,7 @@
     <string name="low_storage_error">Las dependecias del detector no se pueden descargar debido a la falta de espacio en el dispositivo</string>
     <string name="ok">OK</string>
     <string name="permission_camera_rationale">El acceso a la cámara es necesario para la detección</string>
-    <string name="permission_extenal_storage">El acceso a almacenamiento es necesario para guardar tus fotos</string>
+    <string name="permission_extenal_storage">El acceso a almacenamiento es necesario para guardar las fotos y etiquetas</string>
     <string name="no_camera_permission">Esta aplicación no puede funcionar debido a las restricciones con los permisos. Por favor, concede los permisos solicitados. La aplicación se cerrará.</string>
     <string name="boton_arrancar">Comenzar</string>
     <!--Mensaje de Bienvenida (activity_main), la primera Actividad que ve el usuario -->
@@ -20,6 +20,10 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <!--Mensaje de Finalización, cuando las fotos se han subido por completado -->
     <string name="title_mostrar_dialogo">Operación Exitosa!</string>
     <string name="message_mostrar_dialogo">Gracias por colaborar con el proyecto. Si pudieras colocarte la máscara en otra posición y tomarte nuevas fotos, nos sería de gran ayuda.</string>
+    <string name="message_mostrar_dialogo_no_descargas">No existen fotos nuevas para descargar</string>
+    <string name="message_mostrar_dialogo_descargas_finalizada">Las fotos se han descargado en el directorio "Mascarillas"</string>
+    <string name="message_mostrar_dialogo_descargas_fallidas">Error inesperado, las fotos no se han podido descargadar.</string>
+    <string name="title_mostrar_dialogo_no_descargas">Operación No Exitosa!</string>
     <!--Botones de ShowActivity (activity_show_activity) -->
     <string name="btn_descartar_foto">Descartar</string>
     <string name="btn_aceptar_foto">Aceptar</string>
@@ -71,9 +75,15 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="pref_download_photo">Bajar fotos al móvil</string>
     <string name="pref_download_label">Bajar Etiquetas al móvil</string>
     <string name="pref_summary_download_label">Guarda la información de las etiquetas al móvil en formato .csv</string>
-    <string name="pref_select_date">Seleccionar un rango de fecha para descargar</string>
-    <string name="pref_choose_date">Bajar Etiquetas al móvilr</string>
-    <string name="pref_summary_choose_date">Permite elegir la fecha inicial y final deseada para realizar descargas de fotos y/o etiquetas</string>
-    <string name="pref_register_download">Última descarga</string>
+
+    <string name="pref_select_date">Personalizar descarga con Fecha/Hora</string>
+    <string name="pref_choose_date">Selecciona fecha y/o hora de las fotos o etiquetas para descargar al móvil </string>
+    <string name="pref_summary_choose_date">Permite seleccionar una fecha y hora deseada de las fotos y/o etiquetas</string>
     <string name="pref_summary_register_download">Foto/Etiqueta</string>
+    <string name="pref_list_download">Descarga con fecha/hora personalizada</string>
+    <string name="pref_custom_download">Descarga personalizada</string>
+    <string name="pref_summary_list_download">Selecciona la opción para descargar Fotos/Etiquetas</string>
+    <string name="tag_time_picker">Selecciona la hora de búsqueda</string>
+
+    <string name="pref_register_download">Última descarga</string>
 </resources>
