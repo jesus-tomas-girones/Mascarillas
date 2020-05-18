@@ -20,10 +20,13 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <!--Mensaje de Finalización, cuando las fotos se han subido por completado -->
     <string name="title_mostrar_dialogo">Operación Exitosa!</string>
     <string name="message_mostrar_dialogo">Gracias por colaborar con el proyecto. Si pudieras colocarte la máscara en otra posición y tomarte nuevas fotos, nos sería de gran ayuda.</string>
-    <string name="message_mostrar_dialogo_no_descargas">No existen fotos nuevas para descargar</string>
+    <!--Mensaje de Finalización, cuando las fotos se han descargado -->
+    <string name="message_mostrar_dialogo_no_descargas">No existen fotos y/o etiquetas nuevas para descargar</string>
     <string name="message_mostrar_dialogo_descargas_finalizada">Las fotos se han descargado en el directorio "Mascarillas"</string>
     <string name="message_mostrar_dialogo_descargas_fallidas">Error inesperado, las fotos no se han podido descargadar.</string>
     <string name="title_mostrar_dialogo_no_descargas">Operación No Exitosa!</string>
+    <!--Mensaje de Finalización, cuando las propiedades de las etiquetas se han exportado a CSV  -->
+    <string name="message_mostrar_dialogo_etiquetas_exportadas_CSV">La información de las etiquetas se ha descargado en el directorio "Download/Mascarillas", utiliza Excel para abrirlas</string>
     <!--Botones de ShowActivity (activity_show_activity) -->
     <string name="btn_descartar_foto">Descartar</string>
     <string name="btn_aceptar_foto">Aceptar</string>
@@ -65,6 +68,11 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="label_7">Mal ajuste nasal</string>
     <string name="label_8">Goma mal colocada</string>
     <string name="label_9">Hueco Lateral</string>
+
+    <!-- Nombres de las propiedades de las etiquetas para la exportación a CSV   -->
+    <string name="id">ID</string>
+    <string name="creation_date">FECHA/HORA DE CREACION</string>
+    <string name="url_Photo">URL DE FOTOS ETIQUETADAS</string>
 
     <!-- Preference    -->
     <string name="action_setting">Preferencias</string>

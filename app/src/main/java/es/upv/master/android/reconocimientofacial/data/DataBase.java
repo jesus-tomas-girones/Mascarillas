@@ -4,17 +4,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,13 +20,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
@@ -38,18 +31,17 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.opencsv.CSVWriter;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,12 +49,10 @@ import java.util.Map;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.model.Photo;
 
-import static android.content.Context.MODE_PRIVATE;
-
 public class DataBase {
    static public final String COLLECTION = "photos";
    static public final String LOCAL_DIRECTORY = "Mascarillas";
-   private static final int MAX_LABELS = 100;
+   public static final int MAX_LABELS = 100;
    static public String REFERENCE_FIRESTORAGE = "gs://mascarilla-440d4.appspot.com";
    public static StorageReference storageRef;
    public static boolean subiendoDatos, descargandoDatos = false;
@@ -276,21 +266,20 @@ public class DataBase {
    }
 
    public static void searchLabelledPhoto(long inicialDate, long finalDate,
-              final boolean withPhoto, final boolean withLabel, final LoadLabelledPhotosListener listener){
+              final LoadLabelledPhotosListener listener){
       /**
        * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
        *
-       * @param inicialDate
-       * @param finalDate
-       * @param withPhoto
-       * @param withLabel
+       * @param inicialDate: fecha inicial de búsqueda, por ejemplo 01/05/2020
+       * @param finalDate: fecha final de la búqueda, por ejemplo 18/05/2020
+       * @param listener escuchador que llamaremos cuando se tengan todas las propiedades de las etiquetas
        */
       FirebaseFirestore db = FirebaseFirestore.getInstance();
       Query photosRef = db.collection(COLLECTION)
-                        .whereEqualTo("labelled", true)
-                        .whereGreaterThanOrEqualTo("creation_date", inicialDate);
-               if(finalDate>0)
-                  photosRef.whereLessThanOrEqualTo("creation_date", finalDate);
+                     .whereEqualTo("labelled", true)
+                     .whereGreaterThanOrEqualTo("creation_date", inicialDate)
+                     .whereLessThanOrEqualTo("creation_date", finalDate);
+
                   photosRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                      @Override
                      public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -300,7 +289,7 @@ public class DataBase {
                            for(DocumentSnapshot labelDocument : listLabels){
                               Map<String, Object> labelData = new HashMap<>();
                               //Añadir a la búsqueda las etiquetas de las fotos
-                              if(withLabel){
+                              //id, fecha, urlphoto, label1, x1, y1, label2, x2, y2, label3, x3, y3,...
                                  List<String> label = new ArrayList<>();
                                  List<Double> x = new ArrayList<>();
                                  List<Double> y = new ArrayList<>();
@@ -315,16 +304,14 @@ public class DataBase {
                                  labelData.put("label", label);
                                  labelData.put("x", x);
                                  labelData.put("y", x);
-                              }
                               //Añadir a la búsqueda las url de las fotos, podemos obtener también las id de los documentos
                               //que corresponde al mismo nombre de las fotos en el firestorage
-                              if(withPhoto){
                                  String urlPhoto = labelDocument.getString("urlPhoto");
                                  labelData.put("uriPhoto", urlPhoto);
                                  String idPhoto = labelDocument.getId();
                                  labelData.put("idPhoto", idPhoto);
-                              }
-
+                                 Double creation_date = labelDocument.getDouble("creation_date");
+                                 labelData.put("creation_date", creation_date);
                               listLabelledPhotos.add(labelData);
                            }
                            listener.onLoadPhotos(listLabelledPhotos);
@@ -337,12 +324,18 @@ public class DataBase {
 
    public static void downloadPhotosById(final Activity activity, final ArrayList<String> list_id,
                                          int initial_id, final ProgressDialog progressDownload){
+      /**
+       * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+       *
+       * @param list_id: lista de id de cada foto a descargar
+       * @param initial_id: desde que elemento (index) de la lista se empieza a recorrer
+       * @param progressDownload: permite cargar la barra de progreso sin que se inicialice varias veces por cada foto a descargar
+       */
 
       //Si entra al if significa que la descarga ha finalizado, muestra un dialogo y vacía la lista de id
       //para no concatenar nuevos elementos si se continúa realizando nuevas descargas
       final int index_id = initial_id;
       if(index_id >= list_id.size() && index_id != 0){
-         list_id.clear();
          String title = activity.getResources().getString(R.string.title_mostrar_dialogo);
          String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo_descargas_finalizada);
          showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
@@ -412,6 +405,70 @@ public class DataBase {
                      }
                   }
                });
+
+   }
+
+   public static void saveLabelledPhotosInCSVFile(Activity activity, List<List<String>> listLabels /*, char separator*/){
+      /**
+       * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+       * @param listLabels: lista anidada que contiene la información de cada etiqueta
+       * @param separator: permite delimitar cada celda, en la mayoría de los casos se usa ','
+       *        pero depende de cara región al usar decimales con ','. Excel trabaja con ';'
+       */
+      try {
+         File rootPath = new File(Environment.getExternalStoragePublicDirectory(
+                 Environment.DIRECTORY_DOWNLOADS), LOCAL_DIRECTORY);
+         if(!rootPath.exists()) {
+            rootPath.mkdirs();
+         }
+         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyyMMddHHmmss");
+         String dateString = formatoFecha.format(new Date(System.currentTimeMillis()));
+         String fileName = "mascarillas_"+dateString;
+         final File localFileCSV = new File(rootPath,fileName+".csv");
+         //CSVWriter writer = new CSVWriter(new FileWriter(localFileCSV, true ) ,';');
+         CSVWriter writer=new CSVWriter(new OutputStreamWriter(new FileOutputStream(localFileCSV,
+                 true), "UTF-8"),';');
+         List<String[]> data = new ArrayList<String[]>();
+
+         int maxNumElementsArray = 0;
+         for (List<String> label :listLabels){
+            int size = label.size();
+            String[] labelArray = new String[size];
+            for(int i= 0; i < size; i++){
+               labelArray[i] = label.get(i);
+            }
+            if(maxNumElementsArray < size)
+               maxNumElementsArray = size;
+            data.add(labelArray);
+         }
+
+         String[] titles = new String[maxNumElementsArray];
+         titles[0] = activity.getString(R.string.id);
+         titles[1] = activity.getString(R.string.creation_date);
+         titles[2] = activity.getString(R.string.url_Photo);
+
+         //Máximo número de etiquetas es igual al máximo número de elementos en el array
+         // sin contar (id, creation_date, urlPhoto) y dividido para 3 (labels, x, y)
+         int maxNumLabels = (maxNumElementsArray - 3)/3;
+         for(int i=1; i <= maxNumLabels; i++){
+            int indexLabels = 3*i;
+            titles[indexLabels] = "LABEL"+(i);
+            titles[indexLabels+1] = "X"+(i);
+            titles[indexLabels+2] = "Y"+(i);
+         }
+
+         data.add(0,titles);
+         writer.writeAll(data);
+         writer.close();
+         //Muestra el diálogo de operación exitosa
+         String title = activity.getResources().getString(R.string.title_mostrar_dialogo);
+         String mensaje = activity.getResources().getString(
+                 R.string.message_mostrar_dialogo_etiquetas_exportadas_CSV);
+         showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
+
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
 
    }
 

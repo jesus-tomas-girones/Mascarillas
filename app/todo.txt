@@ -21,8 +21,8 @@ Pendientes:
 //TODO poner en preferenias un botón para descargar fotos y base de datos (x)
 //TODO opción bajar fotos a memoria SD (x)
 //TODO opción bajar colección photos a fichero .csv (solo etiquetados)
-    id, fecha, urlphoto, label1, x1, y1, label2, x2, y2, label3, x3, y3,...
+    id, fecha, urlphoto, label1, x1, y1, label2, x2, y2, label3, x3, y3,... (x)
 //TODO opción bajar fotos a memoria SD pero solo las últimas (guardar en preferencia última fecha de bajada) (x)
-//TODO en listado se carga una foto muy alta antes de cargar la foto real
+//TODO en listado se carga una foto muy alta antes de cargar la foto real (x)
 
 

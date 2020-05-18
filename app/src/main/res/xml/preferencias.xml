@@ -36,7 +36,7 @@
             android:key="pref_final_date"
             android:title="Seleccionar fecha final"
             android:defaultValue="2020-01-01"
-            android:summary="Ultima descarga: 2020-01-01"/>
+            android:summary="2020-01-01"/>
         <Preference
             android:key="set_time_ini"
             android:title="Seleccionar hora inicial"
