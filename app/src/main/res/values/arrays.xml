@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Si se quiere cambiar el número o nombre de etiquetas, cambiar el siguiente array-->
+    <!-- NO USAR ACENTOS -->
     <string-array name="labels">
+        <item>No simetrica</item>
+        <item>Mal extendida</item>
+        <item>Debajo puente nasal</item>
+        <item>Gafas por debajo</item>
+        <item>Ajuste Cuello</item>
+        <!--item>Barba</item>
+        <item>Mal ajuste nasal</item>
+        <item>Goma mal colocada</item>
+        <item>Hueco Lateral</item-->
+    </string-array>
+
+    <!--string-array name="labels_2">
         <item>@string/label_1</item>
         <item>@string/label_2</item>
         <item>@string/label_3</item>
@@ -10,7 +24,7 @@
         <item>@string/label_7</item>
         <item>@string/label_8</item>
         <item>@string/label_9</item>
-    </string-array>
+    </string-array-->
 
     <string-array name="control_dates">
         <item>Desde la última descarga</item>

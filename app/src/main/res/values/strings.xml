@@ -59,7 +59,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="menu_label_aceptar">Aceptar</string>
 
     <!-- Tipos de Problemas Fotos     -->
-    <string name="label_1">No simétrica</string>
+    <!--string name="label_1">No simétrica</string>
     <string name="label_2">Mal extendida</string>
     <string name="label_3">Debajo puente nasal</string>
     <string name="label_4">Gafas por debajo</string>
@@ -67,7 +67,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="label_6">Barba</string>
     <string name="label_7">Mal ajuste nasal</string>
     <string name="label_8">Goma mal colocada</string>
-    <string name="label_9">Hueco Lateral</string>
+    <string name="label_9">Hueco Lateral</string-->
 
     <!-- Nombres de las propiedades de las etiquetas para la exportación a CSV   -->
     <string name="id">ID</string>

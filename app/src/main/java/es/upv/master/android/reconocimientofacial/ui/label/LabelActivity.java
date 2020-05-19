@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,11 +26,18 @@ import es.upv.master.android.reconocimientofacial.data.DataBase;
 
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
 
+   final static int MAX_LABEL = 9; //Número máximo de etiquetas que se admiten. Limitada por nú,ero de botones
+   final static int BUTTON_ID[] = {R.id.btn_1, R.id.btn_2, R.id.btn_3, R.id.btn_4,
+           R.id.btn_5, R.id.btn_6, R.id.btn_7, R.id.btn_8, R.id.btn_9};
+   final static int CIRCLES_ID[] = {R.id.txv_label1, R.id.txv_label2, R.id.txv_label3, R.id.txv_label4,
+           R.id.txv_label5, R.id.txv_label6, R.id.txv_label7, R.id.txv_label8, R.id.txv_label9};
+
+
    String idPhoto;  //id del documento a modificar
    boolean islabelledPhoto;
    String nLabel = "1";
    ImageView photo;
-   TextView[] circle = new TextView[9];
+   TextView[] circle;
    String[] listLabel;
    Button selectedButton;
    boolean exitWithoutSaving = false;
@@ -53,14 +59,23 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
       photo = findViewById(R.id.photo);
       photo.setOnTouchListener(this);
 
-      //Inicializo todos los círculos
-      int circlesID[] = {R.id.txv_label1, R.id.txv_label2, R.id.txv_label3, R.id.txv_label4, R.id.txv_label5,
-              R.id.txv_label6, R.id.txv_label7, R.id.txv_label8, R.id.txv_label9};
-      for (int i = 0; i < circle.length; i++) {
-         circle[i] = findViewById(circlesID[i]);
-      }
       //Cargo todos las etiquetas desde un recurso array en el array listlabel
       listLabel = getResources().getStringArray(R.array.labels);
+      if (listLabel.length>MAX_LABEL) {
+         Toast.makeText(this,"ERROR: Demasiadas Etiquetas",Toast.LENGTH_LONG).show();
+      }
+
+      //Inicializo todos los círculos y botones
+      circle = new TextView[listLabel.length];
+      for (int i = 0; i < circle.length; i++) {
+         circle[i] = findViewById(CIRCLES_ID[i]);
+         TextView v = findViewById(BUTTON_ID[i]);
+         v.setText(listLabel[i]);
+      }
+      for (int i = circle.length; i < MAX_LABEL; i++) {
+         Button v = findViewById(BUTTON_ID[i]);
+         v.setVisibility(View.GONE);
+      }
 
       //Cargamos la imagen de URL
       Glide.with(getApplicationContext())
@@ -192,8 +207,8 @@ public class LabelActivity extends AppCompatActivity implements View.OnTouchList
                  public void onLoad(List<String> label, List<Double> x, List<Double> y) {
                     for (int i = 0; i < label.size(); i++) {
                        int nLabel = 0;
-                       while (!label.get(i).equals(listLabel[nLabel])) nLabel++;
-                       if (nLabel > listLabel.length) {
+                       while (nLabel < listLabel.length && !label.get(i).equals(listLabel[nLabel])) nLabel++;
+                       if (nLabel >= listLabel.length) {
                           String s= "Etiqueta '" + label.get(i) + "' n encontrada en lista de etiquetas actual";
                           Log.e("MASCARILLA", s); //DOTO crear costante TAG
                           Toast.makeText(getApplicationContext(), s, Toast.LENGTH_LONG).show();

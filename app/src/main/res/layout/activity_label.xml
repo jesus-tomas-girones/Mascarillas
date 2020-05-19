@@ -10,10 +10,12 @@
     <ImageView
         android:id="@+id/photo"
         android:layout_width="match_parent"
-        android:layout_height="530dp"
+        android:layout_height="0dp"
         android:adjustViewBounds="true"
         android:cropToPadding="true"
+        app:layout_constraintBottom_toTopOf="@+id/btn_1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/mask_frontal" />
@@ -25,9 +27,9 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="1"
-        android:text="@string/label_1"
         android:textColor="@color/colorLabel1"
         android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_4"
         app:layout_constraintEnd_toStartOf="@+id/btn_2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +44,6 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="2"
-        android:text="@string/label_2"
         android:textColor="@color/colorLabel2"
         android:textSize="10sp"
         app:layout_constraintEnd_toStartOf="@+id/btn_3"
@@ -57,7 +58,6 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="3"
-        android:text="@string/label_3"
         android:textColor="@color/colorLabel3"
         android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -73,10 +73,11 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="4"
-        android:text="@string/label_4"
         android:textColor="@color/colorLabel4"
         android:textSize="10sp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_7"
         app:layout_constraintEnd_toEndOf="@+id/btn_1"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_1" />
     <!--tools:visibility="invisible" /-->
@@ -91,9 +92,9 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="5"
-        android:text="@string/label_5"
         android:textColor="@color/colorLabel5"
         android:textSize="10sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/btn_3"
         app:layout_constraintStart_toEndOf="@+id/btn_1"
         app:layout_constraintTop_toBottomOf="@+id/btn_2" />
@@ -107,9 +108,9 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="6"
-        android:text="@string/label_6"
         android:textColor="@color/colorLabel6"
         android:textSize="10sp"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_2"
         app:layout_constraintTop_toBottomOf="@+id/btn_3" />
@@ -122,10 +123,12 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="7"
-        android:text="@string/label_7"
         android:textColor="@color/colorLabel7"
         android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btn_1"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_4" />
 
@@ -140,9 +143,10 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="8"
-        android:text="@string/label_8"
         android:textColor="@color/colorLabel8"
-        android:textSize="12sp"
+        android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_6"
         app:layout_constraintStart_toEndOf="@+id/btn_4"
         app:layout_constraintTop_toBottomOf="@+id/btn_5" />
@@ -156,14 +160,13 @@
         android:background="#75434040"
         android:onClick="onButtonClic"
         android:tag="9"
-        android:text="@string/label_9"
         android:textColor="@color/colorLabel9"
         android:textSize="10sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_2"
         app:layout_constraintTop_toBottomOf="@+id/btn_6" />
-
-
 
 
     <TextView
@@ -171,9 +174,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel1"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="43dp"
         tools:layout_editor_absoluteY="-20dp" />
 
@@ -182,9 +185,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel2"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="144dp"
         tools:layout_editor_absoluteY="-19dp" />
 
@@ -193,9 +196,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel3"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="-27dp" />
 
@@ -204,9 +207,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel4"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="43dp"
         tools:layout_editor_absoluteY="-20dp" />
 
@@ -215,9 +218,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel5"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="144dp"
         tools:layout_editor_absoluteY="-19dp" />
 
@@ -226,9 +229,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel6"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="-27dp" />
 
@@ -237,9 +240,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel7"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="43dp"
         tools:layout_editor_absoluteY="-20dp" />
 
@@ -248,9 +251,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel8"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="144dp"
         tools:layout_editor_absoluteY="-19dp" />
 
@@ -259,9 +262,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="○"
-        android:visibility="invisible"
         android:textColor="@color/colorLabel9"
         android:textSize="129dp"
+        android:visibility="invisible"
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="-27dp" />
 
