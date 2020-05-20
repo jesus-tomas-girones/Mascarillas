@@ -53,7 +53,6 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferencias);
-
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
         currentDate = new Date(System.currentTimeMillis());
         String dateString = formatoFecha.format(currentDate);
@@ -88,9 +87,13 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         timePickerPreferenceFinal.setSummary(formatoHora.format(currentDate));
         configListener();
 
-        boolean switchPass = prefs.getBoolean("password", false);
         passwordSwitch = (SwitchPreference) findPreference("passwordSwitch");
-        passwordSwitch.setSelectable(switchPass);
+        if(!prefs.getBoolean("password", false)){
+            passwordSwitch.setChecked(false);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("password", true);
+            editor.commit();
+        }
 
         almacenamientoEnMemoria();
         if(!almacenamientoEnMemoria()){
@@ -155,9 +158,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
             case "download_label_and_photo":
                 numOptions = Integer.parseInt((String)newValue);
                 getDateAndHourForDownload(numOptions);
-
                 break;
-
         }
         return res;
     }
@@ -388,6 +389,7 @@ public class PreferencesFragment extends PreferenceFragment implements Preferenc
         else if(labels > 0){
             msgLastDownload = "Etiquetas: "+ dateFormatLongToString(labels);
         }
+        register_last_download.setDefaultValue(msgLastDownload);
         register_last_download.setSummary(msgLastDownload);
     }
 

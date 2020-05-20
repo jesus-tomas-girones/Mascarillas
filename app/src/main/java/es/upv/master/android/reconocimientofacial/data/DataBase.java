@@ -15,6 +15,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,6 +31,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.opencsv.CSVWriter;
 
@@ -57,6 +59,7 @@ public class DataBase {
    public static StorageReference storageRef;
    public static boolean subiendoDatos, descargandoDatos = false;
    public static final String TAG = "Mascarillas";
+   public static StorageTask<FileDownloadTask.TaskSnapshot> taskSnapshot = null;
    public static void registrarFoto(final long creation_date, final String id, String url) {
       Photo photo = new Photo(creation_date, false, url);
       FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -335,7 +338,7 @@ public class DataBase {
       //Si entra al if significa que la descarga ha finalizado, muestra un dialogo y vacía la lista de id
       //para no concatenar nuevos elementos si se continúa realizando nuevas descargas
       final int index_id = initial_id;
-      if(index_id >= list_id.size() && index_id != 0){
+      if(index_id >= list_id.size() && index_id != 0 ){
          String title = activity.getResources().getString(R.string.title_mostrar_dialogo);
          String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo_descargas_finalizada);
          showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
@@ -348,6 +351,21 @@ public class DataBase {
       progressDownload.setMessage("Espere...");
       progressDownload.setCancelable(true);
       progressDownload.setCanceledOnTouchOutside(false);
+      progressDownload.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar",
+              new DialogInterface.OnClickListener() {
+                 @Override
+                 public void onClick(DialogInterface dialog, int which) {
+                    //if(taskSnapshot != null)
+                    taskSnapshot.cancel();
+                    progressDownload.dismiss();
+                   //
+                    String title = activity.getResources().getString(R.string.title_mostrar_dialogo_operacion_cancel);
+                    String mensaje = activity.getResources().
+                            getString(R.string.message_mostrar_dialogo_descargas_cancelada)+
+                            " Nº Fotos descargadas: "+(index_id+1);
+                    showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
+                 }
+              });
 
       //Creo el ruta y l directorio donde se almacenará las fotos y lo monto en MediaStore
       // para que el usuario pueda observar el directorio desde galeria
@@ -369,7 +387,7 @@ public class DataBase {
       storageRef = storage.getReferenceFromUrl(REFERENCE_FIRESTORAGE);
       StorageReference ficheroRef = storageRef.child(COLLECTION).child(list_id.get(index_id)+".jpg");
 
-      ficheroRef.getFile(localFile)
+      taskSnapshot = ficheroRef.getFile(localFile)
               .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                  @Override
                  public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
@@ -404,7 +422,12 @@ public class DataBase {
                                            / taskSnapshot.getTotalByteCount()) + "%");
                      }
                   }
-               });
+               }).addOnCanceledListener(new OnCanceledListener() {
+                     @Override
+                     public void onCanceled() {
+                        progressDownload.dismiss();
+                     }
+      });
 
    }
 

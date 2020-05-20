@@ -14,7 +14,6 @@ En LabelActivity poner botón en barra de acciones de pasar a siguiente (flecha)
 Otra alternativa es el gesto de desplazar con el dedo.
 Inicar en mensaje inicial, la lista de errores y que se pide añadir fotos con errores
 
-Pendientes:
 //TODO invertir la foto de perfíl del usuario (depende mucho de la cámara)
 //TODO botón aceptar en LabelActivity (x)
 //TODO pasar a la siguiente foto con un gesto en LabelActivity (x)
@@ -24,5 +23,13 @@ Pendientes:
     id, fecha, urlphoto, label1, x1, y1, label2, x2, y2, label3, x3, y3,... (x)
 //TODO opción bajar fotos a memoria SD pero solo las últimas (guardar en preferencia última fecha de bajada) (x)
 //TODO en listado se carga una foto muy alta antes de cargar la foto real (x)
+
+Pendientes:
+//TODO “Recordar contraseña” implementada (x)
+//TODO Al pulsar “Bajar Fotos al móvil” ¿Al volver atrás, para de bajar fotos?
+        No se detiene la descarga, pero he puesto un botos de cancelar la descarga
+//TODO Pasar opción de descargar a Modo etiquetador y poner nueva contraseña (x)
+//TODO Quitar de la consola en base de datos las fotos antiguas. (x)
+//TODO En caso de que hayan más botones que etiquetas pone a no visible los que sobran.
 
 

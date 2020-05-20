@@ -24,7 +24,9 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="message_mostrar_dialogo_no_descargas">No existen fotos y/o etiquetas nuevas para descargar</string>
     <string name="message_mostrar_dialogo_descargas_finalizada">Las fotos se han descargado en el directorio "Mascarillas"</string>
     <string name="message_mostrar_dialogo_descargas_fallidas">Error inesperado, las fotos no se han podido descargadar.</string>
+    <string name="message_mostrar_dialogo_descargas_cancelada">Has cancelado la descarga.</string>
     <string name="title_mostrar_dialogo_no_descargas">Operación No Exitosa!</string>
+    <string name="title_mostrar_dialogo_operacion_cancel">Operación Cancelada!</string>
     <!--Mensaje de Finalización, cuando las propiedades de las etiquetas se han exportado a CSV  -->
     <string name="message_mostrar_dialogo_etiquetas_exportadas_CSV">La información de las etiquetas se ha descargado en el directorio "Download/Mascarillas", utiliza Excel para abrirlas</string>
     <!--Botones de ShowActivity (activity_show_activity) -->
@@ -34,7 +36,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="btn_salir">Descartar</string>
     <string name="btn_continuar">Aceptar</string>
     <!--Menú MainActivity -->
-    <string name="menu_preferencias">Preferencias</string>
+    <string name="menu_preferencias">Descargas</string>
     <string name="menu_modo_evaluador">Pasar Modo Etiquetador</string>
     <!--Snackbar de RecognitionActivity - -->
     <string name="snackbar_try_mach_face">Intenta coincidir tu cara con la imagen</string>

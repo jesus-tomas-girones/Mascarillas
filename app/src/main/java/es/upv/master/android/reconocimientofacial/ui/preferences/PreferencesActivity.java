@@ -20,4 +20,10 @@ public class PreferencesActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onStop() { //Stop
+        super.onStop();
+        this.finish();
+    }
+
 }

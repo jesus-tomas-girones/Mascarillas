@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+
 public class MainActivity extends AppCompatActivity {
     public static SharedPreferences prefs;
     @Override
@@ -50,23 +51,18 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.menu_preferencia) {
-            Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
-            startActivity(i);
-            return true;
-        }
-
-        else if (id == R.id.menu_ser_evaluador) {
-            boolean switchPass = prefs.getBoolean("passwordSwitch", false);
+        if (id == R.id.menu_ser_evaluador) {
+            Boolean switchPass = false;
+            if(prefs.getBoolean("password", false)){
+                switchPass = prefs.getBoolean("passwordSwitch", (Boolean)false);
+            }
             if(switchPass){
                 Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                 startActivity(i);
             }else{
                 alertDialogLogin();
             }
-
-            return true;
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -97,10 +93,7 @@ public class MainActivity extends AppCompatActivity {
                             if (pass.equals(password)) {
                                 Toast.makeText(getApplicationContext(),
                                         "Contraseña correcta", Toast.LENGTH_SHORT).show();
-                                //Escribo la contraesña en preferencias
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putBoolean("password", true);
-                                editor.commit();
+
                                 Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                                 startActivity(i);
                             } else {

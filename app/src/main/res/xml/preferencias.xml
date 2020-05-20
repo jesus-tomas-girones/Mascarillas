@@ -6,7 +6,7 @@
         android:key="passwordSwitch"
         android:title="@string/pref_remember_password"
         android:summary="@string/pref_summary_password"
-        android:defaultValue="0"/>
+        android:defaultValue="false"/>
     <PreferenceCategory android:title="@string/pref_download_photo_and_data">
         <ListPreference
             android:key="download_photo"
