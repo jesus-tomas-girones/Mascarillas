@@ -14,22 +14,21 @@ En LabelActivity poner botón en barra de acciones de pasar a siguiente (flecha)
 Otra alternativa es el gesto de desplazar con el dedo.
 Inicar en mensaje inicial, la lista de errores y que se pide añadir fotos con errores
 
-//TODO invertir la foto de perfíl del usuario (depende mucho de la cámara)
-//TODO botón aceptar en LabelActivity (x)
-//TODO pasar a la siguiente foto con un gesto en LabelActivity (x)
-//TODO poner en preferenias un botón para descargar fotos y base de datos (x)
-//TODO opción bajar fotos a memoria SD (x)
-//TODO opción bajar colección photos a fichero .csv (solo etiquetados)
+invertir la foto de perfíl del usuario (depende mucho de la cámara)
+botón aceptar en LabelActivity
+pasar a la siguiente foto con un gesto en LabelActivity (x)
+poner en preferenias un botón para descargar fotos y base de datos (x)
+opción bajar fotos a memoria SD (x)
+opción bajar colección photos a fichero .csv (solo etiquetados)
     id, fecha, urlphoto, label1, x1, y1, label2, x2, y2, label3, x3, y3,... (x)
-//TODO opción bajar fotos a memoria SD pero solo las últimas (guardar en preferencia última fecha de bajada) (x)
-//TODO en listado se carga una foto muy alta antes de cargar la foto real (x)
+opción bajar fotos a memoria SD pero solo las últimas (guardar en preferencia última fecha de bajada) (x)
+en listado se carga una foto muy alta antes de cargar la foto real (x)
+“Recordar contraseña” implementada (x)
+Pasar opción de descargar a Modo etiquetador y poner nueva contraseña (x)
+Quitar de la consola en base de datos las fotos antiguas. (x)
+En caso de que hayan más botones que etiquetas pone a no visible los que sobran.
 
 Pendientes:
-//TODO “Recordar contraseña” implementada (x)
-//TODO Al pulsar “Bajar Fotos al móvil” ¿Al volver atrás, para de bajar fotos?
-        No se detiene la descarga, pero he puesto un botos de cancelar la descarga
-//TODO Pasar opción de descargar a Modo etiquetador y poner nueva contraseña (x)
-//TODO Quitar de la consola en base de datos las fotos antiguas. (x)
-//TODO En caso de que hayan más botones que etiquetas pone a no visible los que sobran.
 
-
+//TODO El ListLabelActivity Crear nuevo item de menú Preferencias y poner Recordar contraseña. Otro item diferente para Descargas
+//TODO Poner contraseña en descargas. Por ejemplo 4321
