@@ -26,7 +26,6 @@ import java.util.List;
 import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.data.DataBase;
 
-
 public class LabelActivity extends AppCompatActivity implements View.OnTouchListener {
 
    final static int MAX_LABEL = 9; //Número máximo de etiquetas que se admiten. Limitada por nú,ero de botones
