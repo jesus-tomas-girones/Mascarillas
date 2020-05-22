@@ -35,9 +35,6 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <!--Botones de RecognitionActivity - Mostrar dialogo -->
     <string name="btn_salir">Descartar</string>
     <string name="btn_continuar">Aceptar</string>
-    <!--Menú MainActivity -->
-    <string name="menu_preferencias">Descargas</string>
-    <string name="menu_modo_evaluador">Pasar Modo Etiquetador</string>
     <!--Snackbar de RecognitionActivity - -->
     <string name="snackbar_try_mach_face">Intenta coincidir tu cara con la imagen</string>
     <string name="snackbar_error">ERROR INESPERADO</string>
@@ -48,6 +45,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="cerrar_boton">Cerrar</string>
     <string name="entrar_boton">ENTRAR</string>
     <string name="password_login_evaluator">mascarilla1234</string>
+    <string name="password_download">1234</string>
     <string name="title_login_evaluator">Clave de Acceso</string>
     <string name="msg_login_evaluator">Ingresa tu contraseña</string>
 
@@ -55,12 +53,17 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="tab_lista_evaluados">Lista Etiquetados</string>
     <string name="tab_lista_sin_evaluar">Lista Sin Etiquetar</string>
 
+    <!--Menú MainActivity -->
+    <string name="menu_modo_evaluador">Pasar Modo Etiquetador</string>
     <!-- menu label    -->
     <string name="menu_label_cerrar">Cancelar</string>
     <string name="menu_label_siguiente">Siguiente</string>
     <string name="menu_label_aceptar">Aceptar</string>
+    <!-- menu Listlabel    -->
+    <string name="menu_preferencias">Preferencias</string>
+    <string name="menu_download">Descargas</string>
 
-    <!-- Tipos de Problemas Fotos     -->
+    <!-- Tipos de Etiquetas (Problemas Fotos)  -->
     <!--string name="label_1">No simétrica</string>
     <string name="label_2">Mal extendida</string>
     <string name="label_3">Debajo puente nasal</string>
@@ -70,6 +73,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="label_7">Mal ajuste nasal</string>
     <string name="label_8">Goma mal colocada</string>
     <string name="label_9">Hueco Lateral</string-->
+    <string name="correct_label">CORRECTA</string>
 
     <!-- Nombres de las propiedades de las etiquetas para la exportación a CSV   -->
     <string name="id">ID</string>

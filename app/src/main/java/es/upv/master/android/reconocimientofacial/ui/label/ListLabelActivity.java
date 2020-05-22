@@ -20,12 +20,15 @@ import es.upv.master.android.reconocimientofacial.data.DataBase;
 import es.upv.master.android.reconocimientofacial.model.Photo;
 import es.upv.master.android.reconocimientofacial.ui.preferences.PreferencesActivity;
 
+import static es.upv.master.android.reconocimientofacial.ui.MainActivity.alertDialogLogin;
+
 public class ListLabelActivity extends AppCompatActivity {
    private TabLayout tabs;
    private RecyclerView recyclerView;
    FirebaseFirestore db;
    public static ListLabelAdapter adaptador;
    public static final int REQUEST_CODE_NEXT_PHOTO = 1;
+   public static final String TYPE_PREFERENCE_DOWNLOAD = "download";
    public static int position;
    FirestoreRecyclerOptions<Photo> opciones;
 
@@ -149,8 +152,17 @@ public class ListLabelActivity extends AppCompatActivity {
       int id = item.getItemId();
 
       //noinspection SimplifiableIfStatement
+      if (id == R.id.menu_download) {
+         String password = getString(R.string.password_download);
+         alertDialogLogin(this, PreferencesActivity.class, TYPE_PREFERENCE_DOWNLOAD, password);
+/*         Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
+         i.putExtra("type_preferences", "download");
+         startActivity(i);*/
+         return true;
+      }
       if (id == R.id.menu_preferencia) {
          Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
+         i.putExtra("type_preferences", "preferences");
          startActivity(i);
          return true;
       }

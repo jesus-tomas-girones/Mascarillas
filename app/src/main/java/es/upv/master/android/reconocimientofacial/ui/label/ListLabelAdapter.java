@@ -66,7 +66,7 @@ public class ListLabelAdapter extends
                 labels = labels +label + "\n";
             }
         }
-        if (labels.isEmpty()) labels = "CORRECTA"; //TODO pasar a recurso
+        if (labels.isEmpty()) labels = context.getString(R.string.correct_label); //Etiqueta correcta
         return labels;
     }
 

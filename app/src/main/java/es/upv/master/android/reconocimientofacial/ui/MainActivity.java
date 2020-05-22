@@ -8,6 +8,7 @@ import es.upv.master.android.reconocimientofacial.R;
 import es.upv.master.android.reconocimientofacial.ui.take_photo.TakePhotoActivity;
 import es.upv.master.android.reconocimientofacial.ui.label.ListLabelActivity;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -32,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void start(View v){
         Intent i = new Intent(this, TakePhotoActivity.class);
-        //Intent i = new Intent(this, LabelActivity.class);
         startActivity(i);
     }
 
@@ -60,7 +60,8 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                 startActivity(i);
             }else{
-                alertDialogLogin();
+                String password = getString(R.string.password_login_evaluator);
+                alertDialogLogin(this, ListLabelActivity.class, null , password);
             }
                 return true;
         }
@@ -68,13 +69,14 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void alertDialogLogin(){
+    public static void alertDialogLogin(final Activity activity, final Class nextActivity,
+                                        final String extra, final String passwordResources){
 
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle(getString(R.string.title_login_evaluator));
-        alertDialog.setMessage(getString(R.string.msg_login_evaluator));
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        alertDialog.setTitle(activity. getString(R.string.title_login_evaluator));
+        alertDialog.setMessage(activity. getString(R.string.msg_login_evaluator));
 
-        final EditText input = new EditText(MainActivity.this);
+        final EditText input = new EditText(activity);
 
 
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
@@ -84,31 +86,32 @@ public class MainActivity extends AppCompatActivity {
         alertDialog.setView(input);
         alertDialog.setIcon(R.drawable.ic_candado);
         alertDialog.setCancelable(false);
-        alertDialog.setPositiveButton(getString(R.string.entrar_boton),
+        alertDialog.setPositiveButton(activity. getString(R.string.entrar_boton),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        String password = input.getText().toString();
-                        if (!password.isEmpty()) {
-                            String pass = getString(R.string.password_login_evaluator);
-                            if (pass.equals(password)) {
-                                Toast.makeText(getApplicationContext(),
+                        String passwordInput = input.getText().toString();
+                        if (!passwordInput.isEmpty()) {
+                            if (passwordResources.equals(passwordInput)) {
+                                Toast.makeText(activity,
                                         "Contraseña correcta", Toast.LENGTH_SHORT).show();
 
-                                Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
-                                startActivity(i);
+                                Intent i = new Intent(activity, nextActivity);
+                                if(extra != null)
+                                    i.putExtra("type_preferences", extra);
+                                activity.startActivity(i);
                             } else {
-                                Toast.makeText(getApplicationContext(),
-                                        getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(activity,
+                                        activity.getString(R.string.password_error), Toast.LENGTH_SHORT).show();
 
                             }
                         }else{
-                            Toast.makeText(getApplicationContext(),
-                                    getString(R.string.password_error), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity,
+                                    activity.getString(R.string.password_error), Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
 
-        alertDialog.setNegativeButton(getString(R.string.cerrar_boton),
+        alertDialog.setNegativeButton(activity. getString(R.string.cerrar_boton),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();

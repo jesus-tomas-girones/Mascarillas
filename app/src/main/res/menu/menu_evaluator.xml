@@ -2,9 +2,25 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_preferencia"
+        android:id="@+id/menu_list_label"
+        android:icon="@drawable/ic_menu"
         android:orderInCategory="100"
-        app:showAsAction="never"
-        android:title="@string/menu_preferencias"/>
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/menu_download"
+                android:orderInCategory="101"
+                android:title="@string/menu_download"
+                android:icon="@drawable/ic_download"
+                app:showAsAction="always|withText"/>
+            <item
+                android:id="@+id/menu_preferencia"
+                android:orderInCategory="102"
+                android:title="@string/menu_preferencias"
+                android:icon="@drawable/ic_preferences"
+                app:showAsAction="always|withText"/>
+        </menu>
+    </item>
 
 </menu>
