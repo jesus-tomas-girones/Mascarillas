@@ -9,13 +9,11 @@ public class PreferencesActivity extends AppCompatActivity {
     public static FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
           getFragmentManager().beginTransaction()
                 .replace(android.R.id.content, new DownloadFragment())
                 .commit();
         fragmentManager = getSupportFragmentManager();
-
     }
 
     @Override
