@@ -7,7 +7,6 @@
         android:orderInCategory="100"
         android:title="@string/menu_label_siguiente"
         app:showAsAction="always" />
-
     <item
         android:id="@+id/empty"
         android:icon="@drawable/ic_menu"
