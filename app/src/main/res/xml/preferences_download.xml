@@ -22,12 +22,12 @@
         android:title="@string/pref_select_date"
         android:summary="@string/pref_summary_choose_date">
         <PreferenceCategory android:title="@string/pref_choose_date">
-        <es.upv.master.android.reconocimientofacial.ui.preferences.DatePreference
+        <es.upv.mastermoviles.intemasc.captura.ui.preferences.DatePreference
             android:key="pref_inicial_date"
             android:title="Seleccionar fecha inicial"
             android:defaultValue="2020-01-01"
             android:summary="2020-01-01"/>
-        <es.upv.master.android.reconocimientofacial.ui.preferences.DatePreference
+        <es.upv.mastermoviles.intemasc.captura.ui.preferences.DatePreference
             android:key="pref_final_date"
             android:title="Seleccionar fecha final"
             android:defaultValue="2020-01-01"

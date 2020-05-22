@@ -45,7 +45,6 @@
         android:textColor="@color/colorLabel2"
         android:textSize="10sp"
         app:layout_constraintEnd_toStartOf="@+id/btn_3"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@id/btn_1"
         app:layout_constraintTop_toBottomOf="@+id/photo" />
 
@@ -58,9 +57,23 @@
         android:tag="3"
         android:textColor="@color/colorLabel3"
         android:textSize="10sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintEnd_toStartOf="@+id/btn_10"
         app:layout_constraintStart_toEndOf="@+id/btn_2"
+        app:layout_constraintTop_toBottomOf="@+id/photo" />
+
+    <Button
+        android:id="@+id/btn_10"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#75434040"
+        android:onClick="onButtonClic"
+        android:tag="10"
+        android:textColor="@color/colorLabel10"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_3"
         app:layout_constraintTop_toBottomOf="@+id/photo" />
 
     <Button
@@ -75,10 +88,8 @@
         android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/btn_7"
         app:layout_constraintEnd_toEndOf="@+id/btn_1"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_1" />
-    <!--tools:visibility="invisible" /-->
 
     <Button
         android:id="@+id/btn_5"
@@ -108,10 +119,24 @@
         android:tag="6"
         android:textColor="@color/colorLabel6"
         android:textSize="10sp"
-        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@id/btn_3"
+        app:layout_constraintStart_toEndOf="@id/btn_2"
+        app:layout_constraintTop_toBottomOf="@id/btn_3" />
+
+    <Button
+        android:id="@+id/btn_11"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#75434040"
+        android:onClick="onButtonClic"
+        android:tag="11"
+        android:textColor="@color/colorLabel11"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_2"
-        app:layout_constraintTop_toBottomOf="@+id/btn_3" />
+        app:layout_constraintStart_toEndOf="@id/btn_3"
+        app:layout_constraintTop_toBottomOf="@id/btn_3" />
 
     <Button
         android:id="@+id/btn_7"
@@ -123,10 +148,8 @@
         android:tag="7"
         android:textColor="@color/colorLabel7"
         android:textSize="10sp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btn_1"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_4" />
 
@@ -143,7 +166,6 @@
         android:tag="8"
         android:textColor="@color/colorLabel8"
         android:textSize="10sp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_6"
         app:layout_constraintStart_toEndOf="@+id/btn_4"
@@ -160,12 +182,25 @@
         android:tag="9"
         android:textColor="@color/colorLabel9"
         android:textSize="10sp"
-        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_2"
-        app:layout_constraintTop_toBottomOf="@+id/btn_6" />
+        app:layout_constraintEnd_toEndOf="@id/btn_6"
+        app:layout_constraintStart_toEndOf="@id/btn_2"
+        app:layout_constraintTop_toBottomOf="@id/btn_6" />
 
+    <Button
+        android:id="@+id/btn_12"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="1dp"
+        android:background="#75434040"
+        android:onClick="onButtonClic"
+        android:tag="12"
+        android:textColor="@color/colorLabel12"
+        android:textSize="10sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_3"
+        app:layout_constraintTop_toBottomOf="@id/btn_6" />
 
     <TextView
         android:id="@+id/txv_label1"
@@ -266,5 +301,37 @@
         tools:layout_editor_absoluteX="255dp"
         tools:layout_editor_absoluteY="-27dp" />
 
+    <TextView
+        android:id="@+id/txv_label10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="○"
+        android:textColor="@color/colorLabel10"
+        android:textSize="129dp"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="-27dp" />
+
+    <TextView
+        android:id="@+id/txv_label11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="○"
+        android:textColor="@color/colorLabel11"
+        android:textSize="129dp"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="-27dp" />
+
+    <TextView
+        android:id="@+id/txv_label12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="○"
+        android:textColor="@color/colorLabel12"
+        android:textSize="129dp"
+        android:visibility="invisible"
+        tools:layout_editor_absoluteX="255dp"
+        tools:layout_editor_absoluteY="-27dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

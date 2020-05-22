@@ -7,11 +7,14 @@
         <item>Mal extendida</item>
         <item>Debajo puente nasal</item>
         <item>Gafas por debajo</item>
-        <item>Ajuste Cuello</item>
+        <item>Ajuste cuello</item>
         <item>Barba</item>
         <item>Mal ajuste nasal</item>
         <item>Goma mal colocada</item>
         <item>Hueco Lateral</item>
+        <item>Debajo nariz</item>
+        <item>Sin mascarilla</item>
+        <!--item>Otro</item-->
     </string-array>
 
     <!--string-array name="labels_2">

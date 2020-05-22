@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="es.upv.master.android.reconocimientofacial">
+    package="es.upv.mastermoviles.intemasc.captura">
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -24,7 +24,7 @@
         android:usesCleartextTraffic="true">
         <!-- android:theme="@style/AppTheme.NoActionBar" -->
         <activity
-            android:name=".ui.MainActivity"
+            android:name="es.upv.mastermoviles.intemasc.captura.ui.MainActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity">
             <intent-filter>
@@ -34,26 +34,26 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.take_photo.TakePhotoActivity"
+            android:name="es.upv.mastermoviles.intemasc.captura.ui.take_photo.TakePhotoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".ui.take_photo.ShowPhotoActivity"
+            android:name="es.upv.mastermoviles.intemasc.captura.ui.take_photo.ShowPhotoActivity"
             android:label="Aceptar Foto"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".ui.label.LabelActivity"
+            android:name="es.upv.mastermoviles.intemasc.captura.ui.label.LabelActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".ui.label.ListLabelActivity"
+            android:name="es.upv.mastermoviles.intemasc.captura.ui.label.ListLabelActivity"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity"></activity>
         <activity
-            android:name=".ui.preferences.PreferencesActivity"
+            android:name="es.upv.mastermoviles.intemasc.captura.ui.preferences.PreferencesActivity"
             android:label="@string/action_setting"
             android:configChanges="orientation|keyboardHidden|screenSize"
             tools:ignore="LockedOrientationActivity"></activity>
