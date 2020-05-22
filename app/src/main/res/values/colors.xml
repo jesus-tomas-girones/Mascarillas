@@ -4,10 +4,7 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="black">#000000</color>
-    <color name="colorCeleste">#2196F3</color>
-    <color name="colorGold">#B77A5015</color>
-<!-- Colores de las ETIQUETAS -->
+    <!-- Colores de las ETIQUETAS -->
     <color name="colorLabel1">#E91E63</color>
     <color name="colorLabel2">#3F51B5</color>
     <color name="colorLabel3">#009688</color>
@@ -20,7 +17,5 @@
     <color name="colorLabel10">#FFC0CB</color>
     <color name="colorLabel11">#FFFFFF</color>
     <color name="colorLabel12">#000000</color>
-
-    <color name="colorFondoBotonLabel">#75434040</color>
 
 </resources>

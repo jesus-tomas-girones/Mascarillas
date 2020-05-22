@@ -33,18 +33,13 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="btn_descartar_foto">Descartar</string>
     <string name="btn_aceptar_foto">Aceptar</string>
     <!--Botones de RecognitionActivity - Mostrar dialogo -->
-    <string name="btn_salir">Descartar</string>
-    <string name="btn_continuar">Aceptar</string>
     <!--Snackbar de RecognitionActivity - -->
     <string name="snackbar_try_mach_face">Intenta coincidir tu cara con la imagen</string>
-    <string name="snackbar_error">ERROR INESPERADO</string>
 
     <!-- Strings de diálogo login personalizado -->
-    <string name="mostrar_contrasena_check">Mostrar contraseña</string>
     <string name="password_error">Contraseña Incorrecta!</string>
     <string name="cerrar_boton">Cerrar</string>
     <string name="entrar_boton">ENTRAR</string>
-    <string name="password_login_evaluator">mascarilla1234</string>
     <string name="password_download">4321</string>
     <string name="title_login_evaluator">Clave de Acceso</string>
     <string name="msg_login_evaluator">Ingresa tu contraseña</string>
@@ -60,7 +55,6 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="menu_label_siguiente">Siguiente</string>
     <string name="menu_label_aceptar">Aceptar</string>
     <!-- menu Listlabel    -->
-    <string name="menu_preferencias">Preferencias</string>
     <string name="menu_download">Descargas</string>
 
     <!-- Tipos de Etiquetas (Problemas Fotos)  -->
@@ -81,9 +75,7 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="url_Photo">URL DE FOTOS ETIQUETADAS</string>
 
     <!-- Preference    -->
-    <string name="action_setting">Preferencias</string>
-    <string name="pref_remember_password">Recordar contraseña</string>
-    <string name="pref_summary_password">Guarda la clave de acceso de modo etiquetador</string>
+    <string name="action_setting">Descargas</string>
     <string name="pref_download_photo_and_data">Descargar fotos e información de etiquetas</string>
     <string name="pref_summary_download_photo">Guarda las fotos etiquetadas a la memoría de tu móvil</string>
     <string name="pref_download_photo">Bajar fotos al móvil</string>
@@ -95,7 +87,6 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="pref_summary_choose_date">Permite seleccionar una fecha y hora deseada de las fotos y/o etiquetas</string>
     <string name="pref_summary_register_download">Foto/Etiqueta</string>
     <string name="pref_list_download">Descarga con fecha/hora personalizada</string>
-    <string name="pref_custom_download">Descarga personalizada</string>
     <string name="pref_summary_list_download">Selecciona la opción para descargar Fotos/Etiquetas</string>
     <string name="tag_time_picker">Selecciona la hora de búsqueda</string>
 
