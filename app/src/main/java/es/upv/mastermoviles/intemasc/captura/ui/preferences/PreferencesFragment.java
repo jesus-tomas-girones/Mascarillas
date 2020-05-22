@@ -14,7 +14,7 @@ public class PreferencesFragment extends PreferenceFragment {
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
+ //       addPreferencesFromResource(R.xml.preferences);
         passwordSwitch = (SwitchPreference) findPreference("passwordSwitch");
         if(!prefs.getBoolean("password", false)){
             passwordSwitch.setChecked(false);

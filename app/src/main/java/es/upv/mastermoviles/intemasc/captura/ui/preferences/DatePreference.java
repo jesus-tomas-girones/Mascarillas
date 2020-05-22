@@ -16,7 +16,9 @@ import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -188,4 +190,23 @@ public class DatePreference extends DialogPreference {
 
     }
 
+    public static class PreferencesActivity extends AppCompatActivity {
+        public static FragmentManager fragmentManager;
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+
+            super.onCreate(savedInstanceState);
+              getFragmentManager().beginTransaction()
+                    .replace(android.R.id.content, new DownloadFragment())
+                    .commit();
+            fragmentManager = getSupportFragmentManager();
+        }
+
+        @Override
+        public void onStop() { //Stop
+            super.onStop();
+            this.finish();
+        }
+
+    }
 }

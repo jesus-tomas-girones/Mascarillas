@@ -154,18 +154,20 @@ public class ListLabelActivity extends AppCompatActivity {
       //noinspection SimplifiableIfStatement
       if (id == R.id.menu_download) {
          String password = getString(R.string.password_download);
-         alertDialogLogin(this, PreferencesActivity.class, TYPE_PREFERENCE_DOWNLOAD, password);
-/*         Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
+//         alertDialogLogin(this, PreferencesActivity.class, TYPE_PREFERENCE_DOWNLOAD, password);
+         alertDialogLogin(this, TYPE_PREFERENCE_DOWNLOAD, PreferencesActivity.class,  password);
+
+         /*         Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
          i.putExtra("type_preferences", "download");
          startActivity(i);*/
          return true;
       }
-      if (id == R.id.menu_preferencia) {
+/*      if (id == R.id.menu_preferencia) {
          Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
          i.putExtra("type_preferences", "preferences");
          startActivity(i);
          return true;
-      }
+      }*/
       return super.onOptionsItemSelected(item);
    }
 

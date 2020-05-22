@@ -14,7 +14,7 @@
         <item>Hueco Lateral</item>
         <item>Debajo nariz</item>
         <item>Sin mascarilla</item>
-        <!--item>Otro</item-->
+        <item>Otro</item>
     </string-array>
 
     <!--string-array name="labels_2">
