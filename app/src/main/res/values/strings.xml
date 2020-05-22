@@ -44,8 +44,6 @@ PROTECCIÓN DE DATOS:\n Las fotografías son tratadas de forma totalmente anóni
     <string name="password_error">Contraseña Incorrecta!</string>
     <string name="cerrar_boton">Cerrar</string>
     <string name="entrar_boton">ENTRAR</string>
-    <string name="password_login_evaluator">mascarilla1234</string>
-    <string name="password_download">1234</string>
     <string name="title_login_evaluator">Clave de Acceso</string>
     <string name="msg_login_evaluator">Ingresa tu contraseña</string>
 

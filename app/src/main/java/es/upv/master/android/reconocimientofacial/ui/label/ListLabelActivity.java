@@ -6,11 +6,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -21,6 +24,7 @@ import es.upv.master.android.reconocimientofacial.model.Photo;
 import es.upv.master.android.reconocimientofacial.ui.preferences.PreferencesActivity;
 
 import static es.upv.master.android.reconocimientofacial.ui.MainActivity.alertDialogLogin;
+import static es.upv.master.android.reconocimientofacial.ui.MainActivity.prefs;
 
 public class ListLabelActivity extends AppCompatActivity {
    private TabLayout tabs;
@@ -28,7 +32,7 @@ public class ListLabelActivity extends AppCompatActivity {
    FirebaseFirestore db;
    public static ListLabelAdapter adaptador;
    public static final int REQUEST_CODE_NEXT_PHOTO = 1;
-   public static final String TYPE_PREFERENCE_DOWNLOAD = "download";
+   private final String PREFERENCE_PASSWORD_DOWNLOAD = "password_download";
    public static int position;
    FirestoreRecyclerOptions<Photo> opciones;
 
@@ -37,6 +41,8 @@ public class ListLabelActivity extends AppCompatActivity {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.activity_evaluator);
       //
+       Toolbar toolbar = findViewById(R.id.toolbar);
+       setSupportActionBar(toolbar);
 
       recyclerView = findViewById(R.id.recyclerview_photos);
       db = FirebaseFirestore.getInstance();
@@ -153,17 +159,15 @@ public class ListLabelActivity extends AppCompatActivity {
 
       //noinspection SimplifiableIfStatement
       if (id == R.id.menu_download) {
-         String password = getString(R.string.password_download);
-         alertDialogLogin(this, PreferencesActivity.class, TYPE_PREFERENCE_DOWNLOAD, password);
-/*         Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
-         i.putExtra("type_preferences", "download");
-         startActivity(i);*/
-         return true;
-      }
-      if (id == R.id.menu_preferencia) {
-         Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
-         i.putExtra("type_preferences", "preferences");
-         startActivity(i);
+          boolean passwDownload = prefs.getBoolean(PREFERENCE_PASSWORD_DOWNLOAD, false);
+          if(passwDownload){
+             Intent i = new Intent(getApplicationContext(), PreferencesActivity.class);
+             startActivity(i);
+          }else{
+              String password = "4321";
+              alertDialogLogin(this,PREFERENCE_PASSWORD_DOWNLOAD,
+                      PreferencesActivity.class, password);
+          }
          return true;
       }
       return super.onOptionsItemSelected(item);

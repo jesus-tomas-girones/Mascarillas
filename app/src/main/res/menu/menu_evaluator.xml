@@ -14,12 +14,6 @@
                 android:title="@string/menu_download"
                 android:icon="@drawable/ic_download"
                 app:showAsAction="always|withText"/>
-            <item
-                android:id="@+id/menu_preferencia"
-                android:orderInCategory="102"
-                android:title="@string/menu_preferencias"
-                android:icon="@drawable/ic_preferences"
-                app:showAsAction="always|withText"/>
         </menu>
     </item>
 
