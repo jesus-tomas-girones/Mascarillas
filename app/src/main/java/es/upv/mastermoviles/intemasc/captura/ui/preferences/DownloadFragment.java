@@ -47,7 +47,6 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
     private final long HOUR_MS = 3600000;
     private Date timeDownload, currentDate;
     private Preference timePickerPreferenceInitial, timePickerPreferenceFinal;
-    //private SwitchPreference passwordSwitch;
 
     @Override public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +54,6 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
         SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
         currentDate = new Date(System.currentTimeMillis());
         String dateString = formatoFecha.format(currentDate);
-/*        Calendar cal = Calendar.getInstance();
-        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd");
-        String dateString = format1.format(cal.getTime());*/
 
         listDownloadPhotos= (ListPreference) findPreference("download_photo");
         listDownloadPhotos.setOnPreferenceChangeListener(this);
@@ -86,14 +82,6 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
         timePickerPreferenceFinal = findPreference("set_time_fin");
         timePickerPreferenceFinal.setSummary(formatoHora.format(currentDate));
         configListener();
-
-/*        passwordSwitch = (SwitchPreference) findPreference("passwordSwitch");
-        if(!prefs.getBoolean("password", false)){
-            passwordSwitch.setChecked(false);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("password", true);
-            editor.commit();
-        }*/
 
         almacenamientoEnMemoria();
         if(!almacenamientoEnMemoria()){

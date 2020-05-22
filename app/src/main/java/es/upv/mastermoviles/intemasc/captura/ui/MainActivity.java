@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     public static SharedPreferences prefs;
+    private final String PREFERENCE_PASSWORD_LOGIN = "password_login";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,16 +52,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.menu_ser_evaluador) {
-            Boolean switchPass = false;
-            if(prefs.getBoolean("password", false)){
-                switchPass = prefs.getBoolean("passwordSwitch", (Boolean)false);
-            }
-            if(switchPass){
+            boolean passwLogin = prefs.getBoolean(PREFERENCE_PASSWORD_LOGIN, false);
+            if(passwLogin){
                 Intent i = new Intent(getApplicationContext(), ListLabelActivity.class);
                 startActivity(i);
             }else{
-                String password = getString(R.string.password_login_evaluator);
-                alertDialogLogin(this, ListLabelActivity.class, null , password);
+                alertDialogLogin(this,PREFERENCE_PASSWORD_LOGIN,
+                        ListLabelActivity.class, "mascarilla1234");
             }
                 return true;
         }
@@ -68,8 +66,8 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static void alertDialogLogin(final Activity activity, final Class nextActivity,
-                                        final String extra, final String passwordResources){
+    public static void alertDialogLogin(final Activity activity, final String preference_password,
+                    final Class nextActivity, final String password){
 
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
         alertDialog.setTitle(activity. getString(R.string.title_login_evaluator));
@@ -90,13 +88,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String passwordInput = input.getText().toString();
                         if (!passwordInput.isEmpty()) {
-                            if (passwordResources.equals(passwordInput)) {
+                            if (password.equals(passwordInput)) {
                                 Toast.makeText(activity,
                                         "Contraseña correcta", Toast.LENGTH_SHORT).show();
+                                //Usuario autentificado guardo el estado a true para que no vuelva a pedir contraseña
+                                SharedPreferences.Editor editor = prefs.edit();
+                                editor.putBoolean(preference_password, true);
+                                editor.commit();
 
                                 Intent i = new Intent(activity, nextActivity);
-                                if(extra != null)
-                                    i.putExtra("type_preferences", extra);
                                 activity.startActivity(i);
                             } else {
                                 Toast.makeText(activity,
