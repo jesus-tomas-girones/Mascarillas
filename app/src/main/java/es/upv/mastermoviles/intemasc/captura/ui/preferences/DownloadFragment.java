@@ -138,7 +138,6 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
                 break;
             case "pref_inicial_date":
                 inicialDate.setSummary((String) newValue);
-                //inicialDate
                 break;
             case "pref_final_date":
                 finalDate.setSummary((String) newValue);
@@ -151,6 +150,34 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
         return res;
     }
 
+    private void downloadPhotos(long initialDateSearch,long finalDateSearch){
+        DataBase.searchAllURLPhotos(initialDateSearch,finalDateSearch,
+                new DataBase.LoadLabelledPhotosListener() {
+                    ArrayList<String> list_id_photos = new ArrayList<String>();
+                    List<String> labels;
+                    @Override
+                    public void onLoadPhotos(List<Map<String, Object>> listLabelledPhotos) {
+                        Activity activity = getActivity();
+                        if(!listLabelledPhotos.isEmpty()){
+                            for(Map<String, Object> label: listLabelledPhotos){
+                                String url = label.get("uriPhoto").toString();
+                                String id = label.get("idPhoto").toString();
+                                System.out.println("uriPhoto: "+url+ ", idPhoto: " +id);
+                                list_id_photos.add(id);
+                            }
+                            DataBase.downloadPhotosById(activity,list_id_photos,
+                                        0, new ProgressDialog(activity));
+                            saveInPreferenceLastDownload(true, false);
+                            registerLastDownload();
+                        }
+                        else{
+                            String title = activity.getResources().getString(R.string.title_mostrar_dialogo_no_descargas);
+                            String mensaje = activity.getResources().getString(R.string.message_mostrar_dialogo_no_descargas);
+                            DataBase.showDialogFireStorage(activity, title, mensaje, DISMISS_DIALOG);
+                        }
+                    }
+                });
+    }
 
     private void downloadLabelledphoto(long initialDateSearch,long finalDateSearch,
                                        final boolean withPhoto, final boolean withLabel){
@@ -226,6 +253,9 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
                 break;
         }
         if(dateSearch > 0){
+            if(withPhoto && !withLabel)
+                downloadPhotos(dateSearch, realTime);
+            if(!withPhoto && withLabel)
             downloadLabelledphoto(dateSearch, realTime,withPhoto, withLabel);
         }
         Toast.makeText(getActivity(), "No existen descargas de fotos", Toast.LENGTH_LONG);
@@ -296,7 +326,10 @@ public class DownloadFragment extends PreferenceFragment implements Preference.O
                 timeDownload = calendar.getTime();
                 long time = timeDownload.getTime();
                 long realTime = System.currentTimeMillis();
-                downloadLabelledphoto(time,realTime, withPhoto, withLabel);
+                if(withPhoto && !withLabel)
+                    downloadPhotos(time, realTime);
+                if(!withPhoto && withLabel)
+                    downloadLabelledphoto(time, realTime,withPhoto, withLabel);
             }
         });
         newFragment.show(PreferencesActivity.fragmentManager, "datePicker");

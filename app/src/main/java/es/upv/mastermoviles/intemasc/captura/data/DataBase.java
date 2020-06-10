@@ -323,6 +323,46 @@ public class DataBase {
                   });
    }
 
+   public static void searchAllURLPhotos(long inicialDate, long finalDate,
+                                          final LoadLabelledPhotosListener listener){
+      /**
+       * Dado el id de la colección photos, lee sus etiquetas y coordenadas por medio de un listener
+       *
+       * @param inicialDate: fecha inicial de búsqueda, por ejemplo 01/05/2020
+       * @param finalDate: fecha final de la búqueda, por ejemplo 18/05/2020
+       * @param listener escuchador que llamaremos cuando se tengan todas las propiedades de las etiquetas
+       */
+      FirebaseFirestore db = FirebaseFirestore.getInstance();
+      Query photosRef = db.collection(COLLECTION)
+              .whereGreaterThanOrEqualTo("creation_date", inicialDate)
+              .whereLessThanOrEqualTo("creation_date", finalDate);
+
+      photosRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+         @Override
+         public void onComplete(@NonNull Task<QuerySnapshot> task) {
+            if (task.isSuccessful()) {
+               List<DocumentSnapshot> listLabels = task.getResult().getDocuments();
+               List< Map<String, Object>> listLabelledPhotos = new ArrayList<Map<String, Object>>();
+               for(DocumentSnapshot labelDocument : listLabels){
+                  Map<String, Object> labelData = new HashMap<>();
+                  //Añadir a la búsqueda las url de las fotos, podemos obtener también las id de los documentos
+                  //que corresponde al mismo nombre de las fotos en el firestorage
+                  String urlPhoto = labelDocument.getString("urlPhoto");
+                  labelData.put("uriPhoto", urlPhoto);
+                  String idPhoto = labelDocument.getId();
+                  labelData.put("idPhoto", idPhoto);
+                  Double creation_date = labelDocument.getDouble("creation_date");
+                  labelData.put("creation_date", creation_date);
+                  listLabelledPhotos.add(labelData);
+               }
+               listener.onLoadPhotos(listLabelledPhotos);
+            } else {
+               Log.e("MASCARILLA", "Error en Database.loadLabels() accediendo a Firebase"); //DOTO crear costante TAG
+            }
+         }
+      });
+   }
+
    public static void downloadPhotosById(final Activity activity, final ArrayList<String> list_id,
                                          int initial_id, final ProgressDialog progressDownload){
       /**
